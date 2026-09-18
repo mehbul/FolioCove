@@ -1,0 +1,9 @@
+{
+  "name": "PrivyPDF Private Document Studio",
+  "short_name": "PrivyPDF",
+  "description": "Private browser-first PDF editing and conversion tools.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#07101c",
+  "theme_color": "#07101c"
+}
