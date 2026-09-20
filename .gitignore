@@ -1,3 +1,10 @@
 .worktrees/
 node_modules/
+.superpowers/
+npm-debug.log*
+coverage/
+.cache/
+.env
+.env.*
+.DS_Store
 

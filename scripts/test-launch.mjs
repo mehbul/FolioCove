@@ -1,14 +1,23 @@
 import fs from 'node:fs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
-import {createRequire} from 'node:module';
+import * as pdfLib from 'pdf-lib';
 import {core,notices,classifyOutcome,safeMetric} from '../dist/launch.mjs';
-const require=createRequire(import.meta.url),pdfLib=require(require.resolve('pdf-lib',{paths:[process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES||'/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules']}));
-const html=fs.readFileSync('dist/index.html','utf8'),script=html.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
-new vm.SourceTextModule(script);new vm.SourceTextModule(fs.readFileSync('dist/launch.mjs','utf8'));new vm.Script(fs.readFileSync('dist/sw.js','utf8'));
+const html=fs.readFileSync('dist/index.html','utf8');
+const scriptPath=html.match(/<script type="module" src="([^"]+)"><\/script>/)?.[1];
+assert.equal(scriptPath,'/assets/app.js');
+const script=fs.readFileSync(`dist${scriptPath}`,'utf8');
+new vm.Script(fs.readFileSync('dist/sw.js','utf8'));
 assert.equal(core.length,10);assert.equal(new Set(core.map(x=>x[1])).size,10);
 for(const [,slug] of core){const page=fs.readFileSync(`dist/${slug}/index.html`,'utf8');assert(page.includes('<base href="/">'));assert(page.includes('noindex,nofollow'))}
 for(const slug of ['privacy','security','limitations','terms','testing'])assert(fs.existsSync(`dist/${slug}/index.html`));
+for(const route of [...core.map(x=>x[1]),'privacy','security','limitations','terms','testing'])assert(fs.existsSync(`dist/${route}/index.html`),`missing route ${route}`);
+for(const file of ['dist/index.html','dist/assets/app.js','dist/assets/tesseract/worker.min.js','dist/launch.mjs']){
+ const text=fs.readFileSync(file,'utf8');
+ assert(!/CODEX_PRIMARY_RUNTIME_NODE_MODULES/.test(text),`${file} must not use Codex runtime dependencies`);
+ assert(!/document-upload|upload endpoint|\/upload\b|fetch\(['"]https?:\/\/(?!tessdata\.projectnaptha\.com)/i.test(text),`${file} contains a blocked upload or third-party executable fetch marker`);
+ assert(!/cdn\.jsdelivr\.net|cdn\.sheetjs\.com|unpkg\.com/.test(text),`${file} must not reference third-party JavaScript CDNs`);
+}
 assert.equal(classifyOutcome('status error'),'failure');assert.equal(classifyOutcome('status ok'),'completed');assert.equal(classifyOutcome('status'),null);
 assert.deepEqual(Object.keys(safeMetric('merge','completed',123)),['tool','outcome','durationMs']);assert(notices.trimheads.includes('NOT redaction'));assert(notices.pdftoword.includes('not a native DOCX'));
 const nodes=new Map();
@@ -20,8 +29,10 @@ class Element{
 const get=id=>{if(!nodes.has(id))nodes.set(id,new Element(id));return nodes.get(id)};
 const buttons=[...html.matchAll(/<button class="tool[^>]*data-tool="([^"]+)"/g)].map(m=>{const el=new Element();el.dataset.tool=m[1];return el});
 const document={getElementById:get,querySelectorAll:()=>buttons,querySelector:s=>buttons.find(x=>s.includes(`"${x.dataset.tool}"`))||new Element(),createElement:()=>new Element(),dispatchEvent:()=>{}};
-const context={document,localStorage:{getItem:()=>null,setItem:()=>{}},CustomEvent:class{},setTimeout:()=>{},console,Blob,URL,Intl,...pdfLib};
-const body=script.replace(/^\s*import[^;]+;/,'').split('    const {initLaunch}=')[0];
+const context={document,localStorage:{getItem:()=>null,setItem:()=>{}},CustomEvent:class{},setTimeout:()=>{},console,Blob,URL,Intl,PDFDocument:pdfLib.PDFDocument,PDFName:pdfLib.PDFName,StandardFonts:pdfLib.StandardFonts,degrees:pdfLib.degrees,rgb:pdfLib.rgb};
+const sourceScript=fs.readFileSync('src/app/index.mjs','utf8');
+const body=sourceScript.replace(/^\s*import[^;]+;\s*/,'').split(/const\s+\{\s*initLaunch\s*\}\s*=\s*await\s+import\(["']\/launch\.mjs["']\)/)[0];
+assert.notEqual(body,sourceScript,'test harness could not isolate the app setup code');
 const api=new Function(...Object.keys(context),body+`\n const testApi={configs,setupTool,pageIndexes,set:(tool,input)=>{current=tool;selected=input;},getStatus:()=>({kind:status.className,text:status.textContent}),outputs:[],};download=(bytes,name)=>testApi.outputs.push({bytes,name});downloadBlob=(blob,name)=>testApi.outputs.push({blob,name});return testApi;`)(...Object.values(context));assert.equal(Object.keys(api.configs).length,74);
 api.setupTool('targetcompress');assert(get('options').innerHTML.includes('target-kb'));api.setupTool('sign');assert(get('options').innerHTML.includes('sign-name'));
 assert.deepEqual(Array.from(api.pageIndexes('1-3, 5',5)),[0,1,2,4]);assert.throws(()=>api.pageIndexes('0',5));assert.throws(()=>api.pageIndexes('3-1',5));
