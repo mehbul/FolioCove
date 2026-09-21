@@ -2,8 +2,10 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
 import * as pdfLib from 'pdf-lib';
+import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
 import JSZip from 'jszip';
 import {core,notices,classifyOutcome,safeMetric} from '../dist/launch.mjs';
+const standardFontDataUrl='node_modules/pdfjs-dist/standard_fonts/';
 const html=fs.readFileSync('dist/index.html','utf8');
 const scriptPath=html.match(/<script type="module" src="([^"]+)"><\/script>/)?.[1];
 assert.equal(scriptPath,'/assets/app.js');
@@ -49,6 +51,8 @@ async function executeWithFiles(tool,files){api.outputs.length=0;api.set(tool,fi
 async function execute(tool,bytes){return executeWithFiles(tool,tool==='merge'?[asFile(bytes),asFile(bytes)]:[asFile(bytes)])}
 function worksheetXml(rows){const col=n=>String.fromCharCode(65+n),esc=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');return `<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>${rows.map((row,r)=>`<row r="${r+1}">${row.map((cell,c)=>{const ref=`${col(c)}${r+1}`;return typeof cell==='number'?`<c r="${ref}"><v>${cell}</v></c>`:`<c r="${ref}" t="inlineStr"><is><t>${esc(cell)}</t></is></c>`}).join('')}</row>`).join('')}</sheetData></worksheet>`}
 async function xlsxFixture(){const zip=new JSZip();zip.file('[Content_Types].xml','<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>');zip.file('_rels/.rels','<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>');zip.file('xl/workbook.xml','<?xml version="1.0" encoding="UTF-8"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Summary" sheetId="1" r:id="rId1"/><sheet name="Detail" sheetId="2" r:id="rId2"/></sheets></workbook>');zip.file('xl/_rels/workbook.xml.rels','<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/></Relationships>');zip.file('xl/worksheets/sheet1.xml',worksheetXml([['Metric','Value'],['Revenue',42]]));zip.file('xl/worksheets/sheet2.xml',worksheetXml([['Region','Count'],['North',7]]));return new Uint8Array(await zip.generateAsync({type:'uint8array'}))}
+function xlsFixture(){const bytes=fs.readFileSync('scripts/fixtures/legacy-signal.xls');assert.equal(bytes.subarray(0,8).toString('hex'),'d0cf11e0a1b11ae1');assert.equal(bytes.length,3584);return new Uint8Array(bytes)}
+async function pdfText(bytes){const task=pdfjs.getDocument({data:new Uint8Array(bytes),standardFontDataUrl}),pdf=await task.promise;try{const pages=[];for(let i=1;i<=pdf.numPages;i++){const content=await (await pdf.getPage(i)).getTextContent();pages.push(content.items.map(x=>x.str).join(' '))}return pages.join('\n')}finally{await task.destroy()}}
 for(const [index,bytes] of fixtures.entries()){
  for(const tool of ['merge','split','edit','sign','rotate','numbers','reverse']){
   get('pages').value='1';get('edit-page').value='1';get('edit-text').value='Synthetic note';get('edit-x').value='10';get('edit-y').value='10';get('sign-page').value='1';get('sign-name').value='Test User';get('sign-pos').value='left';get('angle').value='90';get('number-start').value='1';
@@ -63,5 +67,16 @@ assert.equal(api.outputs.length,1);
 assert.equal(api.outputs[0].name,'excel-to-pdf.pdf');
 const spreadsheetPdf=await pdfLib.PDFDocument.load(api.outputs[0].bytes);
 assert(spreadsheetPdf.getPageCount()>=1);
-console.log(`PASS: syntax, 15 routes, metrics schema, route option initialization, page-range validation, spreadsheet-to-PDF replacement regression; ${runs} generated-bundle app-handler executions across 10 generated PDFs plus malformed input.`);
+const legacySpreadsheetBytes=xlsFixture();
+const legacySpreadsheetState=await executeWithFiles('exceltopdf',[asNamedFile(legacySpreadsheetBytes,'legacy-signal.xls','application/vnd.ms-excel')]);
+assert.equal(legacySpreadsheetState.kind,'status ok',`legacy exceltopdf: ${legacySpreadsheetState.text}`);
+assert.equal(api.outputs.length,1);
+assert.equal(api.outputs[0].name,'excel-to-pdf.pdf');
+const legacySpreadsheetPdf=await pdfLib.PDFDocument.load(api.outputs[0].bytes);
+assert.equal(legacySpreadsheetPdf.getPageCount(),1);
+const legacySpreadsheetText=await pdfText(api.outputs[0].bytes);
+assert.match(legacySpreadsheetText,/LegacySheet/);
+assert.match(legacySpreadsheetText,/Legacy,Value/);
+assert.match(legacySpreadsheetText,/Signal,314/);
+console.log(`PASS: syntax, 15 routes, metrics schema, route option initialization, page-range validation, XLSX and legacy XLS spreadsheet-to-PDF regressions; ${runs} generated-bundle app-handler executions across 10 generated PDFs plus malformed input.`);
 console.log('NOT TESTED: browser rendering, OCR, camera, compression, redaction accuracy, encrypted inputs, browser network traffic, Safari/mobile, human task completion.');

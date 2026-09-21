@@ -9,6 +9,7 @@
     "test": "node scripts/test-launch.mjs"
   },
   "dependencies": {
+    "@e965/xlsx": "0.20.3",
     "jszip": "3.10.1",
     "mammoth": "1.12.3",
     "pdf-lib": "1.17.1",
