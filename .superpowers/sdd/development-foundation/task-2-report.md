@@ -266,3 +266,100 @@ found 0 vulnerabilities
 ## Concerns
 
 OCR accuracy is still not broadly certified; the strengthened test proves one deterministic English image-only scan produces searchable recognized text. Safari/mobile/camera hardware, visual fidelity, compression quality, deeper redaction/security proof, full sanitization, and human completion remain unverified launch gates.
+
+# Task 2 fix round 2: generated bundle whitespace normalization
+
+## Finding addressed
+
+Independent verification found `git diff --check 37fcfea..HEAD` failing on trailing whitespace in the generated `dist/assets/app.js` license block near lines 114860, 114863, 114866, 114879, 114882, 114885, 114897, and 114900.
+
+## Changes
+
+- Fixed the build pipeline rather than hand-editing only the generated bundle.
+- Added `cleanGeneratedText()` in `scripts/build.mjs` to strip trailing spaces/tabs from generated text and ensure a final newline.
+- Applied the normalization to the esbuild app bundle after the existing Tesseract worker URL rewrite.
+- Applied the same normalization to the generated local Tesseract worker asset after its URL rewrites, so copied generated text assets remain diff-clean.
+- Ran a fresh build to regenerate tracked `dist/assets/app.js` from the updated pipeline.
+
+## Exact commands and results
+
+### `npm run build`
+
+Exit code: 0
+
+```text
+> privypdf@0.1.0 build
+> node scripts/build.mjs
+
+Generated 10 tool routes and 5 beta information pages.
+```
+
+### `git diff --check`
+
+Exit code: 0
+
+```text
+(no whitespace errors; Git emitted only Windows line-ending normalization warnings)
+```
+
+### `git diff --check 37fcfea`
+
+Exit code: 0
+
+```text
+(no whitespace errors; Git emitted only Windows line-ending normalization warnings)
+```
+
+This pre-commit range check compared commit `37fcfea` to the regenerated working tree and confirmed the generated bundle no longer contains the reported trailing whitespace.
+
+### `npm test`
+
+Exit code: 0
+
+```text
+> privypdf@0.1.0 test
+> node scripts/test-launch.mjs
+
+PASS: syntax, 15 routes, metrics schema, route option initialization, page-range validation, XLSX and legacy XLS spreadsheet-to-PDF regressions; 77 generated-bundle app-handler executions across 10 generated PDFs plus malformed input.
+NOT TESTED: browser rendering, OCR, camera, compression, redaction accuracy, encrypted inputs, browser network traffic, Safari/mobile, human task completion.
+```
+
+### `npm run test:e2e`
+
+Exit code: 0
+
+```text
+> privypdf@0.1.0 test:e2e
+> playwright test --project=chromium
+
+Running 20 tests using 3 workers
+
+1 skipped
+19 passed (12.6s)
+```
+
+The skipped test is the explicit OCR local-only test, unchanged by this whitespace/build-pipeline fix.
+
+## Self-review
+
+- Confirmed the fix lives in `scripts/build.mjs` and a fresh build regenerates clean tracked output.
+- Confirmed the reported license-block blank lines in `dist/assets/app.js` no longer contain spaces.
+- Confirmed no product behavior, routes, dependencies, accounts, payments, analytics, deployment, or public-access settings were changed.
+- Confirmed the generated-bundle test still reports all 77 app-handler executions.
+- Confirmed the Chromium E2E suite still passes against the regenerated `dist/` output.
+
+## Concerns
+
+No new functional concerns were introduced by this build-output normalization. Existing Task 2 launch gaps still apply: OCR accuracy beyond deterministic fixtures, Safari/mobile/camera hardware, visual fidelity, compression quality, deeper redaction/security proof, full sanitization, and human completion remain unverified.
+
+## Post-commit exact range check
+
+### `git diff --check 37fcfea..HEAD`
+
+Exit code: 0
+
+```text
+(no whitespace errors; Git emitted only the existing user-config ignore warning before status in the combined shell output)
+```
+
+The committed branch range that previously failed on `dist/assets/app.js` now passes.

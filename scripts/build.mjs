@@ -18,6 +18,10 @@ async function writeFile(to, content) {
   await fs.writeFile(to, content);
 }
 
+function cleanGeneratedText(content) {
+  return content.replace(/[ \t]+$/gm, '').replace(/\r?\n?$/, '\n');
+}
+
 function renderDocPage(slug, page) {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>${page.title} — PrivyPDF</title><link rel="stylesheet" href="/launch.css"></head><body class="policy"><nav><a href="/">← PrivyPDF tools</a></nav><h1>${page.title}</h1>${page.body}<footer><a href="/privacy/">Privacy</a> · <a href="/security/">Security</a> · <a href="/limitations/">Limitations</a> · <a href="/testing/">Testing</a></footer></body></html>`;
 }
@@ -43,7 +47,7 @@ appBundle = appBundle.replace(
   /`https:\/\/cdn\.jsdelivr\.net\/npm\/tesseract\.js@v\$\{[^}]+\}\/dist\/worker\.min\.js`/g,
   '`/assets/tesseract/worker.min.js`'
 );
-await fs.writeFile(appBundlePath, appBundle);
+await fs.writeFile(appBundlePath, cleanGeneratedText(appBundle));
 
 await copyFile(path.join(src, 'app', 'launch.mjs'), path.join(dist, 'launch.mjs'));
 await copyFile(path.join(src, 'styles', 'launch.css'), path.join(dist, 'launch.css'));
@@ -74,7 +78,7 @@ let tesseractWorker = await fs.readFile(tesseractWorkerPath, 'utf8');
 tesseractWorker = tesseractWorker
   .replace('https://cdn.jsdelivr.net/npm/tesseract.js-core@v', '/assets/tesseract')
   .replace('https://cdn.jsdelivr.net/npm/@tesseract.js-data/', 'https://tessdata.projectnaptha.com/4.0.0/');
-await fs.writeFile(tesseractWorkerPath, tesseractWorker);
+await fs.writeFile(tesseractWorkerPath, cleanGeneratedText(tesseractWorker));
 
 let homepage = await fs.readFile(path.join(src, 'pages', 'home.html'), 'utf8');
 homepage = homepage.replace('%%APP_SCRIPT%%', '/assets/app.js');

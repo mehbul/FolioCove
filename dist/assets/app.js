@@ -114857,13 +114857,13 @@ if (document.modelContext?.registerTool) {
 
 jszip/dist/jszip.min.js:
   (*!
-  
+
   JSZip v3.10.1 - A JavaScript class for generating and reading zip files
   <http://stuartk.com/jszip>
-  
+
   (c) 2009-2016 Stuart Knightley <stuart [at] stuartk.com>
   Dual licenced under the MIT license or GPLv3. See https://raw.github.com/Stuk/jszip/main/LICENSE.markdown.
-  
+
   JSZip uses the library pako released under the MIT license :
   https://github.com/nodeca/pako/blob/main/LICENSE
   *)
@@ -114876,13 +114876,13 @@ mammoth/mammoth.browser.js:
    * @license  MIT
    *)
   (*!
-  
+
   JSZip v3.7.1 - A JavaScript class for generating and reading zip files
   <http://stuartk.com/jszip>
-  
+
   (c) 2009-2016 Stuart Knightley <stuart [at] stuartk.com>
   Dual licenced under the MIT license or GPLv3. See https://raw.github.com/Stuk/jszip/master/LICENSE.markdown.
-  
+
   JSZip uses the library pako released under the MIT license :
   https://github.com/nodeca/pako/blob/master/LICENSE
   *)
@@ -114894,10 +114894,10 @@ mammoth/mammoth.browser.js:
 tslib/tslib.es6.js:
   (*! *****************************************************************************
   Copyright (c) Microsoft Corporation.
-  
+
   Permission to use, copy, modify, and/or distribute this software for any
   purpose with or without fee is hereby granted.
-  
+
   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
   REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
   AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
