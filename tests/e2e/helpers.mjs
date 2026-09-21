@@ -42,6 +42,43 @@ export async function createMalformedPdf(filePath) {
   return filePath;
 }
 
+export async function createImageOnlyTextPdf(page, filePath, lines) {
+  await page.setContent(`
+    <!doctype html>
+    <meta charset="utf-8">
+    <style>
+      body { margin: 0; background: #f7f7f2; }
+      [data-testid="ocr-fixture"] {
+        box-sizing: border-box;
+        width: 1000px;
+        min-height: 460px;
+        padding: 72px 84px;
+        background: #fffef8;
+        color: #080808;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 58px;
+        font-weight: 700;
+        line-height: 1.34;
+        letter-spacing: 1px;
+        border: 18px solid #f0efe7;
+      }
+      p { margin: 0 0 36px; }
+    </style>
+    <main data-testid="ocr-fixture">${lines.map(line => `<p>${line}</p>`).join('')}</main>
+  `);
+  const png = await page.getByTestId('ocr-fixture').screenshot({ type: 'png' });
+  const doc = await PDFDocument.create();
+  const img = await doc.embedPng(png);
+  const pageWidth = 612;
+  const pageHeight = 792;
+  const drawWidth = 520;
+  const drawHeight = drawWidth * (img.height / img.width);
+  const pdfPage = doc.addPage([pageWidth, pageHeight]);
+  pdfPage.drawImage(img, { x: 46, y: pageHeight - drawHeight - 72, width: drawWidth, height: drawHeight });
+  await fs.writeFile(filePath, await doc.save());
+  return filePath;
+}
+
 function crc32(buffer) {
   let crc = 0xffffffff;
   for (const byte of buffer) {

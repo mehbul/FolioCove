@@ -163,3 +163,106 @@ Exit code: 0
 ## Concerns
 
 The task is complete with the remaining verification gaps listed above. They are product-launch concerns rather than blockers for Task 2's requested browser validation foundation.
+
+# Task 2 fix round 1: OCR searchable-text verification
+
+## Finding addressed
+
+The prior OCR browser test uploaded a selectable-text PDF and only asserted that `searchable-ocr.pdf` opened as one page. A blank or textless OCR output could pass that test, so it did not prove end-to-end searchable OCR.
+
+## Changes
+
+- Replaced the OCR fixture path with an image-only scanned PDF fixture generated from a browser-rendered PNG and embedded into a PDF with `pdf-lib`.
+- Added a precondition assertion that the input scan has no selectable target OCR phrase when parsed through the Node PDF.js helper.
+- Strengthened the downloaded-output assertion to parse `searchable-ocr.pdf` through the independent Node PDF.js text extraction helper and require recognized searchable words from the scan.
+- Normalization is limited to OCR-appropriate uppercase conversion and non-alphanumeric whitespace folding before checking words. The assertion still requires meaningful recognized words (`LOCAL`, `SCAN`, `ALPHA`, and `CLEAR`) rather than status text or page count.
+- Kept the existing network privacy guard and added the OCR phrase to the marker list so request URLs/bodies cannot leak the scanned phrase.
+- No product code change was required because the current browser OCR path already writes recognized text into the generated PDF text layer.
+
+## Exact commands and results
+
+### `npm run test:e2e:ocr`
+
+Exit code: 0
+
+```text
+> privypdf@0.1.0 test:e2e:ocr
+> set PRIVYPDF_RUN_OCR=1&& playwright test tests/e2e/ocr.local.spec.mjs --project=chromium
+
+Running 1 test using 1 worker
+
+ok 1 [chromium] › tests\e2e\ocr.local.spec.mjs:23:3 › network-dependent OCR validation › searchable OCR creates independently extractable recognized text (4.0s)
+
+1 passed (6.0s)
+```
+
+### `npm run build` / `npm test`
+
+A sandboxed attempt hit Windows filesystem restrictions in esbuild and left `dist/` incomplete. The same commands were rerun with elevated execution and passed.
+
+Exit code: 0
+
+```text
+> privypdf@0.1.0 build
+> node scripts/build.mjs
+
+Generated 10 tool routes and 5 beta information pages.
+
+> privypdf@0.1.0 test
+> node scripts/test-launch.mjs
+
+PASS: syntax, 15 routes, metrics schema, route option initialization, page-range validation, XLSX and legacy XLS spreadsheet-to-PDF regressions; 77 generated-bundle app-handler executions across 10 generated PDFs plus malformed input.
+NOT TESTED: browser rendering, OCR, camera, compression, redaction accuracy, encrypted inputs, browser network traffic, Safari/mobile, human task completion.
+```
+
+### `npm run test:e2e`
+
+Exit code: 0
+
+```text
+> privypdf@0.1.0 test:e2e
+> playwright test --project=chromium
+
+Running 20 tests using 3 workers
+
+1 skipped
+19 passed (13.1s)
+```
+
+The skipped test is the explicit OCR local-only test, which is covered by `npm run test:e2e:ocr` above.
+
+### `npm run test:e2e:installed`
+
+Exit code: 0
+
+```text
+> privypdf@0.1.0 test:e2e:installed
+> playwright test --project=chrome --project=edge
+
+Running 40 tests using 6 workers
+
+2 skipped
+38 passed (15.4s)
+```
+
+The skipped tests are the OCR local-only test in the Chrome and Edge projects.
+
+### `npm audit --omit=dev --audit-level=high`
+
+Exit code: 0
+
+```text
+found 0 vulnerabilities
+```
+
+## Self-review
+
+- Verified the source OCR fixture is image-only by asserting the target phrase is not extractable before upload.
+- Verified the output OCR PDF contains independently extractable recognized text via the Node PDF.js path, not product status text or page count alone.
+- Confirmed the OCR test still uses a real browser, real file input, real download, no fixed sleeps, and scoped network assertions.
+- Confirmed no accounts, payments, analytics, deployment, public access, dependency changes, or route removals were introduced.
+- Confirmed the full Chromium browser suite and installed Chrome/Edge deterministic suites still pass with OCR skipped only in their default matrices.
+
+## Concerns
+
+OCR accuracy is still not broadly certified; the strengthened test proves one deterministic English image-only scan produces searchable recognized text. Safari/mobile/camera hardware, visual fidelity, compression quality, deeper redaction/security proof, full sanitization, and human completion remain unverified launch gates.
