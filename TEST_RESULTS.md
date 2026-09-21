@@ -1,26 +1,64 @@
 # Private beta validation
 
-Command: `node --experimental-vm-modules scripts/test-launch.mjs`
+## Generated-bundle verification
+
+Command: `npm test`
 
 Passed:
 - Main script, launch module and service worker parse successfully.
 - Ten dedicated tool routes and five documentation routes exist.
-- Tool-specific controls initialize for direct selection (compression and signatures).
+- Tool-specific controls initialize for direct selection.
 - Metrics expose only tool ID, outcome and duration.
 - Page-range validation accepts valid ranges and rejects invalid ones.
-- 77 actual application-handler executions: merge, extract, add text, typed signature, rotation, numbering and reversal across ten generated PDFs, plus malformed-input rejection for each handler.
+- 77 generated-bundle application-handler executions cover merge, extract, add text, typed signature, rotation, numbering and reversal across ten generated PDFs, plus malformed-input rejection for each handler.
 - Generated output PDFs reopen and have the expected page counts.
+- Spreadsheet-to-PDF generated-bundle regressions cover both XLSX and legacy OLE/BIFF XLS fixtures.
 
-The test harness uses the installed pdf-lib and simulated DOM elements, NOT a real browser. Fixtures include one-page, five-page, mixed-size, rotated, blank, form, metadata, vector graphic and 50-page documents. They do not constitute the requested full 100-case core-tool browser matrix. Page-count checks do not establish visual fidelity or accurate text positioning.
+## Browser E2E verification
 
-Pending / NOT verified:
-- Browser UI and real downloads on desktop and mobile.
-- Camera capture, image rendering, OCR, target compression and redaction correctness.
-- Password-protected and severely corrupted files.
-- Network audit and dependency security review.
-- Twenty human pilot testers and at least 90% unaided completion.
-- Final operator identity/contact, privacy policy and terms review.
-- Remote aggregate analytics, cross-device return-visit metrics.
-- Public launch approval and indexing.
+Command: `npm run test:e2e`
 
-Private access and noindex are intentionally retained. The old cache-first service worker is retired; old PrivyPDF shell caches are cleared on activation. This removes cached app shells, not user documents. Full offline support is not claimed.
+Passed in Playwright-managed Chromium:
+- All ten dedicated routes load directly: Merge PDFs, Extract pages, Visual page organizer, Compress to target size, Camera document scanner, Searchable OCR PDF, Edit PDF, Sign PDF, Secure redact, and Privacy Inspector.
+- Each route selects the expected tool, exposes expected controls, preserves `noindex,nofollow`, and produces no uncaught page errors.
+- Synthetic happy-path downloads are verified by opening/parsing the resulting artifacts:
+  - Merge: two synthetic PDFs become a three-page PDF.
+  - Split: pages 2-3 are extracted and expected marker text remains present.
+  - Visual organizer: page order changes and the downloaded PDF remains parseable.
+  - Target compression: downloaded PDF remains parseable with expected page count.
+  - Camera scanner/photo-to-PDF: a generated PNG document photo becomes a one-page PDF.
+  - Edit PDF: added text is extractable from the downloaded PDF.
+  - Typed sign: typed signature text is extractable from the downloaded PDF.
+  - Redact: rasterized redaction output opens and the synthetic target text is not extractable.
+  - Privacy Inspector: metadata is reported and the sanitized copy opens with title/author cleared.
+- Unsupported TXT input for a PDF workflow produces a clear error and no download.
+- Malformed PDF input produces an error and no misleading download.
+- During processing, the network guard fails on non-local POST/PUT/PATCH requests and on request URL/body leakage of the synthetic filename or unique document marker. No violations were observed in the passing runs.
+
+Command: `npm run test:e2e:installed`
+
+Passed on installed Windows desktop browsers:
+- Google Chrome: 19 deterministic E2E tests passed; OCR model-dependent test skipped.
+- Microsoft Edge: 19 deterministic E2E tests passed; OCR model-dependent test skipped.
+
+Command: `npm run test:e2e:ocr`
+
+Passed in Playwright-managed Chromium:
+- Searchable OCR accepted a synthetic PDF, fetched any required English model data only through the documented Tesseract model host allowance, downloaded `searchable-ocr.pdf`, and the output opened as a one-page PDF.
+
+## Defects found and fixed
+
+- Visual organizer thumbnails could render while the Apply button stayed disabled because PDF.js cleanup ran before restoring the user-visible action state. The handler now re-enables the action as soon as organizer state is valid, then performs PDF.js cleanup best-effort.
+
+## Pending / NOT verified
+
+- Safari, mobile browsers, Android Chrome, iOS Safari, and camera hardware capture.
+- Visual fidelity of compression, scanner enhancement, edit placement, signature placement, redaction appearance, and organized-page thumbnails.
+- OCR accuracy beyond the parseable-output smoke test.
+- Compression quality or guaranteed target-size achievement.
+- Redaction security beyond non-extractability of the synthetic target text in one automated case.
+- Full sanitization/security audit of every hidden-data structure.
+- Password-protected documents and severely corrupted files beyond one malformed PDF check.
+- Human pilot tester completion, unaided completion rate, operator identity/contact, privacy/terms legal review, public launch approval, sitemap/indexing changes, and remote analytics decisions.
+
+Private access and noindex are intentionally retained. The old cache-first service worker remains retired; old PrivyPDF shell caches are cleared on activation. This removes cached app shells, not user documents. Full offline support is not claimed.

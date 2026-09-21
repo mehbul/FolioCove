@@ -49,7 +49,7 @@
         const redraw=()=>renderOrganizer(file).catch(()=>{status.className='status error';status.textContent='Could not render thumbnails. Select the file again.'});
         for(let pos=0;pos<organizer.length;pos++){
           if(run!==organizerRun||current!=='visualorganize'||selected[0]!==file)return;
-          const item=organizer[pos],card=document.createElement('div'),canvas=document.createElement('canvas'),actions=document.createElement('div');card.className='thumb';card.draggable=true;actions.className='thumb-actions';
+          const item=organizer[pos],card=document.createElement('div'),canvas=document.createElement('canvas'),actions=document.createElement('div');card.className='thumb';card.dataset.testid='page-thumb';card.draggable=true;actions.className='thumb-actions';
           actions.innerHTML=`<span>Page ${item.index+1}</span><button type="button" data-act="prev" aria-label="Move page earlier">←</button><button type="button" data-act="next" aria-label="Move page later">→</button><button type="button" data-act="rotate" aria-label="Rotate page">↻</button><button type="button" data-act="delete" aria-label="Delete page">×</button>`;
           card.append(canvas,actions);visualPanel.append(card);const page=await pdf.getPage(item.index+1),view=page.getViewport({scale:.3,rotation:(page.rotate+item.rotation)%360});canvas.width=view.width;canvas.height=view.height;await page.render({canvasContext:canvas.getContext('2d'),viewport:view}).promise;
           const move=to=>{if(to<0||to>=organizer.length)return;const [moved]=organizer.splice(pos,1);organizer.splice(to,0,moved);redraw()};
@@ -58,7 +58,7 @@
           actions.querySelector('[data-act="delete"]').onclick=()=>{if(organizer.length===1){status.textContent='Keep at least one page.';return}organizer.splice(pos,1);redraw()};
           card.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',String(pos));card.classList.add('dragging')});card.addEventListener('dragend',()=>card.classList.remove('dragging'));card.addEventListener('dragover',e=>e.preventDefault());card.addEventListener('drop',e=>{e.preventDefault();const from=Number(e.dataTransfer.getData('text/plain'));if(!Number.isInteger(from)||from<0||from>=organizer.length)return;const [moved]=organizer.splice(from,1);organizer.splice(pos,0,moved);redraw()});
         }
-      }finally{await pdf.destroy();if(run===organizerRun&&current==='visualorganize')go.disabled=!selected.length||!organizer?.length}
+      }finally{if(run===organizerRun&&current==='visualorganize')go.disabled=!selected.length||!organizer?.length;await pdf.destroy().catch(()=>{})}
     }
     function download(bytes,name){const blob=new Blob([bytes],{type:'application/pdf'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),2000)}
     function pageIndexes(spec,count){const out=new Set();for(const part of spec.split(',')){const m=part.trim().match(/^(\d+)(?:-(\d+))?$/);if(!m)throw Error('Use page numbers like 1-3, 6');let a=+m[1],b=+(m[2]||m[1]);if(a<1||b>count||a>b)throw Error(`Choose pages between 1 and ${count}`);for(let n=a;n<=b;n++)out.add(n-1)}return [...out]}

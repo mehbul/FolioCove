@@ -1,6 +1,6 @@
 # PrivyPDF
 
-PrivyPDF is a private beta PDF utility that runs document processing in the browser. The existing Sites host serves static files from `dist/`; editable source now lives in `src/` and is built reproducibly with npm.
+PrivyPDF is a private beta PDF utility that runs document processing in the browser. The existing Sites host serves static files from `dist/`; editable source lives in `src/` and is built reproducibly with npm.
 
 ## Windows Setup
 
@@ -33,11 +33,37 @@ The build regenerates `dist/`, including the homepage, the 10 core tool routes, 
 
 ## Testing
 
+Run the generated-bundle and static route checks:
+
 ```powershell
 npm test
 ```
 
-The test suite parses the generated JavaScript, verifies all expected routes, checks that generated files do not reference third-party JavaScript CDNs or document-upload endpoints, and exercises 77 PDF handler cases against synthetic PDFs and malformed input.
+This suite parses generated JavaScript, verifies all expected routes, checks generated files for blocked third-party JavaScript CDN/upload markers, and exercises 77 generated-bundle PDF handler cases against synthetic PDFs and malformed input. It also covers generated-bundle XLSX and legacy XLS spreadsheet-to-PDF regressions.
+
+Run the browser E2E suite against Playwright-managed Chromium:
+
+```powershell
+npm run test:e2e
+```
+
+The E2E suite serves the built `dist/` app, opens the ten dedicated routes directly, checks the selected tool and controls, verifies `noindex,nofollow`, watches for uncaught page errors, monitors processing requests for document-marker leakage and non-local POST/PUT/PATCH traffic, and validates downloaded artifacts from synthetic fixtures. It covers merge, split, visual organizer, target compression, camera/photo-to-PDF, edit, typed sign, redact, Privacy Inspector, unsupported file type, and malformed PDF flows.
+
+Run the same deterministic suite against installed desktop Chrome and Edge on Windows when available:
+
+```powershell
+npm run test:e2e:installed
+```
+
+Run the network-dependent OCR check explicitly when English Tesseract traineddata access is available:
+
+```powershell
+npm run test:e2e:ocr
+```
+
+The regular E2E script skips this OCR test to keep CI deterministic and reasonably fast. CI installs Playwright Chromium and runs `npm ci`, `npm run build`, `npm test`, and `npm run test:e2e`.
+
+Playwright traces and screenshots are retained only on failure under ignored `test-results/` and `playwright-report/` paths.
 
 ## Project Structure
 
@@ -49,7 +75,9 @@ The test suite parses the generated JavaScript, verifies all expected routes, ch
 - `src/static/` contains static generated-site assets.
 - `scripts/build.mjs` regenerates `dist/`.
 - `scripts/dev-server.mjs` serves the generated site locally.
-- `scripts/test-launch.mjs` runs static and handler verification.
+- `scripts/test-launch.mjs` runs static and generated-bundle handler verification.
+- `tests/e2e/` contains Playwright browser tests and deterministic fixture generation helpers.
+- `playwright.config.mjs` defines Chromium, Chrome, and Edge browser projects.
 - `.openai/hosting.json` still points hosting at `dist/`.
 
 ## Privacy Model
@@ -60,4 +88,4 @@ Build-time browser dependencies are bundled into local site assets so normal PDF
 
 ## Limitations
 
-This private beta is not ready for public launch. Redaction, sanitization, OCR, compression, conversions, and quality checks require independent output review. Browser compatibility, mobile behavior, network inspection, and human tester completion remain separate launch gates.
+This private beta is not ready for public launch. The automated browser suite verifies that selected synthetic workflows complete and produce parseable downloads; it does not prove visual fidelity, OCR accuracy, compression quality, redaction security, full sanitization, camera hardware behavior, mobile behavior, Safari compatibility, or human task completion. Keep originals and independently inspect every output.

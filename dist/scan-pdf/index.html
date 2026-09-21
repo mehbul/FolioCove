@@ -104,13 +104,13 @@
         <button class="tool" data-tool="opendoc"><span>O</span> OpenDocument / EPUB to PDF <b class="new-tag">NEW</b></button>
       </nav>
       <div class="workspace">
-        <div class="title-row"><div><h2 id="tool-title">Merge PDFs</h2><p id="tool-copy">Combine multiple PDFs in the order you add them.</p></div><span class="local-badge">⌁ 100% local</span></div>
-        <label class="drop" id="drop"><input class="file-input" id="picker" type="file" accept="application/pdf" multiple><div><div class="upload-icon">⇧</div><h3 id="drop-title">Drop PDFs here</h3><p id="drop-copy">or select files from your device</p><span class="choose">Choose files</span></div></label>
+        <div class="title-row"><div><h2 id="tool-title" data-testid="tool-title">Merge PDFs</h2><p id="tool-copy">Combine multiple PDFs in the order you add them.</p></div><span class="local-badge">⌁ 100% local</span></div>
+        <label class="drop" id="drop"><input class="file-input" id="picker" data-testid="file-input" type="file" accept="application/pdf" multiple><div><div class="upload-icon">⇧</div><h3 id="drop-title">Drop PDFs here</h3><p id="drop-copy">or select files from your device</p><span class="choose">Choose files</span></div></label>
         <div class="files" id="files"></div>
-        <div class="options" id="options"></div><div class="visual-panel" id="visual-panel"></div>
-        <div class="actions"><button class="favorite" id="favorite" type="button">☆ Favorite</button><button class="go" id="go" disabled>Merge & download</button></div>
-        <div class="status" id="status" aria-live="polite"></div>
-        <p id="tool-limit" class="notice"></p>
+        <div class="options" id="options" data-testid="tool-options"></div><div class="visual-panel" id="visual-panel" data-testid="visual-panel"></div>
+        <div class="actions"><button class="favorite" id="favorite" type="button">☆ Favorite</button><button class="go" id="go" data-testid="run-tool" disabled>Merge & download</button></div>
+        <div class="status" id="status" data-testid="status" aria-live="polite"></div>
+        <p id="tool-limit" data-testid="tool-limit" class="notice"></p>
         <div id="job-controls" hidden><progress id="job-progress" aria-label="Processing progress"></progress><span id="job-stage">Processing…</span><button id="cancel-job" type="button">Cancel and reload</button></div>
       </div>
     </section>

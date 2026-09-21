@@ -113712,6 +113712,7 @@ async function renderOrganizer(file) {
       if (run !== organizerRun || current !== "visualorganize" || selected[0] !== file) return;
       const item = organizer[pos], card = document.createElement("div"), canvas = document.createElement("canvas"), actions = document.createElement("div");
       card.className = "thumb";
+      card.dataset.testid = "page-thumb";
       card.draggable = true;
       actions.className = "thumb-actions";
       actions.innerHTML = `<span>Page ${item.index + 1}</span><button type="button" data-act="prev" aria-label="Move page earlier">\u2190</button><button type="button" data-act="next" aria-label="Move page later">\u2192</button><button type="button" data-act="rotate" aria-label="Rotate page">\u21BB</button><button type="button" data-act="delete" aria-label="Delete page">\xD7</button>`;
@@ -113757,8 +113758,9 @@ async function renderOrganizer(file) {
       });
     }
   } finally {
-    await pdf.destroy();
     if (run === organizerRun && current === "visualorganize") go.disabled = !selected.length || !organizer?.length;
+    await pdf.destroy().catch(() => {
+    });
   }
 }
 function download(bytes, name) {
