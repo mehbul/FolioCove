@@ -10,12 +10,12 @@
   },
   "dependencies": {
     "jszip": "3.10.1",
-    "mammoth": "1.8.0",
+    "mammoth": "1.12.3",
     "pdf-lib": "1.17.1",
-    "pdfjs-dist": "4.4.168",
+    "pdfjs-dist": "6.3.289",
     "qrcode": "1.5.4",
-    "tesseract.js": "5.1.1",
-    "xlsx": "0.18.5"
+    "read-excel-file": "9.3.10",
+    "tesseract.js": "5.1.1"
   },
   "devDependencies": {
     "esbuild": "0.25.10"
