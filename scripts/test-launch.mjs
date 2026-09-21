@@ -29,10 +29,9 @@ class Element{
 const get=id=>{if(!nodes.has(id))nodes.set(id,new Element(id));return nodes.get(id)};
 const buttons=[...html.matchAll(/<button class="tool[^>]*data-tool="([^"]+)"/g)].map(m=>{const el=new Element();el.dataset.tool=m[1];return el});
 const document={getElementById:get,querySelectorAll:()=>buttons,querySelector:s=>buttons.find(x=>s.includes(`"${x.dataset.tool}"`))||new Element(),createElement:()=>new Element(),dispatchEvent:()=>{}};
-const context={document,localStorage:{getItem:()=>null,setItem:()=>{}},CustomEvent:class{},setTimeout:()=>{},console,Blob,URL,Intl,PDFDocument:pdfLib.PDFDocument,PDFName:pdfLib.PDFName,StandardFonts:pdfLib.StandardFonts,degrees:pdfLib.degrees,rgb:pdfLib.rgb};
-const sourceScript=fs.readFileSync('src/app/index.mjs','utf8');
-const body=sourceScript.replace(/^\s*import[^;]+;\s*/,'').split(/const\s+\{\s*initLaunch\s*\}\s*=\s*await\s+import\(["']\/launch\.mjs["']\)/)[0];
-assert.notEqual(body,sourceScript,'test harness could not isolate the app setup code');
+const context={document,localStorage:{getItem:()=>null,setItem:()=>{}},CustomEvent:class{},setTimeout,console,Blob,URL,Intl};
+const body=script.split(/(?:const|var)\s+\{\s*initLaunch\s*\}\s*=\s*await\s+import\(["']\/launch\.mjs["']\)/)[0];
+assert.notEqual(body,script,'test harness could not isolate the generated app bundle setup code');
 const api=new Function(...Object.keys(context),body+`\n const testApi={configs,setupTool,pageIndexes,set:(tool,input)=>{current=tool;selected=input;},getStatus:()=>({kind:status.className,text:status.textContent}),outputs:[],};download=(bytes,name)=>testApi.outputs.push({bytes,name});downloadBlob=(blob,name)=>testApi.outputs.push({blob,name});return testApi;`)(...Object.values(context));assert.equal(Object.keys(api.configs).length,74);
 api.setupTool('targetcompress');assert(get('options').innerHTML.includes('target-kb'));api.setupTool('sign');assert(get('options').innerHTML.includes('sign-name'));
 assert.deepEqual(Array.from(api.pageIndexes('1-3, 5',5)),[0,1,2,4]);assert.throws(()=>api.pageIndexes('0',5));assert.throws(()=>api.pageIndexes('3-1',5));
@@ -49,5 +48,5 @@ for(const [index,bytes] of fixtures.entries()){
  }
 }
 for(const tool of ['merge','split','edit','sign','rotate','numbers','reverse']){const state=await execute(tool,new TextEncoder().encode('not a PDF'));assert.equal(state.kind,'status error');assert.equal(api.outputs.length,0);runs++}
-console.log(`PASS: syntax, 15 routes, metrics schema, route option initialization, page-range validation; ${runs} actual app-handler executions across 10 generated PDFs plus malformed input.`);
+console.log(`PASS: syntax, 15 routes, metrics schema, route option initialization, page-range validation; ${runs} generated-bundle app-handler executions across 10 generated PDFs plus malformed input.`);
 console.log('NOT TESTED: browser rendering, OCR, camera, compression, redaction accuracy, encrypted inputs, browser network traffic, Safari/mobile, human task completion.');
