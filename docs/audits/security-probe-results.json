@@ -1,0 +1,69 @@
+{
+  "browser": "153.0.8010.12",
+  "cases": {
+    "privacycheck": {
+      "name": "safe-to-share.pdf",
+      "status": "Privacy report\n• 1 populated metadata fields\n• 1 pages with annotations or links\n• 1 interactive form fields\n• Automatic document actions detected\n• No named resource dictionary\nA sanitized sharing copy was downloaded.",
+      "author": "",
+      "catalogMetadata": true,
+      "xmp": "<x:xmpmeta xmlns:x=\"adobe:ns:meta/\">PRIVATE_XMP_MARKER</x:xmpmeta>",
+      "fields": [
+        {
+          "name": "Private field",
+          "value": "PRIVATE_FORM_MARKER"
+        }
+      ],
+      "openAction": false,
+      "orphanAction": true
+    },
+    "sanitize": {
+      "name": "sanitized.pdf",
+      "status": "Done — your private download is ready.",
+      "author": "",
+      "catalogMetadata": true,
+      "xmp": "<x:xmpmeta xmlns:x=\"adobe:ns:meta/\">PRIVATE_XMP_MARKER</x:xmpmeta>",
+      "fields": [
+        {
+          "name": "Private field",
+          "value": "PRIVATE_FORM_MARKER"
+        }
+      ],
+      "openAction": false,
+      "orphanAction": true
+    },
+    "clean": {
+      "name": "cleaned.pdf",
+      "status": "Done — your private download is ready.",
+      "author": "",
+      "catalogMetadata": true,
+      "xmp": "<x:xmpmeta xmlns:x=\"adobe:ns:meta/\">PRIVATE_XMP_MARKER</x:xmpmeta>",
+      "fields": [
+        {
+          "name": "Private field",
+          "value": "PRIVATE_FORM_MARKER"
+        }
+      ],
+      "openAction": true,
+      "orphanAction": true
+    },
+    "csv": {
+      "status": "Done — your private download is ready.",
+      "csv": "Page,Line\n1,\"=1+1\""
+    },
+    "redactInvalidPage": {
+      "status": "Done — your private download is ready.",
+      "download": "securely-redacted.pdf",
+      "pageCount": 1
+    },
+    "html": {
+      "status": "Done — your private download is ready.",
+      "download": "html-to-pdf.pdf",
+      "requests": [],
+      "scriptExecuted": false
+    }
+  },
+  "externalRequests": [],
+  "storage": {
+    "privypdf-recent": "[\"htmltopdf\",\"redact\",\"pdftoexcel\",\"clean\",\"sanitize\",\"privacycheck\"]"
+  }
+}
