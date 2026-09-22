@@ -62,4 +62,4 @@ Passed in Playwright-managed Chromium:
 - Password-protected documents and severely corrupted files beyond one malformed PDF check.
 - Human pilot tester completion, unaided completion rate, operator identity/contact, privacy/terms legal review, public launch approval, sitemap/indexing changes, and remote analytics decisions.
 
-Private access and noindex are intentionally retained. The old cache-first service worker remains retired; old PrivyPDF shell caches are cleared on activation. This removes cached app shells, not user documents. Full offline support is not claimed.
+Private access and noindex are intentionally retained. The old cache-first service worker remains retired; old FolioCove shell caches are cleared on activation. This removes cached app shells, not user documents. Full offline support is not claimed.

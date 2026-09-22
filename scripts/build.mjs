@@ -38,7 +38,7 @@ function cleanGeneratedText(content) {
 }
 
 function renderDocPage(slug, page) {
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>${page.title} — PrivyPDF</title><link rel="stylesheet" href="/launch.css"></head><body class="policy"><nav><a href="/">← PrivyPDF tools</a></nav><h1>${page.title}</h1>${page.body}<footer><a href="/privacy/">Privacy</a> · <a href="/security/">Security</a> · <a href="/limitations/">Limitations</a> · <a href="/testing/">Testing</a></footer></body></html>`;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>${page.title} — FolioCove</title><link rel="stylesheet" href="/launch.css"></head><body class="policy"><nav><a href="/">← FolioCove tools</a></nav><h1>${page.title}</h1>${page.body}<footer><a href="/privacy/">Privacy</a> · <a href="/security/">Security</a> · <a href="/limitations/">Limitations</a> · <a href="/testing/">Testing</a></footer></body></html>`;
 }
 
 await fs.rm(dist, {recursive: true, force: true});
@@ -101,7 +101,7 @@ homepage = homepage.replace('%%APP_SCRIPT%%', '/assets/app.js');
 await writeFile(path.join(dist, 'index.html'), homepage);
 
 const routeSource = homepage
-  .replace(/<title>.*?<\/title>/, '<title>%%TITLE%% — PrivyPDF</title>')
+  .replace(/<title>.*?<\/title>/, '<title>%%TITLE%% — FolioCove</title>')
   .replace('What do you need to do?', '%%TITLE%%');
 
 for (const [, slug, title] of core) {

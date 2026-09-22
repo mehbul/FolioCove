@@ -1,8 +1,8 @@
-# PrivyPDF development foundation
+# FolioCove development foundation
 
 ## Global constraints
 
-- Preserve PrivyPDF's browser-first, device-local document-processing model. Do not add document uploads, remote analytics, accounts, payments, or deployment in this plan.
+- Preserve FolioCove's browser-first, device-local document-processing model. Do not add document uploads, remote analytics, accounts, payments, or deployment in this plan.
 - Keep the existing private Sites configuration in `.openai/hosting.json` and preserve all existing tool routes and beta/legal pages.
 - Keep generated deployable output in `dist/`, while placing editable application source in a clearly named source directory.
 - Pin direct runtime and development dependency versions exactly; do not commit `node_modules`.

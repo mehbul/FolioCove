@@ -1,8 +1,8 @@
-# PrivyPDF 30-day founder launch plan
+# FolioCove 30-day founder launch plan
 
 Date: 2026-09-22
 
-PrivyPDF is ready for a disciplined private beta, not a public launch. The product already has a credible wedge: private, browser-first PDF utilities that process documents on the user's device, with no accounts, payments, document-upload endpoint, or remote analytics. The current build includes ten launch-focus routes, five beta/legal documentation routes, optional local-only beta metrics, a 100 MB per-file beta limit, and a wider 74-tool catalog behind the same workspace.
+FolioCove is ready for a disciplined private beta, not a public launch. The product already has a credible wedge: private, browser-first PDF utilities that process documents on the user's device, with no accounts, payments, document-upload endpoint, or remote analytics. The current build includes ten launch-focus routes, five beta/legal documentation routes, optional local-only beta metrics, a 100 MB per-file beta limit, and a wider 74-tool catalog behind the same workspace.
 
 The next 30 days should turn the current engineering evidence into launch confidence. Codex can handle the engineering, QA, documentation, launch analysis, and release preparation. The owner must provide business identity, legal/contact details, private access decisions, tester relationships, and final public-release approval.
 
@@ -35,7 +35,7 @@ Known launch gaps remain:
 
 Use a narrow public promise:
 
-> PrivyPDF gives privacy-conscious workers a fast set of browser-based PDF tools for everyday document cleanup, conversion, review, and sharing checks. Files are selected locally and processed on the device; the app has no document-upload endpoint.
+> FolioCove gives privacy-conscious workers a fast set of browser-based PDF tools for everyday document cleanup, conversion, review, and sharing checks. Files are selected locally and processed on the device; the app has no document-upload endpoint.
 
 Avoid stronger claims until external review catches up:
 

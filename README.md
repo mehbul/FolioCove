@@ -1,6 +1,8 @@
-# PrivyPDF
+# FolioCove
 
-PrivyPDF is a private beta PDF utility that runs document processing in the browser. The existing Sites host serves static files from `dist/`; editable source lives in `src/` and is built reproducibly with npm.
+Previously named PrivyPDF. Existing browser preferences and optional local metrics retain their original storage keys so an update does not erase them.
+
+FolioCove is a private beta PDF utility that runs document processing in the browser. The existing Sites host serves static files from `dist/`; editable source lives in `src/` and is built reproducibly with npm.
 
 ## Windows Setup
 

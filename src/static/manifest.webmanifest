@@ -1,6 +1,6 @@
 {
-  "name": "PrivyPDF Private Document Studio",
-  "short_name": "PrivyPDF",
+  "name": "FolioCove Private Document Studio",
+  "short_name": "FolioCove",
   "description": "Private browser-first PDF editing and conversion tools.",
   "start_url": "./",
   "display": "standalone",

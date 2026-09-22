@@ -1,4 +1,4 @@
-# PrivyPDF security and privacy audit
+# FolioCove security and privacy audit
 
 | Severity | Count |
 |---|---:|

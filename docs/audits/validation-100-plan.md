@@ -1,8 +1,8 @@
-# PrivyPDF 100-Case Validation Program
+# FolioCove 100-Case Validation Program
 
 > **For agentic workers:** Implement this plan in small reviewed slices. Use the repository's existing Playwright conventions, preserve product behavior while building the validation harness, and treat a failing assertion as defect evidence rather than weakening the oracle.
 
-**Goal:** Build an executable release gate containing exactly 100 tool/input cases: ten meaningful cases for each of PrivyPDF's ten core tools.
+**Goal:** Build an executable release gate containing exactly 100 tool/input cases: ten meaningful cases for each of FolioCove's ten core tools.
 
 **Architecture:** Playwright drives the generated `dist/` app as a user would. Synthetic fixture factories create documents and photos with known markers; independent Node-side oracles inspect every download with `pdf-lib`, PDF.js, structural object checks, rendered-pixel checks, and the existing network/privacy guard. Deterministic cases run in Chromium CI, high-risk cases repeat in installed Chrome and Edge, and OCR model cases run in a separately reported model-enabled lane.
 

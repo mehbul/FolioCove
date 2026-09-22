@@ -51,6 +51,6 @@ const server = http.createServer(async (request, response) => {
 });
 
 server.listen(port, host, () => {
-  console.log(`PrivyPDF dev server: http://${host}:${port}/`);
+  console.log(`FolioCove dev server: http://${host}:${port}/`);
   console.log('Serving generated files from dist/. Run npm run build after source changes.');
 });
