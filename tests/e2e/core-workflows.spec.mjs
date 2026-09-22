@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import path from 'node:path';
 import fs from 'node:fs/promises';
+import { PDFDocument, StandardFonts } from 'pdf-lib';
 import {
   createCcittScanPdf,
   createDocumentPhoto,
@@ -11,13 +12,26 @@ import {
   installPageGuards,
   makeFixtureDir,
   openTool,
-  pdfMetadata,
   pdfPageCount,
   pdfText,
   pngDarkPixelRatioFromZip,
   runAndSaveDownload,
   uniqueMarker
 } from './helpers.mjs';
+
+async function createTextOnlyPdf(filePath, text) {
+  const doc = await PDFDocument.create();
+  const page = doc.addPage([420, 540]);
+  page.drawText(text, { x: 30, y: 420, size: 12, font: await doc.embedFont(StandardFonts.Helvetica) });
+  await fs.writeFile(filePath, await doc.save());
+  return filePath;
+}
+
+async function expectNoDownloadFromRun(page, timeout = 1500) {
+  const noDownload = page.waitForEvent('download', { timeout }).then(() => 'downloaded', () => 'none');
+  await page.getByTestId('run-tool').click();
+  await expect(noDownload).resolves.toBe('none');
+}
 
 test.describe('core workflow downloads', () => {
   test('merge and split produce parseable PDFs with expected page counts', async ({ page }) => {
@@ -145,21 +159,83 @@ test.describe('core workflow downloads', () => {
     await expectNoGuardViolations(guards);
   });
 
-  test('privacy inspector reports metadata and downloads sanitized copy', async ({ page }) => {
+  test('redaction rejects invalid page and region without a download', async ({ page }) => {
+    const dir = await makeFixtureDir();
+    const source = await createPdf(path.join(dir, fixtureFilename), ['REDACTION-INVALID']);
+    const guards = installPageGuards(page);
+
+    await openTool(page, '/redact-pdf/', 'Secure redact');
+    await page.getByTestId('file-input').setInputFiles(source);
+    await page.getByLabel('Page').fill('99');
+    await expectNoDownloadFromRun(page);
+    await expect(page.getByTestId('status')).toHaveClass(/error/);
+    await expect(page.getByTestId('status')).toContainText('Choose a page between 1 and 1.');
+
+    await page.getByLabel('Page').fill('1');
+    await page.getByLabel('Left %').fill('80');
+    await page.getByLabel('Width %').fill('30');
+    await expectNoDownloadFromRun(page);
+    await expect(page.getByTestId('status')).toHaveClass(/error/);
+    await expect(page.getByTestId('status')).toContainText('redaction region entirely inside the page');
+    await expectNoGuardViolations(guards);
+  });
+
+  test('privacy inspector reports metadata without creating an unverified sharing copy', async ({ page }) => {
     const dir = await makeFixtureDir();
     const source = await createPdf(path.join(dir, fixtureFilename), ['PRIVACY-INSPECTOR-BASE'], { metadata: true });
     const guards = installPageGuards(page);
 
     await openTool(page, '/privacy-inspector/', 'Privacy Inspector');
     await page.getByTestId('file-input').setInputFiles(source);
-    await expect(page.getByLabel('Download a sanitized sharing copy')).toBeChecked();
-    const safe = await runAndSaveDownload(page, dir, 'safe-to-share.pdf');
+    const sharingCopy = page.getByLabel('Sanitized sharing downloads are paused pending verification');
+    await expect(sharingCopy).not.toBeChecked();
+    await expect(sharingCopy).toBeDisabled();
+    await expectNoDownloadFromRun(page);
     await expect(page.getByTestId('status')).toContainText('Privacy report');
-    await expect(page.getByTestId('status')).toContainText('populated metadata fields');
-    const metadata = await pdfMetadata(safe);
-    expect(metadata.title || '').toBe('');
-    expect(metadata.author || '').toBe('');
-    expect(await pdfPageCount(safe)).toBe(1);
+    await expect(page.getByTestId('status')).toContainText('populated standard Info fields');
+    await expect(page.getByTestId('status')).toContainText('No sanitized sharing copy was created.');
+    await expectNoGuardViolations(guards);
+  });
+
+  test('sanitize is fail-closed with no download', async ({ page }) => {
+    const dir = await makeFixtureDir();
+    const source = await createPdf(path.join(dir, fixtureFilename), ['SANITIZE-BASE'], { metadata: true });
+    const guards = installPageGuards(page);
+
+    await page.goto('/');
+    await page.getByLabel('Tool category').selectOption('all');
+    await page.getByRole('button', { name: /Sanitization unavailable/ }).click();
+    await expect(page.getByTestId('tool-title')).toHaveText('Sanitization unavailable');
+    await page.getByTestId('file-input').setInputFiles(source);
+    await expectNoDownloadFromRun(page);
+    await expect(page.getByTestId('status')).toHaveClass(/error/);
+    await expect(page.getByTestId('status')).toContainText('Verified sanitization is unavailable');
+    await expectNoGuardViolations(guards);
+  });
+
+  test('spreadsheet CSV exports neutralize formulas and escape contact values', async ({ page }) => {
+    const dir = await makeFixtureDir();
+    const formulaPdf = await createTextOnlyPdf(path.join(dir, 'formula.pdf'), '=1+1');
+    const contactsPdf = await createTextOnlyPdf(path.join(dir, 'contacts.pdf'), 'audit@example.com +15551234567 https://x.io/"q');
+    const guards = installPageGuards(page, ['formula.pdf', 'contacts.pdf']);
+
+    await page.goto('/');
+    await page.getByLabel('Tool category').selectOption('all');
+    await page.getByRole('button', { name: /PDF to Excel/ }).click();
+    await page.getByTestId('file-input').setInputFiles(formulaPdf);
+    const spreadsheet = await runAndSaveDownload(page, dir, 'document.csv');
+    const spreadsheetCsv = await fs.readFile(spreadsheet, 'utf8');
+    expect(spreadsheetCsv).toContain('"Page","Line"');
+    expect(spreadsheetCsv).toContain('"1","\'=1+1"');
+    expect(spreadsheetCsv).not.toContain('"1","=1+1"');
+
+    await page.getByRole('button', { name: /Extract contacts/ }).click();
+    await page.getByTestId('file-input').setInputFiles(contactsPdf);
+    const contacts = await runAndSaveDownload(page, dir, 'extracted-contacts.csv');
+    const contactsCsv = await fs.readFile(contacts, 'utf8');
+    expect(contactsCsv).toContain('"Email","audit@example.com"');
+    expect(contactsCsv).toContain('"Phone","\'+15551234567"');
+    expect(contactsCsv).toContain('"URL","https://x.io/""q"');
     await expectNoGuardViolations(guards);
   });
 });

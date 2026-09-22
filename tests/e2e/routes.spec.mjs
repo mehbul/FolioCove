@@ -11,7 +11,7 @@ const routes = [
   { route: '/edit-pdf/', title: 'Edit PDF', action: 'Apply edit', accept: 'application/pdf', label: 'Text' },
   { route: '/sign-pdf/', title: 'Sign PDF', action: 'Sign & download', accept: 'application/pdf', label: 'Signer name' },
   { route: '/redact-pdf/', title: 'Secure redact', action: 'Redact & download', accept: 'application/pdf', label: 'Left %' },
-  { route: '/privacy-inspector/', title: 'Privacy Inspector', action: 'Inspect & make safe', accept: 'application/pdf', labelText: 'Download a sanitized sharing copy' }
+  { route: '/privacy-inspector/', title: 'Privacy Inspector', action: 'Inspect only', accept: 'application/pdf', labelText: 'Sanitized sharing downloads are paused pending verification', disabledLabel: true }
 ];
 
 test.describe('direct core routes', () => {
@@ -25,6 +25,7 @@ test.describe('direct core routes', () => {
       await expect(page.getByTestId('tool-limit')).not.toBeEmpty();
       if (spec.label) await expect(page.getByLabel(spec.label)).toBeVisible();
       if (spec.labelText) await expect(page.getByLabel(spec.labelText)).toBeVisible();
+      if (spec.disabledLabel) await expect(page.getByLabel(spec.labelText)).toBeDisabled();
       await expectNoGuardViolations(guards);
     });
   }

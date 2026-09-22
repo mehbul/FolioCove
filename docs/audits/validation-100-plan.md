@@ -16,7 +16,7 @@
 - Every browser case installs the existing request/page-error guard before navigation. No document marker or filename may appear in a request URL or body. The only permitted external request is the documented English OCR model GET.
 - A success case must produce exactly one expected download, a positive status, a re-enabled action button, and an independently valid artifact. “A file downloaded” is never enough.
 - A rejection case must produce no download, a visible error naming the input or parameter category, no uncaught page error, and a usable UI afterward.
-- Do not accept the current behavior when it conflicts with the contract. In particular, invalid redaction pages must fail, and a “sanitized” Privacy Inspector output must not retain the structures it claims to remove.
+- Do not accept behavior that conflicts with the security contract. Invalid redaction pages must fail without a download, Privacy Inspector must remain read-only until sanitization is independently verified, and CSV exports must neutralize spreadsheet-triggering values.
 - Keep the unrelated current `.gitignore` modification intact.
 - Preserve `noindex,nofollow` and the private-beta limitation notices throughout validation.
 
@@ -28,7 +28,7 @@ The present test stack is useful but is not the 100-case release gate:
 - The Playwright suite contains 21 Chromium tests: ten route/control checks, eight workflow tests, two negative-input tests, and one opt-in OCR test. Several workflows combine two tools in one test, so one failure can hide the second tool's result.
 - Existing browser assertions cover one representative success for each core workflow, plus a wrong-type merge input and a malformed split input. They do not prove geometry, output quality, full sanitization, encrypted-input behavior, the 100 MB gate, or broad per-tool error recovery.
 - `TEST_RESULTS.md` already records the missing areas: Safari/mobile/camera hardware, visual fidelity, OCR accuracy, target-size achievement, redaction security, and complete hidden-data cleanup.
-- The audit probe in `docs/audits/security-probe-results.json` found two current P0 behaviors that the matrix must reproduce: redaction page `99` downloads a successful but unredacted PDF, and Privacy Inspector's sharing copy retains catalog XMP, a form value, and an orphaned JavaScript action object.
+- The audit probe in `docs/audits/security-probe-results.json` tracks the former P0 behaviors: redaction page `99` must now fail without a download, and Privacy Inspector must not create an unverified sharing copy.
 - A local `npm run test:e2e` attempt on 2026-09-22 could not launch Playwright Chromium because the managed environment denied the executable with `browserType.launch: spawn EPERM`. All 20 deterministic tests failed in browser setup before their test bodies. This is an execution-environment blocker, not evidence of an application regression; rerun on CI or an unsandboxed local Windows shell.
 
 ## Required shared assertions and evidence
@@ -195,15 +195,15 @@ Priority and feasibility codes used below:
 
 | ID | Fixture and action | Expected assertions | Feasibility | Priority / risk |
 |---|---|---|---|---|
-| PI01 | PDF with title, author, subject, keywords, creator, and producer. | Report count is correct; `safe-to-share.pdf` returns empty values for all public metadata getters and does not contain the marker bytes. | A | P0 hidden data |
-| PI02 | PDF with a catalog `/Metadata` XMP stream containing `PRIVATE_XMP_PI02`. | Report identifies metadata; sanitized catalog has no `/Metadata`; no indirect object or raw output bytes contain the marker. Current output retains it. | A | P0 hidden data |
-| PI03 | PDF with URI link and text annotation. | Report counts affected page; sanitized page has no `/Annots`; annotation/URI markers are absent from all indirect objects; visible base page remains. | A/V | P0 hidden action |
-| PI04 | Filled text field and checkbox with private markers. | Report gives correct field count; sanitized output has zero form fields, no widget annotations, no `/AcroForm`, and no field-value marker bytes. Current output retains fields. | A | P0 hidden data |
-| PI05 | Catalog `/OpenAction`, catalog `/AA`, and page `/AA` JavaScript actions with unique markers. | Report detects automatic actions; sanitized dictionaries and all reachable/orphan indirect objects contain no action markers. Current output leaves an orphan action object. | A | P0 active content |
-| PI06 | `/Names` tree with an embedded-file marker. | Report detects named resources/embedded content; sanitized catalog has no `/Names`; embedded stream marker is absent from every output object/byte sequence. | A | P0 attachment leakage |
-| PI07 | Combined dirty fixture containing PI01–PI06 structures. | One sanitized copy passes every structural/byte oracle, preserves page count and visible public text, and reports each category accurately. | A/V | P0 compound sanitization |
-| PI08 | Combined dirty fixture with “Download a sanitized sharing copy” unchecked. | Report appears; no download event; source fixture hash is unchanged; status does not say a sharing copy was created. | A | P1 user choice |
-| PI09 | Clean PDF with no hidden structures. | Report shows zeros/no actions/no names; optional sanitized output is parseable, visually equivalent, and does not introduce metadata. | A/V | P1 false positives |
+| PI01 | PDF with title, author, subject, keywords, creator, and producer. | Report count is correct; no sanitized sharing download is offered or created. | A | P0 hidden data |
+| PI02 | PDF with a catalog `/Metadata` XMP stream containing `PRIVATE_XMP_PI02`. | Report identifies metadata; no sanitized output is offered or created. | A | P0 hidden data |
+| PI03 | PDF with URI link and text annotation. | Report counts affected pages; no sanitized output is offered or created. | A/V | P0 hidden action |
+| PI04 | Filled text field and checkbox with private markers. | Report gives the correct field count; no sanitized output is offered or created. | A | P0 hidden data |
+| PI05 | Catalog `/OpenAction`, catalog `/AA`, and page `/AA` JavaScript actions with unique markers. | Report detects automatic actions; no sanitized output is offered or created. | A | P0 active content |
+| PI06 | `/Names` tree with an embedded-file marker. | Report detects named resources/embedded content; no sanitized output is offered or created. | A | P0 attachment leakage |
+| PI07 | Combined dirty fixture containing PI01–PI06 structures. | Report identifies each detectable category and creates no cleanup download. | A/V | P0 compound sanitization |
+| PI08 | Combined dirty fixture with the disabled sharing-copy control present. | Report appears; no download event; source fixture hash is unchanged; status says no sanitized sharing copy was created. | A | P1 user choice |
+| PI09 | Clean PDF with no hidden structures. | Report shows zeros/no actions/no names and still creates no cleanup download. | A/V | P1 false positives |
 | PI10 | Password-protected and truncated PDFs as rejection substeps. | Clear errors, no report claiming safety, no download, and no raw parser exception. | A | P0 false assurance |
 
 ## Fixture generation and independent oracles

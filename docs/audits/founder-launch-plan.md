@@ -25,7 +25,7 @@ Known launch gaps remain:
 
 - Safari, iOS Safari, Android Chrome, mobile layouts, and camera hardware capture are not verified.
 - Compression quality, OCR accuracy, scanner enhancement, edit/sign placement, redaction appearance, and visual organizer fidelity are not proven by automation.
-- Redaction security and Privacy Inspector sanitization are not independently audited.
+- Redaction security still needs independent output review; Privacy Inspector is read-only and sanitization downloads are disabled until independently audited.
 - Password-protected, very large, and severely corrupted files need broader behavior mapping.
 - No human pilot tester completion data exists.
 - Operator identity, support contact, jurisdiction, public privacy policy, public terms, indexing, and final analytics posture are unresolved.

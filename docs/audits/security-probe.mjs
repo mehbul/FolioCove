@@ -14,9 +14,9 @@ await context.route('**/*',async route=>{
   else await route.abort();
 });
 async function tool(id){await page.goto(origin);await page.locator('#boot-state').waitFor({state:'hidden'});await page.locator('#tool-filter').selectOption('all');await page.locator(`[data-tool="${id}"]`).click();}
-async function run(bytes,name='synthetic.pdf',mimeType='application/pdf'){
+async function run(bytes,name='synthetic.pdf',mimeType='application/pdf',downloadTimeout=20000){
   await page.locator('#picker').setInputFiles({name,mimeType,buffer:Buffer.from(bytes)});
-  const downloadPromise=page.waitForEvent('download',{timeout:20000}).catch(()=>null);
+  const downloadPromise=page.waitForEvent('download',{timeout:downloadTimeout}).catch(()=>null);
   await page.locator('#go').click();
   const download=await downloadPromise;
   return {bytes:download?await fs.readFile(await download.path()):null,name:download?.suggestedFilename(),status:await page.locator('#status').textContent()};
@@ -32,14 +32,18 @@ try{
   doc.catalog.set(PDFName.of('OpenAction'),action);
   const bytes=await doc.save();
   for(const id of ['privacycheck','sanitize','clean']){
-    await tool(id);const result=await run(bytes);const out=await PDFDocument.load(result.bytes);
+    await tool(id);const result=await run(bytes,'synthetic.pdf','application/pdf',id==='clean'?20000:1500);
+    if(!result.bytes){evidence.cases[id]={name:result.name,status:result.status,downloaded:false};continue}
+    const out=await PDFDocument.load(result.bytes);
     const outputObjects=out.context.enumerateIndirectObjects().map(([ref,obj])=>obj.toString()).join('\n');
     const metadata=out.catalog.lookup(PDFName.of('Metadata'));
-    evidence.cases[id]={name:result.name,status:result.status,author:out.getAuthor(),catalogMetadata:!!metadata,xmp:metadata?.getContentsString(),fields:out.getForm().getFields().map(f=>({name:f.getName(),value:f.getText?.()})),openAction:out.catalog.has(PDFName.of('OpenAction')),orphanAction:outputObjects.includes(Buffer.from('PRIVATE_ACTION_MARKER').toString('hex').toUpperCase())||outputObjects.includes('PRIVATE_ACTION_MARKER')};
+    evidence.cases[id]={name:result.name,status:result.status,downloaded:true,author:out.getAuthor(),catalogMetadata:!!metadata,xmp:metadata?.getContentsString(),fields:out.getForm().getFields().map(f=>({name:f.getName(),value:f.getText?.()})),openAction:out.catalog.has(PDFName.of('OpenAction')),orphanAction:outputObjects.includes(Buffer.from('PRIVATE_ACTION_MARKER').toString('hex').toUpperCase())||outputObjects.includes('PRIVATE_ACTION_MARKER')};
   }
   const formulaDoc=await PDFDocument.create();formulaDoc.addPage().drawText('=1+1',{x:30,y:300,font:await formulaDoc.embedFont(StandardFonts.Helvetica)});
   await tool('pdftoexcel');const formulaResult=await run(await formulaDoc.save());evidence.cases.csv={status:formulaResult.status,csv:formulaResult.bytes.toString()};
-  await tool('redact');await page.locator('#redact-page').fill('99');const redacted=await run(await formulaDoc.save());evidence.cases.redactInvalidPage={status:redacted.status,download:redacted.name,pageCount:await PDFDocument.load(redacted.bytes).then(d=>d.getPageCount())};
+  const contactsDoc=await PDFDocument.create();contactsDoc.addPage().drawText('audit@example.com +15551234567 https://x.io/"q',{x:30,y:300,font:await contactsDoc.embedFont(StandardFonts.Helvetica)});
+  await tool('contacts');const contactsResult=await run(await contactsDoc.save());evidence.cases.contacts={status:contactsResult.status,csv:contactsResult.bytes.toString()};
+  await tool('redact');await page.locator('#redact-page').fill('99');const redacted=await run(await formulaDoc.save(),'synthetic.pdf','application/pdf',1500);evidence.cases.redactInvalidPage={status:redacted.status,download:redacted.name,downloaded:!!redacted.bytes};
   await tool('htmltopdf');const requestStart=requests.length;
   const html='<p>SYNTHETIC_HTML_MARKER</p><img src="https://example.invalid/SYNTHETIC_HTML_MARKER"><iframe src="https://example.invalid/SYNTHETIC_IFRAME_MARKER"></iframe><script>window.auditXSS=true</script>';
   const htmlResult=await run(Buffer.from(html),'synthetic.html','text/html');

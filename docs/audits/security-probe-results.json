@@ -2,38 +2,17 @@
   "browser": "153.0.8010.12",
   "cases": {
     "privacycheck": {
-      "name": "safe-to-share.pdf",
-      "status": "Privacy report\n• 1 populated metadata fields\n• 1 pages with annotations or links\n• 1 interactive form fields\n• Automatic document actions detected\n• No named resource dictionary\nA sanitized sharing copy was downloaded.",
-      "author": "",
-      "catalogMetadata": true,
-      "xmp": "<x:xmpmeta xmlns:x=\"adobe:ns:meta/\">PRIVATE_XMP_MARKER</x:xmpmeta>",
-      "fields": [
-        {
-          "name": "Private field",
-          "value": "PRIVATE_FORM_MARKER"
-        }
-      ],
-      "openAction": false,
-      "orphanAction": true
+      "status": "Privacy report\n• 1 populated standard Info fields\n• 1 pages with annotations or links\n• 1 interactive form fields\n• Automatic document actions detected\n• No named resource dictionary\nNo sanitized sharing copy was created.",
+      "downloaded": false
     },
     "sanitize": {
-      "name": "sanitized.pdf",
-      "status": "Done — your private download is ready.",
-      "author": "",
-      "catalogMetadata": true,
-      "xmp": "<x:xmpmeta xmlns:x=\"adobe:ns:meta/\">PRIVATE_XMP_MARKER</x:xmpmeta>",
-      "fields": [
-        {
-          "name": "Private field",
-          "value": "PRIVATE_FORM_MARKER"
-        }
-      ],
-      "openAction": false,
-      "orphanAction": true
+      "status": "Verified sanitization is unavailable; no PDF was created. Use Privacy Inspector for a read-only report.\nKeep the original. Try a smaller, unencrypted file; report only the tool and error category, not document contents.",
+      "downloaded": false
     },
     "clean": {
-      "name": "cleaned.pdf",
+      "name": "standard-info-fields-cleared.pdf",
       "status": "Done — your private download is ready.",
+      "downloaded": true,
       "author": "",
       "catalogMetadata": true,
       "xmp": "<x:xmpmeta xmlns:x=\"adobe:ns:meta/\">PRIVATE_XMP_MARKER</x:xmpmeta>",
@@ -48,12 +27,15 @@
     },
     "csv": {
       "status": "Done — your private download is ready.",
-      "csv": "Page,Line\n1,\"=1+1\""
+      "csv": "\"Page\",\"Line\"\n\"1\",\"'=1+1\""
+    },
+    "contacts": {
+      "status": "Found 1 emails, 1 phone numbers and 1 links.",
+      "csv": "\"Type\",\"Value\"\n\"Email\",\"audit@example.com\"\n\"Phone\",\"'+15551234567\"\n\"URL\",\"https://x.io/\"\"q\""
     },
     "redactInvalidPage": {
-      "status": "Done — your private download is ready.",
-      "download": "securely-redacted.pdf",
-      "pageCount": 1
+      "status": "Choose a page between 1 and 1.\nKeep the original. Try a smaller, unencrypted file; report only the tool and error category, not document contents.",
+      "downloaded": false
     },
     "html": {
       "status": "Done — your private download is ready.",
@@ -64,6 +46,6 @@
   },
   "externalRequests": [],
   "storage": {
-    "privypdf-recent": "[\"htmltopdf\",\"redact\",\"pdftoexcel\",\"clean\",\"sanitize\",\"privacycheck\"]"
+    "privypdf-recent": "[\"htmltopdf\",\"redact\",\"contacts\",\"pdftoexcel\",\"clean\",\"sanitize\",\"privacycheck\"]"
   }
 }
