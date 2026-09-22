@@ -291,6 +291,34 @@ export async function pngDarkPixelRatioFromZip(zipPath, entryName) {
   return dark / (width * height);
 }
 
+export async function pngRegionBlackPixelRatioFromZip(zipPath, entryName, region) {
+  const { default: JSZip } = await import('jszip');
+  const zip = await JSZip.loadAsync(await fs.readFile(zipPath));
+  const entry = zip.file(entryName);
+  if (!entry) throw new Error(`Missing ${entryName} in PNG ZIP`);
+  const png = Buffer.from(await entry.async('uint8array'));
+  const { width, height, channels, pixels } = decodePng(png);
+  const left = Math.max(0, Math.floor(width * region.x));
+  const top = Math.max(0, Math.floor(height * region.y));
+  const right = Math.min(width, Math.ceil(width * (region.x + region.width)));
+  const bottom = Math.min(height, Math.ceil(height * (region.y + region.height)));
+  const insetX = Math.floor((right - left) * (region.inset ?? 0));
+  const insetY = Math.floor((bottom - top) * (region.inset ?? 0));
+  let black = 0;
+  let total = 0;
+  for (let y = top + insetY; y < bottom - insetY; y++) {
+    for (let x = left + insetX; x < right - insetX; x++) {
+      const i = (y * width + x) * channels;
+      const r = pixels[i];
+      const g = channels === 1 ? r : pixels[i + 1];
+      const b = channels === 1 ? r : pixels[i + 2];
+      if (r < 40 && g < 40 && b < 40) black++;
+      total++;
+    }
+  }
+  return black / Math.max(1, total);
+}
+
 export async function saveDownload(download, dir) {
   const target = path.join(dir, download.suggestedFilename());
   await download.saveAs(target);

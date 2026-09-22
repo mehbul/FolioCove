@@ -47,7 +47,7 @@ Run the browser E2E suite against Playwright-managed Chromium:
 npm run test:e2e
 ```
 
-The E2E suite serves the built `dist/` app, opens the ten dedicated routes directly, checks the selected tool and controls, verifies `noindex,nofollow`, watches for uncaught page errors, monitors processing requests for document-marker leakage and blocks external requests except the documented OCR English-model GET, while allowing same-origin assets. It validates downloaded artifacts from synthetic fixtures and covers merge, split, visual organizer, target compression, CCITT scanned-PDF rendering through local PDF.js decoder assets, camera/photo-to-PDF, edit, typed sign, redaction validation, read-only Privacy Inspector behavior, safe CSV exports, unsupported file type, and malformed PDF flows.
+The E2E suite serves the built `dist/` app, opens the ten dedicated routes directly, checks the selected tool and controls, verifies `noindex,nofollow`, watches for uncaught page errors, monitors processing requests for document-marker leakage and blocks external requests except the documented OCR English-model GET, while allowing same-origin assets. It validates downloaded artifacts from synthetic fixtures and covers merge, split, visual organizer, target compression, CCITT scanned-PDF rendering through local PDF.js decoder assets, camera/photo-to-PDF, edit, typed sign, redaction validation, read-only Privacy Inspector behavior, raw CSV neutralization, unsupported file type, and malformed PDF flows.
 
 Run the same deterministic suite against installed desktop Chrome and Edge on Windows when available:
 

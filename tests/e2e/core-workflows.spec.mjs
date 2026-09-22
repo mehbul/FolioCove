@@ -15,6 +15,7 @@ import {
   pdfPageCount,
   pdfText,
   pngDarkPixelRatioFromZip,
+  pngRegionBlackPixelRatioFromZip,
   runAndSaveDownload,
   uniqueMarker
 } from './helpers.mjs';
@@ -156,6 +157,20 @@ test.describe('core workflow downloads', () => {
     const redacted = await runAndSaveDownload(page, dir, 'securely-redacted.pdf');
     expect(await pdfPageCount(redacted)).toBe(1);
     expect(await pdfText(redacted)).not.toContain('SECRET-REDACT-74291');
+
+    await page.goto('/');
+    await page.getByLabel('Tool category').selectOption('all');
+    await page.getByRole('button', { name: /Pages to PNG ZIP/ }).click();
+    await page.getByTestId('file-input').setInputFiles(redacted);
+    const zip = await runAndSaveDownload(page, dir, 'pdf-pages.zip');
+    const blackRatio = await pngRegionBlackPixelRatioFromZip(zip, 'page-001.png', {
+      x: 0.08,
+      y: 0.40,
+      width: 0.65,
+      height: 0.20,
+      inset: 0.08
+    });
+    expect(blackRatio).toBeGreaterThan(0.95);
     await expectNoGuardViolations(guards);
   });
 
@@ -171,7 +186,13 @@ test.describe('core workflow downloads', () => {
     await expect(page.getByTestId('status')).toHaveClass(/error/);
     await expect(page.getByTestId('status')).toContainText('Choose a page between 1 and 1.');
 
+    await page.getByLabel('Page').fill('1.5');
+    await expectNoDownloadFromRun(page);
+
     await page.getByLabel('Page').fill('1');
+    await page.getByLabel('Width %').fill('0');
+    await expectNoDownloadFromRun(page);
+
     await page.getByLabel('Left %').fill('80');
     await page.getByLabel('Width %').fill('30');
     await expectNoDownloadFromRun(page);
@@ -210,6 +231,22 @@ test.describe('core workflow downloads', () => {
     await expectNoDownloadFromRun(page);
     await expect(page.getByTestId('status')).toHaveClass(/error/);
     await expect(page.getByTestId('status')).toContainText('Verified sanitization is unavailable');
+    await expectNoGuardViolations(guards);
+  });
+
+  test('quick action refuses metadata cleanup commands without a download', async ({ page }) => {
+    const dir = await makeFixtureDir();
+    const source = await createPdf(path.join(dir, fixtureFilename), ['QUICK-METADATA'], { metadata: true });
+    const guards = installPageGuards(page);
+
+    await page.goto('/');
+    await page.getByLabel('Tool category').selectOption('all');
+    await page.getByRole('button', { name: /Quick Action/ }).click();
+    await page.getByTestId('file-input').setInputFiles(source);
+    await page.getByLabel('What should happen?').fill('remove metadata');
+    await expectNoDownloadFromRun(page);
+    await expect(page.getByTestId('status')).toHaveClass(/error/);
+    await expect(page.getByTestId('status')).toContainText('Quick Action does not remove metadata or hidden data');
     await expectNoGuardViolations(guards);
   });
 
