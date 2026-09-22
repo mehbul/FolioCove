@@ -26,6 +26,7 @@ Passed in Playwright-managed Chromium:
   - Split: pages 2-3 are extracted and expected marker text remains present.
   - Visual organizer: page order changes and the downloaded PDF remains parseable.
   - Target compression: downloaded PDF remains parseable with expected page count.
+  - PDF.js decoder assets: a deterministic CCITT scanned-image PDF renders through the browser to a PNG ZIP, and the downloaded PNG contains non-white decoded scan pixels.
   - Camera scanner/photo-to-PDF: a generated PNG document photo becomes a one-page PDF.
   - Edit PDF: added text is extractable from the downloaded PDF.
   - Typed sign: typed signature text is extractable from the downloaded PDF.
@@ -33,13 +34,13 @@ Passed in Playwright-managed Chromium:
   - Privacy Inspector: metadata is reported and the sanitized copy opens with title/author cleared.
 - Unsupported TXT input for a PDF workflow produces a clear error and no download.
 - Malformed PDF input produces an error and no misleading download.
-- During processing, the network guard fails on non-local POST/PUT/PATCH requests and on request URL/body leakage of the synthetic filename or unique document marker. No violations were observed in the passing runs.
+- During processing, the network guard fails on any external request except the documented OCR English-model GET, and it fails on request URL/body leakage of synthetic filenames, unique document markers, or OCR fixture text. Same-origin assets, blob URLs, and data URLs remain allowed. No violations were observed in the passing runs.
 
 Command: `npm run test:e2e:installed`
 
 Passed on installed Windows desktop browsers:
-- Google Chrome: 19 deterministic E2E tests passed; OCR model-dependent test skipped.
-- Microsoft Edge: 19 deterministic E2E tests passed; OCR model-dependent test skipped.
+- Google Chrome: 20 deterministic E2E tests passed; OCR model-dependent test skipped.
+- Microsoft Edge: 20 deterministic E2E tests passed; OCR model-dependent test skipped.
 
 Command: `npm run test:e2e:ocr`
 

@@ -6,6 +6,7 @@ import {fileURLToPath} from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dist = path.join(root, 'dist');
 const port = Number(process.env.PORT || 4173);
+const host = process.env.HOST || '127.0.0.1';
 
 const types = new Map([
   ['.css', 'text/css; charset=utf-8'],
@@ -18,12 +19,19 @@ const types = new Map([
   ['.webmanifest', 'application/manifest+json; charset=utf-8']
 ]);
 
+function resolveDistPath(urlPathname) {
+  const decoded = decodeURIComponent(urlPathname);
+  const candidate = path.resolve(dist, `.${decoded}`);
+  const relative = path.relative(dist, candidate);
+  if (relative.startsWith('..') || path.isAbsolute(relative)) return null;
+  return candidate;
+}
+
 const server = http.createServer(async (request, response) => {
   try {
     const url = new URL(request.url || '/', `http://${request.headers.host || 'localhost'}`);
-    const decoded = decodeURIComponent(url.pathname);
-    const candidate = path.normalize(path.join(dist, decoded));
-    if (!candidate.startsWith(dist)) {
+    const candidate = resolveDistPath(url.pathname);
+    if (!candidate) {
       response.writeHead(403);
       response.end('Forbidden');
       return;
@@ -42,7 +50,7 @@ const server = http.createServer(async (request, response) => {
   }
 });
 
-server.listen(port, () => {
-  console.log(`PrivyPDF dev server: http://localhost:${port}/`);
+server.listen(port, host, () => {
+  console.log(`PrivyPDF dev server: http://${host}:${port}/`);
   console.log('Serving generated files from dist/. Run npm run build after source changes.');
 });

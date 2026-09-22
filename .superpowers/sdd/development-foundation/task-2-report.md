@@ -363,3 +363,148 @@ Exit code: 0
 ```
 
 The committed branch range that previously failed on `dist/assets/app.js` now passes.
+
+# Final whole-branch review fix wave
+
+## Findings addressed
+
+- PDF.js decoder assets were missing from the generated site: the build copied only `pdf.worker.min.mjs`, and app PDF.js loads did not supply `wasmUrl`.
+- `scripts/dev-server.mjs` used string-prefix path containment and bound all interfaces by default.
+- The E2E network privacy guard allowed all external GET requests even though the documented exception was OCR model traffic only.
+
+## Changes
+
+- Added build-time copying of the required PDF.js WASM/fallback decoder runtime files into `dist/assets/pdfjs/wasm/`: `jbig2.wasm`, `jbig2_nowasm_fallback.js`, `openjpeg.wasm`, `openjpeg_nowasm_fallback.js`, `qcms_bg.wasm`, `quickjs-eval.js`, and `quickjs-eval.wasm`.
+- Updated the app PDF.js loader so every app `getDocument` call goes through the same wrapper with `wasmUrl: '/assets/pdfjs/wasm/'` and `workerSrc: '/assets/pdf.worker.min.mjs'`.
+- Added a deterministic CCITT scanned-image PDF fixture generator and a browser E2E regression that renders it through the app's PDF.js path to a PNG ZIP, then decodes the downloaded PNG in Node and asserts non-white rendered pixels. This checks rendered scan content, not page count alone.
+- Fixed the dev server to resolve requested paths with `path.resolve` plus `path.relative` containment, rejecting sibling-prefix traversal, and to bind `127.0.0.1` by default with optional `HOST` override.
+- Tightened the browser network guard so processing fails on any external request except the exact documented OCR English model GET from `https://tessdata.projectnaptha.com/4.0.0/eng.traineddata(.gz)`. Same-origin assets, blob URLs, and data URLs remain allowed.
+- Updated README and TEST_RESULTS to describe local PDF.js decoder assets, the CCITT decoder regression, and the stronger external-request assertion.
+
+## Exact commands and results
+
+### `npm ci`
+
+Exit code: 0
+
+```text
+added 89 packages, and audited 90 packages in 4s
+
+5 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+```
+
+### `npm run build`
+
+Exit code: 0
+
+```text
+> privypdf@0.1.0 build
+> node scripts/build.mjs
+
+Generated 10 tool routes and 5 beta information pages.
+```
+
+### Focused decoder regression
+
+Command: `npx playwright test tests/e2e/core-workflows.spec.mjs --project=chromium --grep "PDF.js decoder assets"`
+
+Exit code: 0
+
+```text
+Running 1 test using 1 worker
+
+ok 1 [chromium] › tests\e2e\core-workflows.spec.mjs:80:3 › core workflow downloads › PDF.js decoder assets render CCITT scanned image content (1.4s)
+
+1 passed (3.3s)
+```
+
+### `npm test`
+
+Exit code: 0
+
+```text
+> privypdf@0.1.0 test
+> node scripts/test-launch.mjs
+
+PASS: syntax, 15 routes, metrics schema, route option initialization, page-range validation, XLSX and legacy XLS spreadsheet-to-PDF regressions; 77 generated-bundle app-handler executions across 10 generated PDFs plus malformed input.
+NOT TESTED: browser rendering, OCR, camera, compression, redaction accuracy, encrypted inputs, browser network traffic, Safari/mobile, human task completion.
+```
+
+### `npm run test:e2e`
+
+Exit code: 0
+
+```text
+> privypdf@0.1.0 test:e2e
+> playwright test --project=chromium
+
+Running 21 tests using 3 workers
+
+1 skipped
+20 passed (13.3s)
+```
+
+The skipped test is the explicit OCR local-only test, covered below. The new CCITT decoder scan regression passed in this Chromium run.
+
+### `npm run test:e2e:installed`
+
+Exit code: 0
+
+```text
+> privypdf@0.1.0 test:e2e:installed
+> playwright test --project=chrome --project=edge
+
+Running 42 tests using 6 workers
+
+2 skipped
+40 passed (15.5s)
+```
+
+The skipped tests are the OCR local-only test in Chrome and Edge. The new CCITT decoder scan regression passed in both installed browser projects.
+
+### `npm run test:e2e:ocr`
+
+Exit code: 0
+
+```text
+> privypdf@0.1.0 test:e2e:ocr
+> set PRIVYPDF_RUN_OCR=1&& playwright test tests/e2e/ocr.local.spec.mjs --project=chromium
+
+Running 1 test using 1 worker
+
+ok 1 [chromium] › tests\e2e\ocr.local.spec.mjs:23:3 › network-dependent OCR validation › searchable OCR creates independently extractable recognized text (7.7s)
+
+1 passed (9.5s)
+```
+
+### `npm audit --omit=dev --audit-level=high`
+
+Exit code: 0
+
+```text
+found 0 vulnerabilities
+```
+
+### `git diff --check`
+
+Exit code: 0
+
+```text
+(no whitespace errors; Git emitted only Windows line-ending normalization warnings)
+```
+
+## Self-review
+
+- Confirmed decoder configuration is centralized in `loadPdfJs`, so the app paths that call `pdfjs.getDocument(...)` receive the local `wasmUrl` without per-call drift.
+- Confirmed the build copies the PDF.js decoder WASM and no-WASM fallback files into generated `dist/` and the files are served by the existing static dev server MIME map.
+- Confirmed the CCITT regression uses a synthetic generated PDF, performs a real browser user flow, downloads a real ZIP, decodes the PNG independently in Node, and asserts rendered dark pixels rather than page count.
+- Confirmed the network guard now blocks arbitrary external GET requests while preserving same-origin asset loads and the documented OCR model exception.
+- Confirmed the dev server rejects paths outside `dist/` using separator-aware path containment and binds loopback by default.
+- Confirmed no accounts, payments, analytics, public access, deployment, framework migration, or route removals were introduced.
+
+## Concerns
+
+The CCITT regression proves one deterministic decoder-backed scan path renders content through browser PDF.js. Broader decoder coverage for arbitrary JBIG2/JPEG2000 files, Safari/mobile/camera hardware, visual fidelity, OCR accuracy beyond deterministic fixtures, compression quality, deeper redaction/security proof, full sanitization, and human completion remain unverified launch gates.

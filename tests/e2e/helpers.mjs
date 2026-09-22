@@ -6,6 +6,7 @@ import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
 
 const standardFontDataUrl = 'node_modules/pdfjs-dist/standard_fonts/';
+const wasmUrl = 'node_modules/pdfjs-dist/wasm/';
 
 export const uniqueMarker = 'PRIVYPDF_E2E_MARKER_74291';
 export const fixtureFilename = 'privypdf-e2e-marker-74291.pdf';
@@ -39,6 +40,59 @@ export async function createPdf(filePath, pageTexts, options = {}) {
 
 export async function createMalformedPdf(filePath) {
   await fs.writeFile(filePath, Buffer.from('%PDF-1.7\nthis is intentionally truncated\n'));
+  return filePath;
+}
+
+function packBits(bitString) {
+  const bytes = [];
+  for (let offset = 0; offset < bitString.length; offset += 8) {
+    const chunk = bitString.slice(offset, offset + 8).padEnd(8, '0');
+    bytes.push(Number.parseInt(chunk, 2));
+  }
+  return Buffer.from(bytes);
+}
+
+function pdfObject(id, body) {
+  return Buffer.from(`${id} 0 obj\n${body}\nendobj\n`, 'binary');
+}
+
+function pdfStreamObject(id, dictionary, stream) {
+  return Buffer.concat([
+    Buffer.from(`${id} 0 obj\n<< ${dictionary} /Length ${stream.length} >>\nstream\n`, 'binary'),
+    stream,
+    Buffer.from('\nendstream\nendobj\n', 'binary')
+  ]);
+}
+
+function assemblePdf(objects) {
+  const chunks = [Buffer.from('%PDF-1.7\n%\xE2\xE3\xCF\xD3\n', 'binary')];
+  const offsets = [0];
+  for (const object of objects) {
+    offsets.push(chunks.reduce((sum, chunk) => sum + chunk.length, 0));
+    chunks.push(object);
+  }
+  const xrefOffset = chunks.reduce((sum, chunk) => sum + chunk.length, 0);
+  const xref = [`xref\n0 ${objects.length + 1}`, '0000000000 65535 f ', ...offsets.slice(1).map(offset => `${String(offset).padStart(10, '0')} 00000 n `)].join('\n');
+  chunks.push(Buffer.from(`${xref}\ntrailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF\n`, 'binary'));
+  return Buffer.concat(chunks);
+}
+
+export async function createCcittScanPdf(filePath) {
+  const white16 = '101010';
+  const white4 = '1011';
+  const black8 = '000101';
+  const rows = [];
+  for (let y = 0; y < 16; y++) rows.push(y >= 4 && y < 12 ? `${white4}${black8}${white4}` : white16);
+  const ccitt = packBits(rows.join(''));
+  const content = Buffer.from('q\n320 0 0 320 70 240 cm\n/Im1 Do\nQ\n', 'binary');
+  const objects = [
+    pdfObject(1, '<< /Type /Catalog /Pages 2 0 R >>'),
+    pdfObject(2, '<< /Type /Pages /Kids [3 0 R] /Count 1 >>'),
+    pdfObject(3, '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 460 560] /Resources << /XObject << /Im1 4 0 R >> >> /Contents 5 0 R >>'),
+    pdfStreamObject(4, '/Type /XObject /Subtype /Image /Width 16 /Height 16 /ColorSpace /DeviceGray /BitsPerComponent 1 /Filter /CCITTFaxDecode /DecodeParms << /K 0 /Columns 16 /Rows 16 /BlackIs1 true /EndOfBlock false >>', ccitt),
+    pdfStreamObject(5, '', content)
+  ];
+  await fs.writeFile(filePath, assemblePdf(objects));
   return filePath;
 }
 
@@ -139,7 +193,7 @@ export async function pdfPageCount(filePath) {
 
 export async function pdfText(filePath) {
   const bytes = await fs.readFile(filePath);
-  const task = pdfjs.getDocument({ data: new Uint8Array(bytes), standardFontDataUrl });
+  const task = pdfjs.getDocument({ data: new Uint8Array(bytes), standardFontDataUrl, wasmUrl });
   const pdf = await task.promise;
   try {
     const pages = [];
@@ -159,6 +213,84 @@ export async function pdfMetadata(filePath) {
   return { title: doc.getTitle(), author: doc.getAuthor(), subject: doc.getSubject(), keywords: doc.getKeywords() };
 }
 
+function paeth(left, above, upperLeft) {
+  const estimate = left + above - upperLeft;
+  const leftDistance = Math.abs(estimate - left);
+  const aboveDistance = Math.abs(estimate - above);
+  const upperLeftDistance = Math.abs(estimate - upperLeft);
+  if (leftDistance <= aboveDistance && leftDistance <= upperLeftDistance) return left;
+  if (aboveDistance <= upperLeftDistance) return above;
+  return upperLeft;
+}
+
+function decodePng(buffer) {
+  if (!buffer.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) throw new Error('Not a PNG');
+  let offset = 8;
+  let width = 0;
+  let height = 0;
+  let colorType = 0;
+  const idat = [];
+  while (offset < buffer.length) {
+    const length = buffer.readUInt32BE(offset);
+    const type = buffer.subarray(offset + 4, offset + 8).toString('ascii');
+    const data = buffer.subarray(offset + 8, offset + 8 + length);
+    if (type === 'IHDR') {
+      width = data.readUInt32BE(0);
+      height = data.readUInt32BE(4);
+      if (data[8] !== 8 || data[12] !== 0) throw new Error('Unsupported PNG encoding');
+      colorType = data[9];
+    } else if (type === 'IDAT') {
+      idat.push(data);
+    } else if (type === 'IEND') {
+      break;
+    }
+    offset += 12 + length;
+  }
+  const channels = colorType === 6 ? 4 : colorType === 2 ? 3 : colorType === 0 ? 1 : 0;
+  if (!channels) throw new Error(`Unsupported PNG color type ${colorType}`);
+  const bytesPerPixel = channels;
+  const stride = width * channels;
+  const inflated = zlib.inflateSync(Buffer.concat(idat));
+  const pixels = Buffer.alloc(stride * height);
+  let source = 0;
+  for (let y = 0; y < height; y++) {
+    const filter = inflated[source++];
+    const rowStart = y * stride;
+    const priorStart = rowStart - stride;
+    for (let x = 0; x < stride; x++) {
+      const raw = inflated[source++];
+      const left = x >= bytesPerPixel ? pixels[rowStart + x - bytesPerPixel] : 0;
+      const above = y > 0 ? pixels[priorStart + x] : 0;
+      const upperLeft = y > 0 && x >= bytesPerPixel ? pixels[priorStart + x - bytesPerPixel] : 0;
+      let value = raw;
+      if (filter === 1) value += left;
+      else if (filter === 2) value += above;
+      else if (filter === 3) value += Math.floor((left + above) / 2);
+      else if (filter === 4) value += paeth(left, above, upperLeft);
+      else if (filter !== 0) throw new Error(`Unsupported PNG filter ${filter}`);
+      pixels[rowStart + x] = value & 0xff;
+    }
+  }
+  return { width, height, channels, pixels };
+}
+
+export async function pngDarkPixelRatioFromZip(zipPath, entryName) {
+  const { default: JSZip } = await import('jszip');
+  const zip = await JSZip.loadAsync(await fs.readFile(zipPath));
+  const entry = zip.file(entryName);
+  if (!entry) throw new Error(`Missing ${entryName} in PNG ZIP`);
+  const png = Buffer.from(await entry.async('uint8array'));
+  const { width, height, channels, pixels } = decodePng(png);
+  let dark = 0;
+  for (let i = 0; i < pixels.length; i += channels) {
+    const r = pixels[i];
+    const g = channels === 1 ? r : pixels[i + 1];
+    const b = channels === 1 ? r : pixels[i + 2];
+    if (r < 220 || g < 220 || b < 220) dark++;
+  }
+  return dark / (width * height);
+}
+
 export async function saveDownload(download, dir) {
   const target = path.join(dir, download.suggestedFilename());
   await download.saveAs(target);
@@ -174,9 +306,9 @@ export function installPageGuards(page, markers = [uniqueMarker, fixtureFilename
     const method = request.method().toUpperCase();
     const parsed = new URL(url);
     const local = ['127.0.0.1', 'localhost'].includes(parsed.hostname) || ['blob:', 'data:'].includes(parsed.protocol);
-    const allowedOcrGet = method === 'GET' && parsed.hostname === 'tessdata.projectnaptha.com';
-    if (!local && !allowedOcrGet && ['POST', 'PUT', 'PATCH'].includes(method)) {
-      networkViolations.push(`${method} ${url}`);
+    const allowedOcrGet = method === 'GET' && parsed.protocol === 'https:' && parsed.hostname === 'tessdata.projectnaptha.com' && /^\/4\.0\.0\/eng\.traineddata(?:\.gz)?$/i.test(parsed.pathname);
+    if (!local && !allowedOcrGet) {
+      networkViolations.push(`external request: ${method} ${url}`);
     }
     const postData = request.postData() || '';
     for (const marker of markers) {

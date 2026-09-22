@@ -13,6 +13,21 @@ async function copyFile(from, to) {
   await fs.copyFile(from, to);
 }
 
+async function copyPdfJsWasmAssets() {
+  const fromDir = path.join(root, 'node_modules', 'pdfjs-dist', 'wasm');
+  const toDir = path.join(dist, 'assets', 'pdfjs', 'wasm');
+  const files = [
+    'jbig2.wasm',
+    'jbig2_nowasm_fallback.js',
+    'openjpeg.wasm',
+    'openjpeg_nowasm_fallback.js',
+    'qcms_bg.wasm',
+    'quickjs-eval.js',
+    'quickjs-eval.wasm'
+  ];
+  for (const file of files) await copyFile(path.join(fromDir, file), path.join(toDir, file));
+}
+
 async function writeFile(to, content) {
   await fs.mkdir(path.dirname(to), {recursive: true});
   await fs.writeFile(to, content);
@@ -59,6 +74,7 @@ await copyFile(
   path.join(root, 'node_modules', 'pdfjs-dist', 'build', 'pdf.worker.min.mjs'),
   path.join(dist, 'assets', 'pdf.worker.min.mjs')
 );
+await copyPdfJsWasmAssets();
 
 await copyFile(
   path.join(root, 'node_modules', 'tesseract.js', 'dist', 'worker.min.js'),

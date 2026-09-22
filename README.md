@@ -47,7 +47,7 @@ Run the browser E2E suite against Playwright-managed Chromium:
 npm run test:e2e
 ```
 
-The E2E suite serves the built `dist/` app, opens the ten dedicated routes directly, checks the selected tool and controls, verifies `noindex,nofollow`, watches for uncaught page errors, monitors processing requests for document-marker leakage and non-local POST/PUT/PATCH traffic, and validates downloaded artifacts from synthetic fixtures. It covers merge, split, visual organizer, target compression, camera/photo-to-PDF, edit, typed sign, redact, Privacy Inspector, unsupported file type, and malformed PDF flows.
+The E2E suite serves the built `dist/` app, opens the ten dedicated routes directly, checks the selected tool and controls, verifies `noindex,nofollow`, watches for uncaught page errors, monitors processing requests for document-marker leakage and blocks external requests except the documented OCR English-model GET, while allowing same-origin assets. It validates downloaded artifacts from synthetic fixtures and covers merge, split, visual organizer, target compression, CCITT scanned-PDF rendering through local PDF.js decoder assets, camera/photo-to-PDF, edit, typed sign, redact, Privacy Inspector, unsupported file type, and malformed PDF flows.
 
 Run the same deterministic suite against installed desktop Chrome and Edge on Windows when available:
 
@@ -84,7 +84,7 @@ Playwright traces and screenshots are retained only on failure under ignored `te
 
 Documents are selected by the browser and processed on the user's device. The app does not add accounts, payments, remote analytics, uploads, or document-upload endpoints. Optional beta metrics remain local browser storage only and omit filenames, contents, hashes, raw errors, and identifiers.
 
-Build-time browser dependencies are bundled into local site assets so normal PDF processing does not fetch executable JavaScript from third-party CDNs. OCR language models may still load from the Tesseract model host, and browser-managed translation models may be downloaded or used by the browser Translator API. The site host still receives normal requests for app assets and authenticated access.
+Build-time browser dependencies and PDF.js worker/decoder assets are bundled into local site assets so normal PDF processing does not fetch executable JavaScript from third-party CDNs or decoder assets from a CDN. OCR language models may still load from the Tesseract model host, and browser-managed translation models may be downloaded or used by the browser Translator API. The site host still receives normal requests for app assets and authenticated access.
 
 ## Limitations
 

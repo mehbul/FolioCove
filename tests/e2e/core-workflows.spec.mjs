@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import {
+  createCcittScanPdf,
   createDocumentPhoto,
   createMalformedPdf,
   createPdf,
@@ -13,6 +14,7 @@ import {
   pdfMetadata,
   pdfPageCount,
   pdfText,
+  pngDarkPixelRatioFromZip,
   runAndSaveDownload,
   uniqueMarker
 } from './helpers.mjs';
@@ -73,6 +75,23 @@ test.describe('core workflow downloads', () => {
     const compressed = await runAndSaveDownload(page, dir, 'target-compressed.pdf');
     expect(await pdfPageCount(compressed)).toBe(2);
     await expect(page.getByTestId('status')).toContainText('Created');
+    await expectNoGuardViolations(guards);
+  });
+  test('PDF.js decoder assets render CCITT scanned image content', async ({ page }) => {
+    const dir = await makeFixtureDir();
+    const source = await createCcittScanPdf(path.join(dir, 'privypdf-e2e-ccitt-74291.pdf'));
+    const guards = installPageGuards(page, ['privypdf-e2e-ccitt-74291.pdf']);
+
+    await page.goto('/');
+    await page.getByLabel('Tool category').selectOption('all');
+    await page.getByRole('button', { name: /Pages to PNG ZIP/ }).click();
+    await expect(page.getByTestId('tool-title')).toHaveText('All pages to PNG');
+    await page.getByTestId('file-input').setInputFiles(source);
+    const zip = await runAndSaveDownload(page, dir, 'pdf-pages.zip');
+
+    const darkRatio = await pngDarkPixelRatioFromZip(zip, 'page-001.png');
+    expect(darkRatio).toBeGreaterThan(0.02);
+    expect(darkRatio).toBeLessThan(0.4);
     await expectNoGuardViolations(guards);
   });
 
