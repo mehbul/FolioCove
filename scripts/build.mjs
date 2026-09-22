@@ -46,7 +46,7 @@ await fs.mkdir(dist, {recursive: true});
 
 await esbuild({
   absWorkingDir: root,
-  entryPoints: ['././src/app/index.mjs'],
+  entryPoints: [path.join(src, 'app', 'index.mjs')],
   outfile: 'dist/assets/app.js',
   bundle: true,
   format: 'esm',
