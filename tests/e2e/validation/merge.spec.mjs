@@ -861,42 +861,62 @@ async function inspectM05Pdf(filePath, glyphBox) {
     object.get(PDFName.of('Type'))?.toString() === '/FontDescriptor' &&
     object.has(PDFName.of('FontFile2'))
   ).length;
-  const task = pdfjs.getDocument({
-    data: new Uint8Array(bytes),
-    standardFontDataUrl,
-    wasmUrl,
-    useSystemFonts: false
-  });
-  const pdfJsDocument = await task.promise;
+
+  // PDF.js reports decoder/font substitution problems through Node console warnings.
+  const pdfJsDiagnostics = [];
+  const originalWarn = console.warn;
+  const originalError = console.error;
+  console.warn = (...args) => {
+    pdfJsDiagnostics.push({ level: 'warn', message: args.map(String).join(' ') });
+    originalWarn(...args);
+  };
+  console.error = (...args) => {
+    pdfJsDiagnostics.push({ level: 'error', message: args.map(String).join(' ') });
+    originalError(...args);
+  };
 
   try {
-    const pages = [];
-    for (let pageNumber = 1; pageNumber <= pdfJsDocument.numPages; pageNumber += 1) {
-      const page = await pdfJsDocument.getPage(pageNumber);
-      const viewport = page.getViewport({ scale: 1 });
-      const canvas = createCanvas(Math.ceil(viewport.width), Math.ceil(viewport.height));
-      const context = canvas.getContext('2d');
-      await page.render({ canvas, canvasContext: context, viewport }).promise;
-      const text = await page.getTextContent();
-      const imageData = context.getImageData(0, 0, canvas.width, canvas.height).data;
-      pages.push({
-        width: canvas.width,
-        height: canvas.height,
-        text: text.items.map(item => item.str).join(' '),
-        glyphPixels: glyphBox ? regionPixels(imageData, canvas.width, canvas.height, glyphBox) : null,
-        png: canvas.toBuffer('image/png')
-      });
-      page.cleanup();
+    const task = pdfjs.getDocument({
+      data: new Uint8Array(bytes),
+      standardFontDataUrl,
+      wasmUrl,
+      useSystemFonts: false,
+      verbosity: pdfjs.VerbosityLevel.WARNINGS
+    });
+    try {
+      const pdfJsDocument = await task.promise;
+      const pages = [];
+      for (let pageNumber = 1; pageNumber <= pdfJsDocument.numPages; pageNumber += 1) {
+        const page = await pdfJsDocument.getPage(pageNumber);
+        const viewport = page.getViewport({ scale: 1 });
+        const canvas = createCanvas(Math.ceil(viewport.width), Math.ceil(viewport.height));
+        const context = canvas.getContext('2d');
+        await page.render({ canvas, canvasContext: context, viewport }).promise;
+        const text = await page.getTextContent();
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height).data;
+        pages.push({
+          width: canvas.width,
+          height: canvas.height,
+          text: text.items.map(item => item.str).join(' '),
+          glyphPixels: glyphBox ? regionPixels(imageData, canvas.width, canvas.height, glyphBox) : null,
+          png: canvas.toBuffer('image/png')
+        });
+        page.cleanup();
+      }
+      return {
+        byteLength: bytes.length,
+        pdfLibPageCount: pdfLibDocument.getPageCount(),
+        pdfJsPageCount: pdfJsDocument.numPages,
+        embeddedFontCount,
+        pdfJsDiagnostics,
+        pages
+      };
+    } finally {
+      await task.destroy();
     }
-    return {
-      byteLength: bytes.length,
-      pdfLibPageCount: pdfLibDocument.getPageCount(),
-      pdfJsPageCount: pdfJsDocument.numPages,
-      embeddedFontCount,
-      pages
-    };
   } finally {
-    await task.destroy();
+    console.warn = originalWarn;
+    console.error = originalError;
   }
 }
 
@@ -915,9 +935,11 @@ test('M05 preserves an embedded Unicode-font glyph region beside an ASCII page',
     expect(sourceUnicode.pdfLibPageCount).toBe(1);
     expect(sourceUnicode.pdfJsPageCount).toBe(1);
     expect(sourceUnicode.embeddedFontCount).toBeGreaterThan(0);
+    expect(sourceUnicode.pdfJsDiagnostics).toEqual([]);
     expect(sourceUnicode.pages[0].text).toContain(m05UnicodeText);
     const sourceDarkRatio = darkPixelRatio(sourceUnicode.pages[0].glyphPixels);
     expect(sourceDarkRatio).toBeGreaterThan(0.01);
+    expect(sourceAscii.pdfJsDiagnostics).toEqual([]);
     expect(sourceAscii.pages[0].text).toContain(m05AsciiMarker);
 
     const guards = installPageGuards(page, [
@@ -959,15 +981,19 @@ test('M05 preserves an embedded Unicode-font glyph region beside an ASCII page',
     expect(output.pdfJsPageCount).toBe(2);
     expect(output.pages).toHaveLength(2);
     expect(output.embeddedFontCount).toBeGreaterThan(0);
+    expect(output.pdfJsDiagnostics).toEqual([]);
     expect(output.pages[0].width).toBe(sourceUnicode.pages[0].width);
     expect(output.pages[0].height).toBe(sourceUnicode.pages[0].height);
     expect(output.pages[1].width).toBe(sourceAscii.pages[0].width);
     expect(output.pages[1].height).toBe(sourceAscii.pages[0].height);
 
     const outputDarkRatio = darkPixelRatio(output.pages[0].glyphPixels);
-    const glyphChangedRatio = changedPixelRatio(sourceUnicode.pages[0].glyphPixels, output.pages[0].glyphPixels);
+    const sourceGlyphBytes = Buffer.from(sourceUnicode.pages[0].glyphPixels);
+    const outputGlyphBytes = Buffer.from(output.pages[0].glyphPixels);
+    const sourceGlyphSha256 = createHash('sha256').update(sourceGlyphBytes).digest('hex');
+    const outputGlyphSha256 = createHash('sha256').update(outputGlyphBytes).digest('hex');
     expect(outputDarkRatio).toBeGreaterThan(0.01);
-    expect(glyphChangedRatio).toBeLessThan(0.01);
+    expect(outputGlyphBytes.equals(sourceGlyphBytes)).toBe(true);
     expect(output.pages[0].text).toContain(m05UnicodeText);
     expect(output.pages[0].text).not.toContain(m05AsciiMarker);
     expect(output.pages[1].text).toContain(m05AsciiMarker);
@@ -994,13 +1020,18 @@ test('M05 preserves an embedded Unicode-font glyph region beside an ASCII page',
         outputBytes: output.byteLength,
         downloadEvents,
         fontErrors,
+        sourcePdfJsDiagnostics: sourceUnicode.pdfJsDiagnostics,
+        asciiPdfJsDiagnostics: sourceAscii.pdfJsDiagnostics,
+        outputPdfJsDiagnostics: output.pdfJsDiagnostics,
         sourceEmbeddedFonts: sourceUnicode.embeddedFontCount,
         outputEmbeddedFonts: output.embeddedFontCount,
         unicodeText: output.pages[0].text,
         asciiText: output.pages[1].text,
         sourceDarkRatio,
         outputDarkRatio,
-        glyphChangedRatio
+        sourceGlyphSha256,
+        outputGlyphSha256,
+        glyphPixelsIdentical: outputGlyphBytes.equals(sourceGlyphBytes)
       }, null, 2)),
       contentType: 'application/json'
     });

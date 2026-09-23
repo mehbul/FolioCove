@@ -20,7 +20,7 @@ The existing page/network guards are installed before navigation and check uncau
 
 Before upload, `pdf-lib` and PDF.js independently open the Unicode source and ASCII companion. PDF.js renders with system font fallback disabled. The Unicode source has an embedded TrueType font descriptor, extracts the exact glyph string, and has a nonblank fixed glyph region. After merge, both parsers open exactly two pages in input order. The output retains an embedded font descriptor, extracts `Ω λ Ж Д` only on page 1, and extracts `PVP-M05-ASCII` only on page 2. Both output page dimensions match their sources.
 
-The fixed glyph region's source and output dark-pixel ratios are both `0.0443205574912892`. The per-pixel changed ratio is `0` at a per-channel difference threshold of 20 (allowed: <0.01). This directly checks the source/output render match and guards against a blank or substituted Unicode region. The browser reported zero font console errors and the existing page/network guards reported zero violations. The test attaches four source/output PNG renders and JSON oracle data. The merged download was 28,406 bytes; its status was `Done — your private download is ready.` and processing took 76 ms in the JSON evidence run.
+The fixed glyph region's source and output dark-pixel ratios are both `0.0443205574912892`. The source and output glyph region bytes are required to match exactly, with no channel or pixel tolerance. This directly checks the source/output render match and guards against a blank or substituted Unicode region. The browser reported zero font console errors. PDF.js Node warnings and errors are captured during each source and output parse/render, with warning verbosity enabled and system font fallback disabled; all three diagnostic lists were empty. The existing page/network guards reported zero violations. The test attaches four source/output PNG renders and JSON oracle data. The merged download was 28,406 bytes; its status was `Done — your private download is ready.` and processing took 76 ms in the JSON evidence run.
 
 ## Commands and result
 
@@ -32,3 +32,7 @@ The fixed glyph region's source and output dark-pixel ratios are both `0.0443205
 ## Coverage limit
 
 This case covers the bundled Chromium project and Node PDF.js rendering. It does not claim installed Chrome, Edge, mobile, or other validation matrix rows. No M05 product defect was observed.
+
+## Review hardening
+
+The M05 oracle now compares every RGB channel in the rendered glyph region exactly. It records source and output region SHA-256 values and requires byte equality; the earlier 20-channel/1%-pixel tolerance has been removed from this case. Source Unicode, source ASCII, and merged output PDF.js warnings/errors are captured and must each be empty. The fixture generator now rejects any ReportLab version other than 4.4.9 before writing a PDF. The review rerun passed: source and output region SHA-256 were both `4e54e510d82660949421a7ece29b41b64767e91a0eb14c9a2bbcf00b45118361`, `glyphPixelsIdentical` was `true`, and all three PDF.js diagnostic lists were empty. The focused Chromium test passed 1/1, the fixture regenerated to its recorded checksum, and `npm run build` and `npm test` both passed.
