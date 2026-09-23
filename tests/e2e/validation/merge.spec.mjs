@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { expect, test } from '@playwright/test';
@@ -63,6 +64,13 @@ const m03ScanFilename = 'pvp-m03-ccitt-scan.pdf';
 const m03TextFilename = 'pvp-m03-selectable-text.pdf';
 const m03TextMarker = 'PVP-M03-SELECTABLE-TEXT';
 const m03ScanDarkPixelBand = { minimum: 0.29, maximum: 0.31 };
+
+const m05UnicodeFilename = 'pvp-m05-unicode.pdf';
+const m05UnicodeSha256 = 'a79dbd29551f2d138c6b3a49df77997d66cb120652931f9729801ab3759e00f5';
+const m05AsciiFilename = 'pvp-m05-ascii.pdf';
+const m05AsciiMarker = 'PVP-M05-ASCII';
+const m05UnicodeText = 'Ω λ Ж Д';
+const m05GlyphBox = { x: 48, y: 224, width: 350, height: 82 };
 
 const m04FormFilename = 'pvp-m04-filled-form.pdf';
 const m04LinkFilename = 'pvp-m04-link.pdf';
@@ -837,6 +845,162 @@ test('M04 preserves a filled form appearance and a linked region', async ({ page
         sourceStructure: { form: sourceForm.structure, link: sourceLink.structure },
         outputStructure: output.structure,
         outputPdfJsAnnotations: output.pages.map(({ annotations }) => annotations)
+      }, null, 2)),
+      contentType: 'application/json'
+    });
+  } finally {
+    await fs.rm(fixtureDir, { recursive: true, force: true });
+  }
+});
+
+async function inspectM05Pdf(filePath, glyphBox) {
+  const bytes = await fs.readFile(filePath);
+  const pdfLibDocument = await PDFDocument.load(bytes);
+  const embeddedFontCount = pdfLibDocument.context.enumerateIndirectObjects().filter(([, object]) =>
+    object instanceof PDFDict &&
+    object.get(PDFName.of('Type'))?.toString() === '/FontDescriptor' &&
+    object.has(PDFName.of('FontFile2'))
+  ).length;
+  const task = pdfjs.getDocument({
+    data: new Uint8Array(bytes),
+    standardFontDataUrl,
+    wasmUrl,
+    useSystemFonts: false
+  });
+  const pdfJsDocument = await task.promise;
+
+  try {
+    const pages = [];
+    for (let pageNumber = 1; pageNumber <= pdfJsDocument.numPages; pageNumber += 1) {
+      const page = await pdfJsDocument.getPage(pageNumber);
+      const viewport = page.getViewport({ scale: 1 });
+      const canvas = createCanvas(Math.ceil(viewport.width), Math.ceil(viewport.height));
+      const context = canvas.getContext('2d');
+      await page.render({ canvas, canvasContext: context, viewport }).promise;
+      const text = await page.getTextContent();
+      const imageData = context.getImageData(0, 0, canvas.width, canvas.height).data;
+      pages.push({
+        width: canvas.width,
+        height: canvas.height,
+        text: text.items.map(item => item.str).join(' '),
+        glyphPixels: glyphBox ? regionPixels(imageData, canvas.width, canvas.height, glyphBox) : null,
+        png: canvas.toBuffer('image/png')
+      });
+      page.cleanup();
+    }
+    return {
+      byteLength: bytes.length,
+      pdfLibPageCount: pdfLibDocument.getPageCount(),
+      pdfJsPageCount: pdfJsDocument.numPages,
+      embeddedFontCount,
+      pages
+    };
+  } finally {
+    await task.destroy();
+  }
+}
+
+test('M05 preserves an embedded Unicode-font glyph region beside an ASCII page', async ({ page }, testInfo) => {
+  const fixtureDir = await makeFixtureDir();
+  const unicodePath = path.resolve('tests/fixtures', m05UnicodeFilename);
+  const asciiPath = path.join(fixtureDir, m05AsciiFilename);
+
+  try {
+    const fixtureHash = createHash('sha256').update(await fs.readFile(unicodePath)).digest('hex');
+    expect(fixtureHash).toBe(m05UnicodeSha256);
+    await createMarkerPdf(asciiPath, [{ marker: m05AsciiMarker, width: 540, height: 400 }]);
+
+    const sourceUnicode = await inspectM05Pdf(unicodePath, m05GlyphBox);
+    const sourceAscii = await inspectM05Pdf(asciiPath);
+    expect(sourceUnicode.pdfLibPageCount).toBe(1);
+    expect(sourceUnicode.pdfJsPageCount).toBe(1);
+    expect(sourceUnicode.embeddedFontCount).toBeGreaterThan(0);
+    expect(sourceUnicode.pages[0].text).toContain(m05UnicodeText);
+    const sourceDarkRatio = darkPixelRatio(sourceUnicode.pages[0].glyphPixels);
+    expect(sourceDarkRatio).toBeGreaterThan(0.01);
+    expect(sourceAscii.pages[0].text).toContain(m05AsciiMarker);
+
+    const guards = installPageGuards(page, [
+      m05UnicodeFilename, m05AsciiFilename, m05UnicodeText, m05AsciiMarker
+    ]);
+    const fontErrors = [];
+    page.on('console', message => {
+      if (message.type() === 'error' && /font/i.test(message.text())) fontErrors.push(message.text());
+    });
+    const downloadEvents = [];
+    page.on('download', download => downloadEvents.push(download.suggestedFilename()));
+    const startedAt = performance.now();
+    await openTool(page, '/merge-pdf/', 'Merge PDFs');
+    await expect(page.getByTestId('tool-limit')).toHaveText(
+      'Private beta. Keep your original and inspect the output. Large, malformed or password-protected files may fail.'
+    );
+    await expect(page.getByTestId('file-input')).toHaveAttribute('accept', 'application/pdf');
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,nofollow');
+
+    await page.getByTestId('file-input').setInputFiles([unicodePath, asciiPath]);
+    await expect(page.getByTestId('run-tool')).toBeEnabled();
+    const processingStartedAt = performance.now();
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      page.getByTestId('run-tool').click()
+    ]);
+    const processingDurationMs = performance.now() - processingStartedAt;
+    expect(processingDurationMs).toBeLessThanOrEqual(20_000);
+    expect(download.suggestedFilename()).toBe('merged.pdf');
+    const mergedPath = await saveDownload(download, fixtureDir);
+    await expect(page.getByTestId('status')).toHaveClass(/ok/);
+    await expect(page.getByTestId('status')).toContainText('Done');
+    await expect(page.getByTestId('run-tool')).toBeEnabled();
+    expect(downloadEvents).toEqual(['merged.pdf']);
+    expect(fontErrors).toEqual([]);
+
+    const output = await inspectM05Pdf(mergedPath, m05GlyphBox);
+    expect(output.pdfLibPageCount).toBe(2);
+    expect(output.pdfJsPageCount).toBe(2);
+    expect(output.pages).toHaveLength(2);
+    expect(output.embeddedFontCount).toBeGreaterThan(0);
+    expect(output.pages[0].width).toBe(sourceUnicode.pages[0].width);
+    expect(output.pages[0].height).toBe(sourceUnicode.pages[0].height);
+    expect(output.pages[1].width).toBe(sourceAscii.pages[0].width);
+    expect(output.pages[1].height).toBe(sourceAscii.pages[0].height);
+
+    const outputDarkRatio = darkPixelRatio(output.pages[0].glyphPixels);
+    const glyphChangedRatio = changedPixelRatio(sourceUnicode.pages[0].glyphPixels, output.pages[0].glyphPixels);
+    expect(outputDarkRatio).toBeGreaterThan(0.01);
+    expect(glyphChangedRatio).toBeLessThan(0.01);
+    expect(output.pages[0].text).toContain(m05UnicodeText);
+    expect(output.pages[0].text).not.toContain(m05AsciiMarker);
+    expect(output.pages[1].text).toContain(m05AsciiMarker);
+    expect(output.pages[1].text).not.toContain(m05UnicodeText);
+    expect(fontErrors).toEqual([]);
+    await expectNoGuardViolations(guards);
+
+    for (const [name, body] of [
+      ['M05-source-unicode-render', sourceUnicode.pages[0].png],
+      ['M05-output-unicode-render', output.pages[0].png],
+      ['M05-source-ascii-render', sourceAscii.pages[0].png],
+      ['M05-output-ascii-render', output.pages[1].png]
+    ]) {
+      await testInfo.attach(name, { body, contentType: 'image/png' });
+    }
+    await testInfo.attach('M05-oracle-results', {
+      body: Buffer.from(JSON.stringify({
+        caseId: 'M05',
+        browserProject: testInfo.project.name,
+        durationMs: Math.round(performance.now() - startedAt),
+        processingDurationMs: Math.round(processingDurationMs),
+        fixtureSha256: fixtureHash,
+        statusText: await page.getByTestId('status').textContent(),
+        outputBytes: output.byteLength,
+        downloadEvents,
+        fontErrors,
+        sourceEmbeddedFonts: sourceUnicode.embeddedFontCount,
+        outputEmbeddedFonts: output.embeddedFontCount,
+        unicodeText: output.pages[0].text,
+        asciiText: output.pages[1].text,
+        sourceDarkRatio,
+        outputDarkRatio,
+        glyphChangedRatio
       }, null, 2)),
       contentType: 'application/json'
     });
