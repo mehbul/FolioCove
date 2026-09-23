@@ -1,9 +1,11 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { expect, test } from '@playwright/test';
+import { createCanvas } from '@napi-rs/canvas';
 import { PDFDocument, StandardFonts, degrees, rgb } from 'pdf-lib';
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
 import {
+  createCcittScanPdf,
   expectNoGuardViolations,
   installPageGuards,
   makeFixtureDir,
@@ -56,6 +58,11 @@ const m02Fixtures = [
 ];
 
 const m02Markers = m02Fixtures.map(fixture => fixture.marker);
+
+const m03ScanFilename = 'pvp-m03-ccitt-scan.pdf';
+const m03TextFilename = 'pvp-m03-selectable-text.pdf';
+const m03TextMarker = 'PVP-M03-SELECTABLE-TEXT';
+const m03ScanDarkPixelBand = { minimum: 0.29, maximum: 0.31 };
 
 async function createMarkerPdf(filePath, pages) {
   const document = await PDFDocument.create();
@@ -179,6 +186,68 @@ async function inspectGeometryPdf(filePath) {
   } finally {
     await task.destroy();
   }
+}
+
+async function inspectRenderedPdf(filePath) {
+  const bytes = await fs.readFile(filePath);
+  const pdfLibDocument = await PDFDocument.load(bytes);
+  const task = pdfjs.getDocument({
+    data: new Uint8Array(bytes),
+    standardFontDataUrl,
+    wasmUrl
+  });
+  const pdfJsDocument = await task.promise;
+
+  try {
+    const pages = [];
+    for (let pageNumber = 1; pageNumber <= pdfJsDocument.numPages; pageNumber += 1) {
+      const page = await pdfJsDocument.getPage(pageNumber);
+      const textContent = await page.getTextContent();
+      const viewport = page.getViewport({ scale: 1 });
+      const canvas = createCanvas(Math.ceil(viewport.width), Math.ceil(viewport.height));
+      const canvasContext = canvas.getContext('2d');
+      await page.render({ canvas, canvasContext, viewport }).promise;
+
+      const imageData = canvasContext.getImageData(0, 0, canvas.width, canvas.height).data;
+      let darkPixels = 0;
+      let opaquePixels = 0;
+      for (let offset = 0; offset < imageData.length; offset += 4) {
+        if (
+          imageData[offset] < 220 ||
+          imageData[offset + 1] < 220 ||
+          imageData[offset + 2] < 220
+        ) {
+          darkPixels += 1;
+        }
+        if (imageData[offset + 3] === 255) opaquePixels += 1;
+      }
+
+      const pixelCount = canvas.width * canvas.height;
+      pages.push({
+        text: textContent.items.map(item => item.str).join(' '),
+        width: canvas.width,
+        height: canvas.height,
+        darkPixelRatio: darkPixels / pixelCount,
+        opaquePixelRatio: opaquePixels / pixelCount,
+        png: canvas.toBuffer('image/png')
+      });
+      page.cleanup();
+    }
+
+    return {
+      byteLength: bytes.length,
+      pdfLibPageCount: pdfLibDocument.getPageCount(),
+      pdfJsPageCount: pdfJsDocument.numPages,
+      pages
+    };
+  } finally {
+    await task.destroy();
+  }
+}
+
+function expectRatioInBand(actual, band) {
+  expect(actual).toBeGreaterThanOrEqual(band.minimum);
+  expect(actual).toBeLessThanOrEqual(band.maximum);
 }
 
 function expectBoxWithinTolerance(actual, expected, tolerance = 1) {
@@ -378,6 +447,108 @@ test('M02 preserves boxes and effective rotations for portrait, landscape and sq
           pdfLib: pdfLibPage,
           pdfJs: output.pdfJsPages[index]
         }))
+      }, null, 2)),
+      contentType: 'application/json'
+    });
+  } finally {
+    await fs.rm(fixtureDir, { recursive: true, force: true });
+  }
+});
+
+test('M03 preserves a CCITT image-only scan beside a selectable-text PDF', async ({ page }, testInfo) => {
+  const fixtureDir = await makeFixtureDir();
+
+  try {
+    const scanPath = await createCcittScanPdf(path.join(fixtureDir, m03ScanFilename));
+    const textPath = await createMarkerPdf(path.join(fixtureDir, m03TextFilename), [
+      { marker: m03TextMarker, width: 460, height: 560 }
+    ]);
+    const sourceScan = await inspectRenderedPdf(scanPath);
+    const sourceText = await inspectRenderedPdf(textPath);
+
+    expect(sourceScan.pdfLibPageCount).toBe(1);
+    expect(sourceScan.pdfJsPageCount).toBe(1);
+    expect(sourceScan.pages).toHaveLength(1);
+    expect(sourceScan.pages[0].text.trim()).toBe('');
+    expectRatioInBand(sourceScan.pages[0].darkPixelRatio, m03ScanDarkPixelBand);
+    expect(sourceScan.pages[0].opaquePixelRatio).toBe(1);
+
+    expect(sourceText.pdfLibPageCount).toBe(1);
+    expect(sourceText.pdfJsPageCount).toBe(1);
+    expect(sourceText.pages).toHaveLength(1);
+    expect(sourceText.pages[0].text).toContain(m03TextMarker);
+    expect(sourceText.pages[0].darkPixelRatio).toBeGreaterThan(0.001);
+    expect(sourceText.pages[0].opaquePixelRatio).toBe(1);
+
+    const guards = installPageGuards(page, [
+      m03TextMarker,
+      m03ScanFilename,
+      m03TextFilename
+    ]);
+    const downloadEvents = [];
+    page.on('download', download => downloadEvents.push(download.suggestedFilename()));
+
+    const startedAt = performance.now();
+    await openTool(page, '/merge-pdf/', 'Merge PDFs');
+    await expect(page.getByTestId('tool-limit')).toHaveText(
+      'Private beta. Keep your original and inspect the output. Large, malformed or password-protected files may fail.'
+    );
+    await expect(page.getByTestId('file-input')).toHaveAttribute('accept', 'application/pdf');
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,nofollow');
+
+    await page.getByTestId('file-input').setInputFiles([scanPath, textPath]);
+    await expect(page.getByTestId('run-tool')).toBeEnabled();
+    const processingStartedAt = performance.now();
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      page.getByTestId('run-tool').click()
+    ]);
+    const processingDurationMs = performance.now() - processingStartedAt;
+    expect(processingDurationMs).toBeLessThanOrEqual(20_000);
+    expect(download.suggestedFilename()).toBe('merged.pdf');
+    const mergedPath = await saveDownload(download, fixtureDir);
+    await expect(page.getByTestId('status')).toHaveClass(/ok/);
+    await expect(page.getByTestId('status')).toContainText('Done');
+    await expect(page.getByTestId('run-tool')).toBeEnabled();
+    expect(downloadEvents).toEqual(['merged.pdf']);
+
+    const output = await inspectRenderedPdf(mergedPath);
+    expect(output.pdfLibPageCount).toBe(2);
+    expect(output.pdfJsPageCount).toBe(2);
+    expect(output.pages).toHaveLength(2);
+
+    const [outputScan, outputText] = output.pages;
+    expect(outputScan.text.trim()).toBe('');
+    expect(outputScan.text).not.toContain(m03TextMarker);
+    expectRatioInBand(outputScan.darkPixelRatio, m03ScanDarkPixelBand);
+    expect(outputScan.darkPixelRatio).toBeCloseTo(sourceScan.pages[0].darkPixelRatio, 6);
+    expect(outputScan.opaquePixelRatio).toBe(1);
+
+    expect(outputText.text).toContain(m03TextMarker);
+    expect(outputText.darkPixelRatio).toBeGreaterThan(0.001);
+    expect(outputText.opaquePixelRatio).toBe(1);
+
+    await expectNoGuardViolations(guards);
+    for (const [name, body] of [
+      ['M03-source-scan-render', sourceScan.pages[0].png],
+      ['M03-output-scan-render', outputScan.png],
+      ['M03-source-text-render', sourceText.pages[0].png],
+      ['M03-output-text-render', outputText.png]
+    ]) {
+      await testInfo.attach(name, { body, contentType: 'image/png' });
+    }
+    await testInfo.attach('M03-oracle-results', {
+      body: Buffer.from(JSON.stringify({
+        caseId: 'M03',
+        browserProject: testInfo.project.name,
+        durationMs: Math.round(performance.now() - startedAt),
+        processingDurationMs: Math.round(processingDurationMs),
+        statusText: await page.getByTestId('status').textContent(),
+        outputBytes: output.byteLength,
+        downloadEvents,
+        scanDarkPixelBand: m03ScanDarkPixelBand,
+        sourcePages: [sourceScan.pages[0], sourceText.pages[0]].map(({ png, ...pageResult }) => pageResult),
+        outputPages: output.pages.map(({ png, ...pageResult }) => pageResult)
       }, null, 2)),
       contentType: 'application/json'
     });
