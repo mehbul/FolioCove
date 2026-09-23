@@ -1277,8 +1277,10 @@ test('M08 requires two selected PDFs before merge can run', async ({ page }, tes
     await expect(page.getByTestId('run-tool')).toBeDisabled();
     const runButtonBox = await page.getByTestId('run-tool').boundingBox();
     expect(runButtonBox).not.toBeNull();
+    const noDownloadObservationStartedAt = performance.now();
     await page.mouse.click(runButtonBox.x + runButtonBox.width / 2, runButtonBox.y + runButtonBox.height / 2);
-    await page.waitForTimeout(1200);
+    await page.waitForTimeout(1500);
+    const noDownloadObservationDurationMs = performance.now() - noDownloadObservationStartedAt;
     await expect(page.getByTestId('status')).toBeEmpty();
     await expect(page.locator('#metrics-summary')).toContainText('0 starts · 0 completed · 0 failed');
     expect(await page.evaluate(() => JSON.parse(localStorage.getItem('privypdf-beta-metrics') ?? '[]'))).toEqual([]);
@@ -1300,6 +1302,8 @@ test('M08 requires two selected PDFs before merge can run', async ({ page }, tes
       body: Buffer.from(JSON.stringify({
         caseId: 'M08',
         browserProject: testInfo.project.name,
+        noDownloadObservationDurationMs: Math.round(noDownloadObservationDurationMs),
+        outputByteCount: 0,
         filesAfterSecondSelection: await page.locator('#files .file-name').allTextContents(),
         runButtonEnabledAfterSecondSelection: await page.getByTestId('run-tool').isEnabled(),
         statusText: await page.getByTestId('status').textContent(),
