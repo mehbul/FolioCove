@@ -7,6 +7,7 @@ import { PDFDict, PDFDocument, PDFName, PDFString, StandardFonts, degrees, rgb }
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
 import {
   createCcittScanPdf,
+  createMalformedPdf,
   expectNoGuardViolations,
   installPageGuards,
   makeFixtureDir,
@@ -90,6 +91,12 @@ const m08FirstFilename = 'pvp-m08-first.pdf';
 const m08SecondFilename = 'pvp-m08-second.pdf';
 const m08FirstMarker = 'PVP-M08-FIRST';
 const m08SecondMarker = 'PVP-M08-SECOND';
+
+const m09ValidFilename = 'pvp-m09-valid.pdf';
+const m09TruncatedFilename = 'pvp-m09-truncated.pdf';
+const m09ReplacementFilename = 'pvp-m09-replacement.pdf';
+const m09ValidMarker = 'PVP-M09-VALID';
+const m09ReplacementMarker = 'PVP-M09-REPLACEMENT';
 
 const m04FormFilename = 'pvp-m04-filled-form.pdf';
 const m04LinkFilename = 'pvp-m04-link.pdf';
@@ -1311,6 +1318,93 @@ test('M08 requires two selected PDFs before merge can run', async ({ page }, tes
         metrics: await page.evaluate(() => JSON.parse(localStorage.getItem('privypdf-beta-metrics') ?? '[]')),
         downloadEvents,
         jobControlsHidden: await page.locator('#job-controls').isHidden()
+      }, null, 2)),
+      contentType: 'application/json'
+    });
+  } finally {
+    await fs.rm(fixtureDir, { recursive: true, force: true });
+  }
+});
+
+test('M09 rejects a truncated PDF without downloading a partial merge', async ({ page }, testInfo) => {
+  const fixtureDir = await makeFixtureDir();
+
+  try {
+    const validPath = await createMarkerPdf(
+      path.join(fixtureDir, m09ValidFilename),
+      [{ marker: m09ValidMarker, width: 300, height: 500 }]
+    );
+    const truncatedPath = await createMalformedPdf(path.join(fixtureDir, m09TruncatedFilename));
+    const replacementPath = await createMarkerPdf(
+      path.join(fixtureDir, m09ReplacementFilename),
+      [{ marker: m09ReplacementMarker, width: 300, height: 500 }]
+    );
+    const truncatedBytes = await fs.readFile(truncatedPath);
+    expect(truncatedBytes.subarray(0, 4).toString()).toBe('%PDF');
+    expect(truncatedBytes.length).toBeLessThan(100);
+    const truncatedDocument = await PDFDocument.load(truncatedBytes);
+    expect(() => truncatedDocument.getPageIndices()).toThrow();
+    expect((await PDFDocument.load(await fs.readFile(validPath))).getPageCount()).toBe(1);
+
+    const guards = installPageGuards(page, [
+      m09ValidFilename, m09TruncatedFilename, m09ReplacementFilename,
+      m09ValidMarker, m09ReplacementMarker
+    ]);
+    await page.addInitScript(() => {
+      localStorage.setItem('privypdf-metrics-optin', JSON.stringify(true));
+      localStorage.setItem('privypdf-beta-metrics', JSON.stringify([]));
+    });
+    const downloadEvents = [];
+    page.on('download', download => downloadEvents.push(download.suggestedFilename()));
+    await openTool(page, '/merge-pdf/', 'Merge PDFs');
+    await expect(page.getByTestId('tool-limit')).toHaveText(
+      'Private beta. Keep your original and inspect the output. Large, malformed or password-protected files may fail.'
+    );
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,nofollow');
+    await expect(page.getByTestId('file-input')).toHaveAttribute('accept', 'application/pdf');
+
+    await page.getByTestId('file-input').setInputFiles([validPath, truncatedPath]);
+    await expect(page.locator('#files .file-name')).toHaveText([m09ValidFilename, m09TruncatedFilename]);
+    await expect(page.getByTestId('run-tool')).toBeEnabled();
+    await page.getByTestId('run-tool').click();
+    await expect(page.getByTestId('status')).toHaveClass(/error/);
+    await expect(page.getByTestId('status')).not.toBeEmpty();
+    await expect(page.getByTestId('status')).not.toContainText('Done');
+    await expect(page.getByTestId('status')).toContainText('Keep the original.');
+    await expect(page.locator('#metrics-summary')).toContainText('1 starts · 0 completed · 1 failed');
+    await expect(page.getByTestId('run-tool')).toBeEnabled();
+    await expect(page.locator('#job-controls')).toBeHidden();
+    for (const selector of ['.sidebar', '#options', '#files']) {
+      await expect(page.locator(selector)).toHaveJSProperty('inert', false);
+    }
+    const noDownloadObservationStartedAt = performance.now();
+    await page.waitForTimeout(1500);
+    const noDownloadObservationDurationMs = performance.now() - noDownloadObservationStartedAt;
+    expect(downloadEvents).toEqual([]);
+    await expect(page.locator('#files .file-name')).toHaveText([m09ValidFilename, m09TruncatedFilename]);
+
+    await page.locator('#files .file').nth(1).getByRole('button', { name: 'Remove file' }).click();
+    await expect(page.locator('#files .file-name')).toHaveText([m09ValidFilename]);
+    await expect(page.getByTestId('run-tool')).toBeDisabled();
+    await page.getByTestId('file-input').setInputFiles(replacementPath);
+    await expect(page.locator('#files .file-name')).toHaveText([m09ValidFilename, m09ReplacementFilename]);
+    await expect(page.getByTestId('run-tool')).toBeEnabled();
+    expect(downloadEvents).toEqual([]);
+    await expectNoGuardViolations(guards);
+
+    await testInfo.attach('M09-oracle-results', {
+      body: Buffer.from(JSON.stringify({
+        caseId: 'M09',
+        browserProject: testInfo.project.name,
+        truncatedInputBytes: truncatedBytes.length,
+        noDownloadObservationDurationMs: Math.round(noDownloadObservationDurationMs),
+        statusClass: await page.getByTestId('status').getAttribute('class'),
+        statusText: await page.getByTestId('status').textContent(),
+        filesAfterRemovingTruncatedInput: [m09ValidFilename],
+        filesAfterReplacement: await page.locator('#files .file-name').allTextContents(),
+        runButtonEnabledAfterReplacement: await page.getByTestId('run-tool').isEnabled(),
+        metrics: await page.evaluate(() => JSON.parse(localStorage.getItem('privypdf-beta-metrics') ?? '[]')),
+        downloadEvents
       }, null, 2)),
       contentType: 'application/json'
     });
