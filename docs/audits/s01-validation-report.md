@@ -27,4 +27,4 @@ Environment: Node 24, Playwright 1.63.0 (bundled Chromium).
 
 ## Coverage limit
 
-This case covers the ordinary contiguous range `2-3` in bundled Chromium. Separate matrix rows cover other range syntax, boundaries, mixed geometry, malformed/encrypted files, and installed Chrome/Edge repetition before release.
+This case covers the ordinary contiguous range `2-3` in bundled Chromium. Other matrix rows cover different range syntax, boundaries, mixed geometry, malformed/encrypted files. Repeating S01 in installed Chrome and Edge remains outstanding before release.
