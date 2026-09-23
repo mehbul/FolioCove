@@ -187,16 +187,20 @@ function expectBoxWithinTolerance(actual, expected, tolerance = 1) {
   }
 }
 
-function expectViewWithinTolerance(actual, expected, tolerance = 1) {
-  const expectedView = [
-    expected.x,
-    expected.y,
-    expected.x + expected.width,
-    expected.y + expected.height
-  ];
+function expectCoordinatesWithinTolerance(actual, expected, tolerance = 1) {
+  expect(actual).toHaveLength(expected.length);
   for (const [index, coordinate] of actual.entries()) {
-    expect(Math.abs(coordinate - expectedView[index])).toBeLessThanOrEqual(tolerance);
+    expect(Math.abs(coordinate - expected[index])).toBeLessThanOrEqual(tolerance);
   }
+}
+
+function cropBoxAsView(cropBox) {
+  return [
+    cropBox.x,
+    cropBox.y,
+    cropBox.x + cropBox.width,
+    cropBox.y + cropBox.height
+  ];
 }
 
 test('M01 merges one-page and two-page PDFs in exact order with page sizes preserved', async ({ page }, testInfo) => {
@@ -301,7 +305,7 @@ test('M02 preserves boxes and effective rotations for portrait, landscape and sq
       expectBoxWithinTolerance(source.pdfLibPages[0].mediaBox, fixture.mediaBox);
       expectBoxWithinTolerance(source.pdfLibPages[0].cropBox, fixture.cropBox);
       expect(source.pdfLibPages[0].rotation).toBe(fixture.rotation);
-      expectViewWithinTolerance(source.pdfJsPages[0].view, fixture.cropBox);
+      expectCoordinatesWithinTolerance(source.pdfJsPages[0].view, cropBoxAsView(fixture.cropBox));
       expect(source.pdfJsPages[0].rotation).toBe(fixture.rotation);
     }
 
@@ -351,7 +355,7 @@ test('M02 preserves boxes and effective rotations for portrait, landscape and sq
       expectBoxWithinTolerance(outputLibPage.mediaBox, source.pdfLibPages[0].mediaBox);
       expectBoxWithinTolerance(outputLibPage.cropBox, source.pdfLibPages[0].cropBox);
       expect(outputLibPage.rotation).toBe(source.pdfLibPages[0].rotation);
-      expectViewWithinTolerance(outputJsPage.view, fixture.cropBox);
+      expectCoordinatesWithinTolerance(outputJsPage.view, source.pdfJsPages[0].view);
       expect(outputJsPage.rotation).toBe(source.pdfJsPages[0].rotation);
       expect(outputJsPage.viewport.width).toBeCloseTo(source.pdfJsPages[0].viewport.width, 4);
       expect(outputJsPage.viewport.height).toBeCloseTo(source.pdfJsPages[0].viewport.height, 4);
