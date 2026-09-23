@@ -1091,6 +1091,9 @@ test('M06 merges 50 marker pages and a final page within 75 seconds, then return
     await expect(page.getByTestId('status')).toContainText('Done');
     await expect(page.getByTestId('run-tool')).toBeEnabled();
     await expect(page.locator('#job-controls')).toBeHidden();
+    for (const selector of ['.sidebar', '#options', '#files']) {
+      await expect(page.locator(selector)).toHaveJSProperty('inert', false);
+    }
     const processingDurationMs = performance.now() - processingStartedAt;
     expect(processingDurationMs).toBeLessThan(75_000);
     expect(downloadEvents).toEqual(['merged.pdf']);
@@ -1109,6 +1112,11 @@ test('M06 merges 50 marker pages and a final page within 75 seconds, then return
         statusText: await page.getByTestId('status').textContent(),
         runButtonEnabled: await page.getByTestId('run-tool').isEnabled(),
         jobControlsHidden: await page.locator('#job-controls').isHidden(),
+        interactiveRegionsIdle: Object.fromEntries(await Promise.all(
+          ['.sidebar', '#options', '#files'].map(async selector => [
+            selector, !(await page.locator(selector).evaluate(element => element.inert))
+          ])
+        )),
         outputBytes: output.byteLength,
         pdfLibPageCount: output.pdfLibPageCount,
         pdfJsPageCount: output.pdfJsPageCount,

@@ -16,7 +16,7 @@ The test requires exactly one download named `merged.pdf`. Both `pdf-lib` and PD
 
 ## Timing and idle state
 
-The timer starts immediately before clicking Merge and stops after the download is saved, the success status appears, the run button is enabled, and the job controls are hidden. That full interval must be below 75,000 ms; the download wait has the same bound. The JSON evidence run measured 221 ms. It recorded `Done — your private download is ready.`, `runButtonEnabled: true`, `jobControlsHidden: true`, and one download event. The page/network guards reported zero violations. The output was 11,698 bytes.
+The timer starts immediately before clicking Merge and stops after the download is saved, the success status appears, the run button is enabled, the job controls are hidden, and the sidebar, options, and file list have all returned to `inert: false`. The three region checks are awaited DOM property assertions, matching the job cleanup code's interactive-state toggle. That full interval must be below 75,000 ms; the download wait has the same bound. The post-review JSON evidence run measured 257 ms. It recorded `Done — your private download is ready.`, `runButtonEnabled: true`, `jobControlsHidden: true`, all three interactive regions idle, and one download event. The page/network guards reported zero violations. The output was 11,698 bytes.
 
 ## Commands and result
 
@@ -28,3 +28,7 @@ The timer starts immediately before clicking Merge and stops after the download 
 ## Coverage limit
 
 The 50 pages contain short synthetic text and form a small PDF. This verifies page count and order at 50 pages, but does not establish performance for image-heavy 50-page documents or memory-constrained devices. Those are separate matrix cases. No M06 product defect was observed.
+
+## Review hardening
+
+The idle oracle now waits for the sidebar, options, and file list to become interactive again after processing. The JSON attachment records `true` for all three idle regions alongside the status, button, and job controls. The focused post-review Chromium run passed 1/1 with these checks.
