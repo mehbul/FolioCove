@@ -10,13 +10,13 @@ Result: PASS in bundled Chromium. A PDF exactly one byte over the binary 100 MiB
 
 ## Fixture and oracle
 
-The test generates three one-page, marked PDFs with `pdf-lib`. It checks that the future oversized PDF begins with `%PDF-` and is parseable while small, then extends that file to exactly 104,857,601 bytes with `fs.truncate`. It verifies the resulting size with `fs.stat` and checks that the browser's file-selection event sees the same byte count. The source remains a PDF with an original valid page and trailing zero padding; the test deliberately never parses its 100 MiB form.
+The test generates three one-page, marked PDFs with `pdf-lib`. It checks that the future oversized PDF begins with `%PDF-` and is parseable while small. On Windows, it explicitly marks the file sparse with `fsutil sparse setflag` and verifies `fsutil sparse queryflag` before extending it with `fs.truncate`; on other platforms, it checks that allocated blocks stay below 1 MiB. It extends the file to exactly 104,857,601 bytes, verifies the logical size with `fs.stat`, and checks that the browser's file-selection event sees the same byte count. The source remains a PDF with an original valid page and trailing zero padding; the test deliberately never parses its 100 MiB form.
 
 Privacy guards are installed before navigation and check all three filenames and markers in outbound requests. A page-lifetime download listener records every download. Before app code runs, the test instruments `File.prototype.arrayBuffer` to record file reads and opts into locally stored metrics. The app's merge path obtains bytes through `File.arrayBuffer()` before calling `pdf-lib`; the read log therefore tests whether that path was reached.
 
 With the small PDF and oversized PDF both selected, the merge action is enabled. Clicking it must show exactly `Private beta limit: 100 MB per file. Choose a smaller file.` The test requires zero file reads, zero local metric starts/completions/failures, hidden job controls, responsive file/options/sidebar regions, and no download during the following 1.5 seconds. The selected files remain visible.
 
-The test then removes the oversized file, selects another small PDF, and completes a merge. `pdf-lib` and PDF.js each find two output pages, and PDF.js extracts the two markers in input order. Only the two small filenames appear in the file-read log; one `merged.pdf` download is recorded, and local metrics show one start and one completion. This checks that the blocked attempt did not leave the interface stuck.
+The test then removes the oversized file, selects another small PDF, and completes a merge. `pdf-lib` and PDF.js each find two output pages, and PDF.js extracts the two markers in input order. Only the two small filenames appear in the file-read log; one `merged.pdf` download is recorded, and local metrics show one start and one completion. This checks that the blocked attempt did not leave the interface stuck. The attached oracle records the sparse status and total elapsed case time, including fixture preparation and browser checks.
 
 ## Commands and result
 

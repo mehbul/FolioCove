@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { expect, test } from '@playwright/test';
@@ -1424,6 +1425,7 @@ test('M09 rejects a truncated PDF without downloading a partial merge', async ({
 
 test('M10 blocks a PDF one byte over 100 MiB before parsing or downloading', async ({ page }, testInfo) => {
   test.setTimeout(120_000);
+  const startedAt = performance.now();
   const fixtureDir = await makeFixtureDir();
 
   try {
@@ -1442,13 +1444,24 @@ test('M10 blocks a PDF one byte over 100 MiB before parsing or downloading', asy
     const oversizePrefix = await fs.readFile(oversizePath);
     expect(oversizePrefix.subarray(0, 5).toString()).toBe('%PDF-');
     expect((await PDFDocument.load(oversizePrefix)).getPageCount()).toBe(1);
+    let sparseStatus;
+    if (process.platform === 'win32') {
+      execFileSync('fsutil', ['sparse', 'setflag', oversizePath]);
+      sparseStatus = execFileSync('fsutil', ['sparse', 'queryflag', oversizePath], { encoding: 'utf8' }).trim();
+      expect(sparseStatus).toMatch(/is set as sparse$/i);
+    }
     const oversizeHandle = await fs.open(oversizePath, 'r+');
     try {
       await oversizeHandle.truncate(m10OverLimitBytes);
     } finally {
       await oversizeHandle.close();
     }
-    expect((await fs.stat(oversizePath)).size).toBe(m10OverLimitBytes);
+    const oversizeStat = await fs.stat(oversizePath);
+    expect(oversizeStat.size).toBe(m10OverLimitBytes);
+    if (process.platform !== 'win32') {
+      expect(oversizeStat.blocks * 512).toBeLessThan(1024 * 1024);
+      sparseStatus = `${oversizeStat.blocks * 512} allocated bytes`;
+    }
 
     const guards = installPageGuards(page, [
       m10ValidFilename, m10OversizeFilename, m10ReplacementFilename,
@@ -1549,6 +1562,8 @@ test('M10 blocks a PDF one byte over 100 MiB before parsing or downloading', asy
         browserProject: testInfo.project.name,
         limitBytes: 100 * 1024 * 1024,
         oversizedInputBytes: m10OverLimitBytes,
+        sparseStatus,
+        totalCaseDurationMs: Math.round(performance.now() - startedAt),
         browserSelectedFiles: selectedFiles,
         noDownloadObservationDurationMs: Math.round(noDownloadObservationDurationMs),
         statusClass: await page.getByTestId('status').getAttribute('class'),
