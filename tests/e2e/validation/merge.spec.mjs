@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { expect, test } from '@playwright/test';
 import { createCanvas } from '@napi-rs/canvas';
-import { PDFDocument, StandardFonts, degrees, rgb } from 'pdf-lib';
+import { PDFDict, PDFDocument, PDFName, PDFString, StandardFonts, degrees, rgb } from 'pdf-lib';
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
 import {
   createCcittScanPdf,
@@ -63,6 +63,14 @@ const m03ScanFilename = 'pvp-m03-ccitt-scan.pdf';
 const m03TextFilename = 'pvp-m03-selectable-text.pdf';
 const m03TextMarker = 'PVP-M03-SELECTABLE-TEXT';
 const m03ScanDarkPixelBand = { minimum: 0.29, maximum: 0.31 };
+
+const m04FormFilename = 'pvp-m04-filled-form.pdf';
+const m04LinkFilename = 'pvp-m04-link.pdf';
+const m04Value = 'PVP-M04-FILLED-VALUE';
+const m04LinkMarker = 'PVP-M04-LINK-REGION';
+const m04LinkUrl = 'https://example.invalid/pvp-m04-link';
+const m04FieldBox = { x: 54, y: 330, width: 300, height: 54 };
+const m04LinkBox = { x: 54, y: 184, width: 300, height: 54 };
 
 async function createMarkerPdf(filePath, pages) {
   const document = await PDFDocument.create();
@@ -270,6 +278,168 @@ function cropBoxAsView(cropBox) {
     cropBox.x + cropBox.width,
     cropBox.y + cropBox.height
   ];
+}
+
+async function createFilledFormPdf(filePath) {
+  const document = await PDFDocument.create();
+  const page = document.addPage([420, 540]);
+  const font = await document.embedFont(StandardFonts.HelveticaBold);
+  page.drawText('M04 synthetic form', { x: 54, y: 450, size: 15, font });
+  page.drawText('Filled value:', { x: 54, y: 400, size: 11, font });
+  const field = document.getForm().createTextField('m04.synthetic.value');
+  field.addToPage(page, {
+    ...m04FieldBox,
+    font,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: rgb(0.1, 0.2, 0.3),
+    backgroundColor: rgb(1, 1, 1)
+  });
+  field.setText(m04Value);
+  document.getForm().updateFieldAppearances(font);
+  await fs.writeFile(filePath, await document.save());
+  return filePath;
+}
+
+async function createLinkedPagePdf(filePath) {
+  const document = await PDFDocument.create();
+  const page = document.addPage([420, 540]);
+  const font = await document.embedFont(StandardFonts.HelveticaBold);
+  page.drawText('M04 synthetic link', { x: 54, y: 450, size: 15, font });
+  page.drawRectangle({
+    ...m04LinkBox,
+    color: rgb(0.86, 0.94, 1),
+    borderColor: rgb(0.08, 0.31, 0.72),
+    borderWidth: 2
+  });
+  page.drawText(m04LinkMarker, {
+    x: m04LinkBox.x + 16,
+    y: m04LinkBox.y + 19,
+    size: 14,
+    font,
+    color: rgb(0.05, 0.2, 0.56)
+  });
+  const action = document.context.obj({
+    S: PDFName.of('URI'),
+    URI: PDFString.of(m04LinkUrl)
+  });
+  const link = document.context.obj({
+    Type: PDFName.of('Annot'),
+    Subtype: PDFName.of('Link'),
+    Rect: [m04LinkBox.x, m04LinkBox.y, m04LinkBox.x + m04LinkBox.width, m04LinkBox.y + m04LinkBox.height],
+    Border: [0, 0, 0],
+    A: action
+  });
+  page.node.addAnnot(document.context.register(link));
+  await fs.writeFile(filePath, await document.save());
+  return filePath;
+}
+
+function regionPixels(imageData, canvasWidth, canvasHeight, box, inset = 0) {
+  const left = Math.max(0, Math.floor(box.x + inset));
+  const right = Math.min(canvasWidth, Math.ceil(box.x + box.width - inset));
+  const top = Math.max(0, Math.floor(canvasHeight - box.y - box.height + inset));
+  const bottom = Math.min(canvasHeight, Math.ceil(canvasHeight - box.y - inset));
+  const pixels = [];
+  for (let y = top; y < bottom; y += 1) {
+    for (let x = left; x < right; x += 1) {
+      const offset = (y * canvasWidth + x) * 4;
+      pixels.push(imageData[offset], imageData[offset + 1], imageData[offset + 2]);
+    }
+  }
+  return pixels;
+}
+
+function darkPixelRatio(pixels) {
+  let dark = 0;
+  for (let offset = 0; offset < pixels.length; offset += 3) {
+    if (pixels[offset] < 150 && pixels[offset + 1] < 150 && pixels[offset + 2] < 150) dark += 1;
+  }
+  return dark / (pixels.length / 3);
+}
+
+function changedPixelRatio(source, output) {
+  expect(output).toHaveLength(source.length);
+  let changed = 0;
+  for (let offset = 0; offset < source.length; offset += 3) {
+    if (Math.max(
+      Math.abs(source[offset] - output[offset]),
+      Math.abs(source[offset + 1] - output[offset + 1]),
+      Math.abs(source[offset + 2] - output[offset + 2])
+    ) > 20) changed += 1;
+  }
+  return changed / (source.length / 3);
+}
+
+async function inspectFormAnnotationPdf(filePath) {
+  const bytes = await fs.readFile(filePath);
+  const pdfLibDocument = await PDFDocument.load(bytes);
+  const structure = {
+    catalogHasAcroForm: pdfLibDocument.catalog.has(PDFName.of('AcroForm')),
+    fieldCount: pdfLibDocument.getForm().getFields().length,
+    pages: []
+  };
+  for (const page of pdfLibDocument.getPages()) {
+    const annotations = [];
+    const annots = page.node.Annots();
+    for (let index = 0; index < (annots?.size() ?? 0); index += 1) {
+      const annotation = pdfLibDocument.context.lookup(annots.get(index), PDFDict);
+      const subtype = annotation.get(PDFName.of('Subtype'))?.toString() ?? null;
+      const action = pdfLibDocument.context.lookup(annotation.get(PDFName.of('A')));
+      const uri = action instanceof PDFDict
+        ? pdfLibDocument.context.lookup(action.get(PDFName.of('URI')))?.decodeText?.() ?? null
+        : null;
+      annotations.push({
+        subtype,
+        hasAppearance: annotation.has(PDFName.of('AP')),
+        uri
+      });
+    }
+    structure.pages.push(annotations);
+  }
+  structure.widgetCount = structure.pages.flat().filter(annotation => annotation.subtype === '/Widget').length;
+  structure.linkCount = structure.pages.flat().filter(annotation => annotation.subtype === '/Link').length;
+  structure.widgetsRemainInteractive = structure.catalogHasAcroForm && structure.fieldCount > 0 && structure.widgetCount > 0;
+  structure.orphanWidgetCount = structure.widgetsRemainInteractive ? 0 : structure.widgetCount;
+
+  const task = pdfjs.getDocument({ data: new Uint8Array(bytes), standardFontDataUrl, wasmUrl });
+  const pdfJsDocument = await task.promise;
+  try {
+    const pages = [];
+    for (let pageNumber = 1; pageNumber <= pdfJsDocument.numPages; pageNumber += 1) {
+      const page = await pdfJsDocument.getPage(pageNumber);
+      const viewport = page.getViewport({ scale: 1 });
+      const canvas = createCanvas(Math.ceil(viewport.width), Math.ceil(viewport.height));
+      const canvasContext = canvas.getContext('2d');
+      await page.render({ canvas, canvasContext, viewport }).promise;
+      const imageData = canvasContext.getImageData(0, 0, canvas.width, canvas.height).data;
+      const text = await page.getTextContent();
+      const annotations = await page.getAnnotations({ intent: 'display' });
+      pages.push({
+        width: canvas.width,
+        height: canvas.height,
+        text: text.items.map(item => item.str).join(' '),
+        annotations: annotations.map(annotation => ({
+          subtype: annotation.subtype,
+          fieldValue: annotation.fieldValue ?? null,
+          url: annotation.unsafeUrl ?? annotation.url ?? null
+        })),
+        fieldInterior: regionPixels(imageData, canvas.width, canvas.height, m04FieldBox, 8),
+        linkInterior: regionPixels(imageData, canvas.width, canvas.height, m04LinkBox, 8),
+        png: canvas.toBuffer('image/png')
+      });
+      page.cleanup();
+    }
+    return {
+      byteLength: bytes.length,
+      pdfLibPageCount: pdfLibDocument.getPageCount(),
+      pdfJsPageCount: pdfJsDocument.numPages,
+      structure,
+      pages
+    };
+  } finally {
+    await task.destroy();
+  }
 }
 
 test('M01 merges one-page and two-page PDFs in exact order with page sizes preserved', async ({ page }, testInfo) => {
@@ -549,6 +719,124 @@ test('M03 preserves a CCITT image-only scan beside a selectable-text PDF', async
         scanDarkPixelBand: m03ScanDarkPixelBand,
         sourcePages: [sourceScan.pages[0], sourceText.pages[0]].map(({ png, ...pageResult }) => pageResult),
         outputPages: output.pages.map(({ png, ...pageResult }) => pageResult)
+      }, null, 2)),
+      contentType: 'application/json'
+    });
+  } finally {
+    await fs.rm(fixtureDir, { recursive: true, force: true });
+  }
+});
+
+test('M04 preserves a filled form appearance and a linked region', async ({ page }, testInfo) => {
+  const fixtureDir = await makeFixtureDir();
+
+  try {
+    const formPath = await createFilledFormPdf(path.join(fixtureDir, m04FormFilename));
+    const linkPath = await createLinkedPagePdf(path.join(fixtureDir, m04LinkFilename));
+    const sourceForm = await inspectFormAnnotationPdf(formPath);
+    const sourceLink = await inspectFormAnnotationPdf(linkPath);
+
+    expect(sourceForm.pdfLibPageCount).toBe(1);
+    expect(sourceForm.pdfJsPageCount).toBe(1);
+    expect(sourceForm.structure.fieldCount).toBe(1);
+    expect(sourceForm.structure.widgetCount).toBe(1);
+    expect(sourceForm.structure.widgetsRemainInteractive).toBe(true);
+    expect(sourceForm.pages[0].annotations.some(annotation => annotation.fieldValue === m04Value)).toBe(true);
+    expect(darkPixelRatio(sourceForm.pages[0].fieldInterior)).toBeGreaterThan(0.01);
+    expect(sourceLink.pdfLibPageCount).toBe(1);
+    expect(sourceLink.pdfJsPageCount).toBe(1);
+    expect(sourceLink.structure.linkCount).toBe(1);
+    expect(sourceLink.structure.pages[0][0].uri).toBe(m04LinkUrl);
+    expect(sourceLink.pages[0].text).toContain(m04LinkMarker);
+    expect(darkPixelRatio(sourceLink.pages[0].linkInterior)).toBeGreaterThan(0.01);
+
+    const guards = installPageGuards(page, [
+      m04FormFilename, m04LinkFilename, m04Value, m04LinkMarker, m04LinkUrl
+    ]);
+    const downloadEvents = [];
+    page.on('download', download => downloadEvents.push(download.suggestedFilename()));
+    const startedAt = performance.now();
+    await openTool(page, '/merge-pdf/', 'Merge PDFs');
+    await expect(page.getByTestId('tool-limit')).toHaveText(
+      'Private beta. Keep your original and inspect the output. Large, malformed or password-protected files may fail.'
+    );
+    await expect(page.getByTestId('file-input')).toHaveAttribute('accept', 'application/pdf');
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,nofollow');
+
+    await page.getByTestId('file-input').setInputFiles([formPath, linkPath]);
+    await expect(page.getByTestId('run-tool')).toBeEnabled();
+    const processingStartedAt = performance.now();
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      page.getByTestId('run-tool').click()
+    ]);
+    const processingDurationMs = performance.now() - processingStartedAt;
+    expect(processingDurationMs).toBeLessThanOrEqual(20_000);
+    expect(download.suggestedFilename()).toBe('merged.pdf');
+    const mergedPath = await saveDownload(download, fixtureDir);
+    await expect(page.getByTestId('status')).toHaveClass(/ok/);
+    await expect(page.getByTestId('status')).toContainText('Done');
+    await expect(page.getByTestId('run-tool')).toBeEnabled();
+    expect(downloadEvents).toEqual(['merged.pdf']);
+
+    const output = await inspectFormAnnotationPdf(mergedPath);
+    expect(output.pdfLibPageCount).toBe(2);
+    expect(output.pdfJsPageCount).toBe(2);
+    expect(output.pages).toHaveLength(2);
+    expect(output.pages[0].width).toBe(sourceForm.pages[0].width);
+    expect(output.pages[0].height).toBe(sourceForm.pages[0].height);
+    expect(output.pages[1].width).toBe(sourceLink.pages[0].width);
+    expect(output.pages[1].height).toBe(sourceLink.pages[0].height);
+
+    const sourceFieldDarkRatio = darkPixelRatio(sourceForm.pages[0].fieldInterior);
+    const outputFieldDarkRatio = darkPixelRatio(output.pages[0].fieldInterior);
+    const fieldChangedRatio = changedPixelRatio(sourceForm.pages[0].fieldInterior, output.pages[0].fieldInterior);
+    expect(outputFieldDarkRatio).toBeGreaterThan(0.01);
+    expect(fieldChangedRatio).toBeLessThan(0.01);
+    expect(output.structure.catalogHasAcroForm).toBe(false);
+    expect(output.structure.fieldCount).toBe(0);
+    expect(output.structure.widgetCount).toBe(1);
+    expect(output.structure.widgetsRemainInteractive).toBe(false);
+    expect(output.structure.orphanWidgetCount).toBe(1);
+    expect(output.pages[0].annotations.some(annotation => annotation.fieldValue === m04Value)).toBe(true);
+    expect(output.structure.pages[0].filter(annotation => annotation.subtype === '/Link')).toHaveLength(0);
+    expect(output.structure.pages[0].some(annotation => annotation.subtype === '/Widget' && annotation.hasAppearance)).toBe(true);
+
+    const sourceLinkDarkRatio = darkPixelRatio(sourceLink.pages[0].linkInterior);
+    const outputLinkDarkRatio = darkPixelRatio(output.pages[1].linkInterior);
+    const linkChangedRatio = changedPixelRatio(sourceLink.pages[0].linkInterior, output.pages[1].linkInterior);
+    expect(outputLinkDarkRatio).toBeGreaterThan(0.01);
+    expect(linkChangedRatio).toBeLessThan(0.01);
+    expect(output.pages[1].text).toContain(m04LinkMarker);
+    expect(output.structure.pages[1].filter(annotation => annotation.subtype === '/Widget')).toHaveLength(0);
+    expect(output.structure.linkCount).toBe(1);
+    expect(output.structure.pages[1][0].uri).toBe(m04LinkUrl);
+    expect(output.pages[0].annotations.some(annotation => annotation.subtype === 'Link')).toBe(false);
+    expect(output.pages[1].annotations.some(annotation => annotation.subtype === 'Link' && annotation.url === m04LinkUrl)).toBe(true);
+
+    await expectNoGuardViolations(guards);
+    for (const [name, body] of [
+      ['M04-source-form-render', sourceForm.pages[0].png],
+      ['M04-output-form-render', output.pages[0].png],
+      ['M04-source-link-render', sourceLink.pages[0].png],
+      ['M04-output-link-render', output.pages[1].png]
+    ]) {
+      await testInfo.attach(name, { body, contentType: 'image/png' });
+    }
+    await testInfo.attach('M04-oracle-results', {
+      body: Buffer.from(JSON.stringify({
+        caseId: 'M04',
+        browserProject: testInfo.project.name,
+        durationMs: Math.round(performance.now() - startedAt),
+        processingDurationMs: Math.round(processingDurationMs),
+        statusText: await page.getByTestId('status').textContent(),
+        outputBytes: output.byteLength,
+        downloadEvents,
+        fieldVisual: { sourceDarkRatio: sourceFieldDarkRatio, outputDarkRatio: outputFieldDarkRatio, changedPixelRatio: fieldChangedRatio },
+        linkVisual: { sourceDarkRatio: sourceLinkDarkRatio, outputDarkRatio: outputLinkDarkRatio, changedPixelRatio: linkChangedRatio },
+        sourceStructure: { form: sourceForm.structure, link: sourceLink.structure },
+        outputStructure: output.structure,
+        outputPdfJsAnnotations: output.pages.map(({ annotations }) => annotations)
       }, null, 2)),
       contentType: 'application/json'
     });
