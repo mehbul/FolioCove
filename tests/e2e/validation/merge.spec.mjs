@@ -98,6 +98,15 @@ const m09ReplacementFilename = 'pvp-m09-replacement.pdf';
 const m09ValidMarker = 'PVP-M09-VALID';
 const m09ReplacementMarker = 'PVP-M09-REPLACEMENT';
 
+const m10ValidFilename = 'pvp-m10-valid.pdf';
+const m10OversizeFilename = 'pvp-m10-over-limit.pdf';
+const m10ReplacementFilename = 'pvp-m10-replacement.pdf';
+const m10ValidMarker = 'PVP-M10-VALID';
+const m10OversizeMarker = 'PVP-M10-OVER-LIMIT';
+const m10ReplacementMarker = 'PVP-M10-REPLACEMENT';
+const m10OverLimitBytes = 100 * 1024 * 1024 + 1;
+const m10LimitError = 'Private beta limit: 100 MB per file. Choose a smaller file.';
+
 const m04FormFilename = 'pvp-m04-filled-form.pdf';
 const m04LinkFilename = 'pvp-m04-link.pdf';
 const m04Value = 'PVP-M04-FILLED-VALUE';
@@ -1405,6 +1414,155 @@ test('M09 rejects a truncated PDF without downloading a partial merge', async ({
         runButtonEnabledAfterReplacement: await page.getByTestId('run-tool').isEnabled(),
         metrics: await page.evaluate(() => JSON.parse(localStorage.getItem('privypdf-beta-metrics') ?? '[]')),
         downloadEvents
+      }, null, 2)),
+      contentType: 'application/json'
+    });
+  } finally {
+    await fs.rm(fixtureDir, { recursive: true, force: true });
+  }
+});
+
+test('M10 blocks a PDF one byte over 100 MiB before parsing or downloading', async ({ page }, testInfo) => {
+  test.setTimeout(120_000);
+  const fixtureDir = await makeFixtureDir();
+
+  try {
+    const validPath = await createMarkerPdf(
+      path.join(fixtureDir, m10ValidFilename),
+      [{ marker: m10ValidMarker, width: 300, height: 500 }]
+    );
+    const oversizePath = await createMarkerPdf(
+      path.join(fixtureDir, m10OversizeFilename),
+      [{ marker: m10OversizeMarker, width: 300, height: 500 }]
+    );
+    const replacementPath = await createMarkerPdf(
+      path.join(fixtureDir, m10ReplacementFilename),
+      [{ marker: m10ReplacementMarker, width: 300, height: 500 }]
+    );
+    const oversizePrefix = await fs.readFile(oversizePath);
+    expect(oversizePrefix.subarray(0, 5).toString()).toBe('%PDF-');
+    expect((await PDFDocument.load(oversizePrefix)).getPageCount()).toBe(1);
+    const oversizeHandle = await fs.open(oversizePath, 'r+');
+    try {
+      await oversizeHandle.truncate(m10OverLimitBytes);
+    } finally {
+      await oversizeHandle.close();
+    }
+    expect((await fs.stat(oversizePath)).size).toBe(m10OverLimitBytes);
+
+    const guards = installPageGuards(page, [
+      m10ValidFilename, m10OversizeFilename, m10ReplacementFilename,
+      m10ValidMarker, m10OversizeMarker, m10ReplacementMarker
+    ]);
+    await page.addInitScript(() => {
+      localStorage.setItem('privypdf-metrics-optin', JSON.stringify(true));
+      localStorage.setItem('privypdf-beta-metrics', JSON.stringify([]));
+      window.__m10SelectedFiles = [];
+      window.__m10FileReadAttempts = [];
+      document.addEventListener('change', event => {
+        if (event.target?.id === 'picker') {
+          window.__m10SelectedFiles.push(...Array.from(event.target.files, file => ({
+            name: file.name,
+            size: file.size
+          })));
+        }
+      }, true);
+      const originalArrayBuffer = File.prototype.arrayBuffer;
+      File.prototype.arrayBuffer = function (...args) {
+        window.__m10FileReadAttempts.push({ name: this.name, size: this.size });
+        return originalArrayBuffer.apply(this, args);
+      };
+    });
+    const downloadEvents = [];
+    page.on('download', download => downloadEvents.push(download.suggestedFilename()));
+    await openTool(page, '/merge-pdf/', 'Merge PDFs');
+    await expect(page.getByTestId('tool-limit')).toHaveText(
+      'Private beta. Keep your original and inspect the output. Large, malformed or password-protected files may fail.'
+    );
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,nofollow');
+    await expect(page.getByTestId('file-input')).toHaveAttribute('accept', 'application/pdf');
+    await expect(page.locator('#metrics-optin')).toBeChecked();
+
+    await page.getByTestId('file-input').setInputFiles([validPath, oversizePath]);
+    await expect(page.locator('#files .file-name')).toHaveText([m10ValidFilename, m10OversizeFilename]);
+    await expect(page.getByTestId('run-tool')).toBeEnabled();
+    const selectedFiles = await page.evaluate(() => window.__m10SelectedFiles);
+    expect(selectedFiles).toEqual([
+      { name: m10ValidFilename, size: (await fs.stat(validPath)).size },
+      { name: m10OversizeFilename, size: m10OverLimitBytes }
+    ]);
+    await page.getByTestId('run-tool').click();
+    await expect(page.getByTestId('status')).toHaveClass(/error/);
+    await expect(page.getByTestId('status')).toHaveText(m10LimitError);
+    const limitStatusText = await page.getByTestId('status').textContent();
+    await expect(page.locator('#metrics-summary')).toContainText('0 starts · 0 completed · 0 failed');
+    expect(await page.evaluate(() => window.__m10FileReadAttempts)).toEqual([]);
+    expect(await page.evaluate(() => JSON.parse(localStorage.getItem('privypdf-beta-metrics') ?? '[]'))).toEqual([]);
+    await expect(page.getByTestId('run-tool')).toBeEnabled();
+    await expect(page.locator('#job-controls')).toBeHidden();
+    for (const selector of ['.sidebar', '#options', '#files']) {
+      await expect(page.locator(selector)).toHaveJSProperty('inert', false);
+    }
+    const noDownloadObservationStartedAt = performance.now();
+    await page.waitForTimeout(1500);
+    const noDownloadObservationDurationMs = performance.now() - noDownloadObservationStartedAt;
+    expect(downloadEvents).toEqual([]);
+    expect(await page.evaluate(() => window.__m10FileReadAttempts)).toEqual([]);
+
+    await page.locator('#files .file').nth(1).getByRole('button', { name: 'Remove file' }).click();
+    await expect(page.locator('#files .file-name')).toHaveText([m10ValidFilename]);
+    await expect(page.getByTestId('run-tool')).toBeDisabled();
+    await page.getByTestId('file-input').setInputFiles(replacementPath);
+    await expect(page.locator('#files .file-name')).toHaveText([m10ValidFilename, m10ReplacementFilename]);
+    await expect(page.getByTestId('run-tool')).toBeEnabled();
+    expect(downloadEvents).toEqual([]);
+    const [recoveryDownload] = await Promise.all([
+      page.waitForEvent('download'),
+      page.getByTestId('run-tool').click()
+    ]);
+    expect(recoveryDownload.suggestedFilename()).toBe('merged.pdf');
+    const recoveredPath = await saveDownload(recoveryDownload, fixtureDir);
+    const recoveredPdf = await inspectMergedPdf(recoveredPath);
+    expect(recoveredPdf.pdfLibPageCount).toBe(2);
+    expect(recoveredPdf.pdfJsPageCount).toBe(2);
+    expect(recoveredPdf.textByPage.map(text => text.trim())).toEqual([
+      m10ValidMarker, m10ReplacementMarker
+    ]);
+    await expect(page.getByTestId('status')).toHaveClass(/ok/);
+    await expect(page.getByTestId('status')).toContainText('Done');
+    await expect(page.locator('#metrics-summary')).toContainText('1 starts · 1 completed · 0 failed');
+    expect((await page.evaluate(() => JSON.parse(localStorage.getItem('privypdf-beta-metrics') ?? '[]'))).map(entry => entry.outcome)).toEqual([
+      'started', 'completed'
+    ]);
+    await expect(page.getByTestId('run-tool')).toBeEnabled();
+    await expect(page.locator('#job-controls')).toBeHidden();
+    expect(await page.evaluate(() => window.__m10FileReadAttempts)).toEqual([
+      { name: m10ValidFilename, size: (await fs.stat(validPath)).size },
+      { name: m10ReplacementFilename, size: (await fs.stat(replacementPath)).size }
+    ]);
+    expect(downloadEvents).toEqual(['merged.pdf']);
+    await expectNoGuardViolations(guards);
+
+    await testInfo.attach('M10-oracle-results', {
+      body: Buffer.from(JSON.stringify({
+        caseId: 'M10',
+        browserProject: testInfo.project.name,
+        limitBytes: 100 * 1024 * 1024,
+        oversizedInputBytes: m10OverLimitBytes,
+        browserSelectedFiles: selectedFiles,
+        noDownloadObservationDurationMs: Math.round(noDownloadObservationDurationMs),
+        statusClass: await page.getByTestId('status').getAttribute('class'),
+        limitStatusText,
+        recoveryStatusText: await page.getByTestId('status').textContent(),
+        filesAfterReplacement: await page.locator('#files .file-name').allTextContents(),
+        runButtonEnabledAfterReplacement: await page.getByTestId('run-tool').isEnabled(),
+        fileReadAttempts: await page.evaluate(() => window.__m10FileReadAttempts),
+        metrics: await page.evaluate(() => JSON.parse(localStorage.getItem('privypdf-beta-metrics') ?? '[]')),
+        downloadEvents,
+        recoveredOutputBytes: recoveredPdf.byteLength,
+        recoveredPdfLibPageCount: recoveredPdf.pdfLibPageCount,
+        recoveredPdfJsPageCount: recoveredPdf.pdfJsPageCount,
+        recoveredMarkers: recoveredPdf.textByPage.map(text => text.trim())
       }, null, 2)),
       contentType: 'application/json'
     });
