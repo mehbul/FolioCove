@@ -72,6 +72,14 @@ const m05AsciiMarker = 'PVP-M05-ASCII';
 const m05UnicodeText = 'Ω λ Ж Д';
 const m05GlyphBox = { x: 48, y: 224, width: 350, height: 82 };
 
+const m06BulkFilename = 'pvp-m06-50-pages.pdf';
+const m06TailFilename = 'pvp-m06-tail.pdf';
+const m06BulkMarkers = Array.from({ length: 50 }, (_, index) =>
+  `PVP-M06-P${String(index + 1).padStart(3, '0')}`
+);
+const m06TailMarker = 'PVP-M06-TAIL';
+const m06ExpectedMarkers = [...m06BulkMarkers, m06TailMarker];
+
 const m04FormFilename = 'pvp-m04-filled-form.pdf';
 const m04LinkFilename = 'pvp-m04-link.pdf';
 const m04Value = 'PVP-M04-FILLED-VALUE';
@@ -1032,6 +1040,83 @@ test('M05 preserves an embedded Unicode-font glyph region beside an ASCII page',
         sourceGlyphSha256,
         outputGlyphSha256,
         glyphPixelsIdentical: outputGlyphBytes.equals(sourceGlyphBytes)
+      }, null, 2)),
+      contentType: 'application/json'
+    });
+  } finally {
+    await fs.rm(fixtureDir, { recursive: true, force: true });
+  }
+});
+
+test('M06 merges 50 marker pages and a final page within 75 seconds, then returns idle', async ({ page }, testInfo) => {
+  test.setTimeout(100_000);
+  const fixtureDir = await makeFixtureDir();
+
+  try {
+    const bulkPath = await createMarkerPdf(
+      path.join(fixtureDir, m06BulkFilename),
+      m06BulkMarkers.map(marker => ({ marker, width: 300, height: 500 }))
+    );
+    const tailPath = await createMarkerPdf(
+      path.join(fixtureDir, m06TailFilename),
+      [{ marker: m06TailMarker, width: 300, height: 500 }]
+    );
+    const bulkSource = await PDFDocument.load(await fs.readFile(bulkPath));
+    const tailSource = await PDFDocument.load(await fs.readFile(tailPath));
+    expect(bulkSource.getPageCount()).toBe(50);
+    expect(tailSource.getPageCount()).toBe(1);
+
+    const guards = installPageGuards(page, [
+      m06BulkFilename, m06TailFilename, ...m06ExpectedMarkers
+    ]);
+    const downloadEvents = [];
+    page.on('download', download => downloadEvents.push(download.suggestedFilename()));
+    await openTool(page, '/merge-pdf/', 'Merge PDFs');
+    await expect(page.getByTestId('tool-limit')).toHaveText(
+      'Private beta. Keep your original and inspect the output. Large, malformed or password-protected files may fail.'
+    );
+    await expect(page.getByTestId('file-input')).toHaveAttribute('accept', 'application/pdf');
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,nofollow');
+
+    await page.getByTestId('file-input').setInputFiles([bulkPath, tailPath]);
+    await expect(page.getByTestId('run-tool')).toBeEnabled();
+    const processingStartedAt = performance.now();
+    const [download] = await Promise.all([
+      page.waitForEvent('download', { timeout: 75_000 }),
+      page.getByTestId('run-tool').click()
+    ]);
+    expect(download.suggestedFilename()).toBe('merged.pdf');
+    const mergedPath = await saveDownload(download, fixtureDir);
+    await expect(page.getByTestId('status')).toHaveClass(/ok/);
+    await expect(page.getByTestId('status')).toContainText('Done');
+    await expect(page.getByTestId('run-tool')).toBeEnabled();
+    await expect(page.locator('#job-controls')).toBeHidden();
+    const processingDurationMs = performance.now() - processingStartedAt;
+    expect(processingDurationMs).toBeLessThan(75_000);
+    expect(downloadEvents).toEqual(['merged.pdf']);
+
+    const output = await inspectMergedPdf(mergedPath);
+    expect(output.pdfLibPageCount).toBe(51);
+    expect(output.pdfJsPageCount).toBe(51);
+    expect(output.textByPage.map(text => text.trim())).toEqual(m06ExpectedMarkers);
+    await expectNoGuardViolations(guards);
+
+    await testInfo.attach('M06-oracle-results', {
+      body: Buffer.from(JSON.stringify({
+        caseId: 'M06',
+        browserProject: testInfo.project.name,
+        processingDurationMs: Math.round(processingDurationMs),
+        statusText: await page.getByTestId('status').textContent(),
+        runButtonEnabled: await page.getByTestId('run-tool').isEnabled(),
+        jobControlsHidden: await page.locator('#job-controls').isHidden(),
+        outputBytes: output.byteLength,
+        pdfLibPageCount: output.pdfLibPageCount,
+        pdfJsPageCount: output.pdfJsPageCount,
+        downloadEvents,
+        extractedMarkers: output.textByPage.map(text => text.trim()),
+        firstMarker: output.textByPage[0].trim(),
+        middleMarker: output.textByPage[25].trim(),
+        lastMarker: output.textByPage[50].trim()
       }, null, 2)),
       contentType: 'application/json'
     });
