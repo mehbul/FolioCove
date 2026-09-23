@@ -86,6 +86,11 @@ const m07LastFilename = 'pvp-m07-last.pdf';
 const m07FirstMarker = 'PVP-M07-FIRST';
 const m07LastMarker = 'PVP-M07-LAST';
 
+const m08FirstFilename = 'pvp-m08-first.pdf';
+const m08SecondFilename = 'pvp-m08-second.pdf';
+const m08FirstMarker = 'PVP-M08-FIRST';
+const m08SecondMarker = 'PVP-M08-SECOND';
+
 const m04FormFilename = 'pvp-m04-filled-form.pdf';
 const m04LinkFilename = 'pvp-m04-link.pdf';
 const m04Value = 'PVP-M04-FILLED-VALUE';
@@ -1232,6 +1237,79 @@ test('M07 preserves a blank middle page between marked pages', async ({ page }, 
         contentType: 'image/png'
       });
     }
+  } finally {
+    await fs.rm(fixtureDir, { recursive: true, force: true });
+  }
+});
+
+test('M08 requires two selected PDFs before merge can run', async ({ page }, testInfo) => {
+  const fixtureDir = await makeFixtureDir();
+
+  try {
+    const firstPath = await createMarkerPdf(
+      path.join(fixtureDir, m08FirstFilename),
+      [{ marker: m08FirstMarker, width: 300, height: 500 }]
+    );
+    const secondPath = await createMarkerPdf(
+      path.join(fixtureDir, m08SecondFilename),
+      [{ marker: m08SecondMarker, width: 300, height: 500 }]
+    );
+    const guards = installPageGuards(page, [
+      m08FirstFilename, m08SecondFilename, m08FirstMarker, m08SecondMarker
+    ]);
+    await page.addInitScript(() => {
+      localStorage.setItem('privypdf-metrics-optin', JSON.stringify(true));
+      localStorage.setItem('privypdf-beta-metrics', JSON.stringify([]));
+    });
+    const downloadEvents = [];
+    page.on('download', download => downloadEvents.push(download.suggestedFilename()));
+    await openTool(page, '/merge-pdf/', 'Merge PDFs');
+    await expect(page.getByTestId('tool-limit')).toHaveText(
+      'Private beta. Keep your original and inspect the output. Large, malformed or password-protected files may fail.'
+    );
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,nofollow');
+    await expect(page.getByTestId('file-input')).toHaveAttribute('accept', 'application/pdf');
+    await expect(page.locator('#metrics-optin')).toBeChecked();
+    await expect(page.locator('#metrics-summary')).toContainText('0 starts · 0 completed · 0 failed');
+
+    await page.getByTestId('file-input').setInputFiles(firstPath);
+    await expect(page.locator('#files .file-name')).toHaveText([m08FirstFilename]);
+    await expect(page.getByTestId('run-tool')).toBeDisabled();
+    const runButtonBox = await page.getByTestId('run-tool').boundingBox();
+    expect(runButtonBox).not.toBeNull();
+    await page.mouse.click(runButtonBox.x + runButtonBox.width / 2, runButtonBox.y + runButtonBox.height / 2);
+    await page.waitForTimeout(1200);
+    await expect(page.getByTestId('status')).toBeEmpty();
+    await expect(page.locator('#metrics-summary')).toContainText('0 starts · 0 completed · 0 failed');
+    expect(await page.evaluate(() => JSON.parse(localStorage.getItem('privypdf-beta-metrics') ?? '[]'))).toEqual([]);
+    expect(downloadEvents).toEqual([]);
+    await expect(page.locator('#job-controls')).toBeHidden();
+    for (const selector of ['.sidebar', '#options', '#files']) {
+      await expect(page.locator(selector)).toHaveJSProperty('inert', false);
+    }
+
+    await page.getByTestId('file-input').setInputFiles(secondPath);
+    await expect(page.locator('#files .file-name')).toHaveText([m08FirstFilename, m08SecondFilename]);
+    await expect(page.getByTestId('run-tool')).toBeEnabled();
+    await expect(page.getByTestId('status')).toBeEmpty();
+    expect(downloadEvents).toEqual([]);
+    expect(await page.evaluate(() => JSON.parse(localStorage.getItem('privypdf-beta-metrics') ?? '[]'))).toEqual([]);
+    await expectNoGuardViolations(guards);
+
+    await testInfo.attach('M08-oracle-results', {
+      body: Buffer.from(JSON.stringify({
+        caseId: 'M08',
+        browserProject: testInfo.project.name,
+        filesAfterSecondSelection: await page.locator('#files .file-name').allTextContents(),
+        runButtonEnabledAfterSecondSelection: await page.getByTestId('run-tool').isEnabled(),
+        statusText: await page.getByTestId('status').textContent(),
+        metricsSummary: await page.locator('#metrics-summary').textContent(),
+        metrics: await page.evaluate(() => JSON.parse(localStorage.getItem('privypdf-beta-metrics') ?? '[]')),
+        downloadEvents,
+        jobControlsHidden: await page.locator('#job-controls').isHidden()
+      }, null, 2)),
+      contentType: 'application/json'
+    });
   } finally {
     await fs.rm(fixtureDir, { recursive: true, force: true });
   }
