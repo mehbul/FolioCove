@@ -80,6 +80,12 @@ const m06BulkMarkers = Array.from({ length: 50 }, (_, index) =>
 const m06TailMarker = 'PVP-M06-TAIL';
 const m06ExpectedMarkers = [...m06BulkMarkers, m06TailMarker];
 
+const m07FirstFilename = 'pvp-m07-first.pdf';
+const m07BlankFilename = 'pvp-m07-blank.pdf';
+const m07LastFilename = 'pvp-m07-last.pdf';
+const m07FirstMarker = 'PVP-M07-FIRST';
+const m07LastMarker = 'PVP-M07-LAST';
+
 const m04FormFilename = 'pvp-m04-filled-form.pdf';
 const m04LinkFilename = 'pvp-m04-link.pdf';
 const m04Value = 'PVP-M04-FILLED-VALUE';
@@ -253,6 +259,13 @@ async function inspectRenderedPdf(filePath) {
         height: canvas.height,
         darkPixelRatio: darkPixels / pixelCount,
         opaquePixelRatio: opaquePixels / pixelCount,
+        nonWhitePixelRatio: (() => {
+          let nonWhite = 0;
+          for (let offset = 0; offset < imageData.length; offset += 4) {
+            if (imageData[offset] !== 255 || imageData[offset + 1] !== 255 || imageData[offset + 2] !== 255 || imageData[offset + 3] !== 255) nonWhite += 1;
+          }
+          return nonWhite / pixelCount;
+        })(),
         png: canvas.toBuffer('image/png')
       });
       page.cleanup();
@@ -1128,6 +1141,97 @@ test('M06 merges 50 marker pages and a final page within 75 seconds, then return
       }, null, 2)),
       contentType: 'application/json'
     });
+  } finally {
+    await fs.rm(fixtureDir, { recursive: true, force: true });
+  }
+});
+
+test('M07 preserves a blank middle page between marked pages', async ({ page }, testInfo) => {
+  const fixtureDir = await makeFixtureDir();
+
+  try {
+    const firstPath = await createMarkerPdf(
+      path.join(fixtureDir, m07FirstFilename),
+      [{ marker: m07FirstMarker, width: 300, height: 500 }]
+    );
+    const blankDocument = await PDFDocument.create();
+    blankDocument.addPage([300, 500]);
+    const blankPath = path.join(fixtureDir, m07BlankFilename);
+    await fs.writeFile(blankPath, await blankDocument.save());
+    const lastPath = await createMarkerPdf(
+      path.join(fixtureDir, m07LastFilename),
+      [{ marker: m07LastMarker, width: 300, height: 500 }]
+    );
+
+    const guards = installPageGuards(page, [
+      m07FirstFilename, m07BlankFilename, m07LastFilename, m07FirstMarker, m07LastMarker
+    ]);
+    const downloadEvents = [];
+    page.on('download', download => downloadEvents.push(download.suggestedFilename()));
+    await openTool(page, '/merge-pdf/', 'Merge PDFs');
+    await expect(page.getByTestId('tool-limit')).toHaveText(
+      'Private beta. Keep your original and inspect the output. Large, malformed or password-protected files may fail.'
+    );
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,nofollow');
+    await page.getByTestId('file-input').setInputFiles([firstPath, blankPath, lastPath]);
+    await expect(page.getByTestId('run-tool')).toBeEnabled();
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      page.getByTestId('run-tool').click()
+    ]);
+    expect(download.suggestedFilename()).toBe('merged.pdf');
+    const mergedPath = await saveDownload(download, fixtureDir);
+    await expect(page.getByTestId('status')).toHaveClass(/ok/);
+    await expect(page.getByTestId('status')).toContainText('Done');
+    await expect(page.getByTestId('run-tool')).toBeEnabled();
+    await expect(page.locator('#job-controls')).toBeHidden();
+    for (const selector of ['.sidebar', '#options', '#files']) {
+      await expect(page.locator(selector)).toHaveJSProperty('inert', false);
+    }
+
+    const output = await inspectRenderedPdf(mergedPath);
+    expect(output.pdfLibPageCount).toBe(3);
+    expect(output.pdfJsPageCount).toBe(3);
+    expect(output.pages.map(result => result.text.trim())).toEqual([
+      m07FirstMarker, '', m07LastMarker
+    ]);
+    expect(output.pages[1].darkPixelRatio).toBe(0);
+    expect(output.pages[1].opaquePixelRatio).toBe(1);
+    expect(output.pages[1].nonWhitePixelRatio).toBe(0);
+    expect(output.pages[0].darkPixelRatio).toBeGreaterThan(0.001);
+    expect(output.pages[2].darkPixelRatio).toBeGreaterThan(0.001);
+    expect(downloadEvents).toEqual(['merged.pdf']);
+    await expectNoGuardViolations(guards);
+
+    await testInfo.attach('M07-oracle-results', {
+      body: Buffer.from(JSON.stringify({
+        caseId: 'M07',
+        browserProject: testInfo.project.name,
+        pdfLibPageCount: output.pdfLibPageCount,
+        pdfJsPageCount: output.pdfJsPageCount,
+        extractedTextByPage: output.pages.map(result => result.text.trim()),
+        darkPixelRatioByPage: output.pages.map(result => result.darkPixelRatio),
+        opaquePixelRatioByPage: output.pages.map(result => result.opaquePixelRatio),
+        nonWhitePixelRatioByPage: output.pages.map(result => result.nonWhitePixelRatio),
+        outputBytes: output.byteLength,
+        downloadEvents,
+        statusText: await page.getByTestId('status').textContent(),
+        runButtonEnabled: await page.getByTestId('run-tool').isEnabled(),
+        jobControlsHidden: await page.locator('#job-controls').isHidden(),
+        interactiveRegionsIdle: Object.fromEntries(await Promise.all(
+          ['.sidebar', '#options', '#files'].map(async selector => [
+            selector, !(await page.locator(selector).evaluate(element => element.inert))
+          ])
+        ))
+      }, null, 2)),
+      contentType: 'application/json'
+    });
+    for (const [index, result] of output.pages.entries()) {
+      await testInfo.attach(`M07-page-${index + 1}`, {
+        body: result.png,
+        contentType: 'image/png'
+      });
+    }
   } finally {
     await fs.rm(fixtureDir, { recursive: true, force: true });
   }
