@@ -1,0 +1,277 @@
+{
+  "components": [
+    {
+      "refersTo": "button-primary",
+      "description": "Extracted from launch.css; preview uses local design tokens with literal fallbacks.",
+      "name": "Primary processing",
+      "html": "<button class=\"ds-go\">Merge PDFs</button>",
+      "kind": "button",
+      "css": ".ds-go{border:0;border-radius:8px;padding:13px 22px;background:var(--mint);color:#fff;font-size:14px;font-weight:700;min-height:46px;transition:transform 140ms var(--ease-out),background-color 140ms ease;font-family:'DM Sans',sans-serif}.ds-go:focus-visible{outline:3px solid var(--mint,#c52949);outline-offset:4px}.ds-go:hover{filter:brightness(.98)}.ds-go:active{transform:scale(.98)}@media(prefers-reduced-motion:reduce){.ds-go{transition:none;transform:none}}"
+    },
+    {
+      "description": "Extracted from launch.css; preview uses local design tokens with literal fallbacks.",
+      "css": ".ds-choose{display:inline-flex;margin-top:16px;padding:10px 18px;border:1px solid #222;border-radius:8px;background:#fff;color:#222;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif}.ds-choose:focus-visible{outline:3px solid var(--mint,#c52949);outline-offset:4px}.ds-choose:hover{filter:brightness(.98)}.ds-choose:active{transform:scale(.98)}@media(prefers-reduced-motion:reduce){.ds-choose{transition:none;transform:none}}",
+      "name": "File chooser",
+      "html": "<button class=\"ds-choose\">Choose files</button>",
+      "kind": "button"
+    },
+    {
+      "description": "Extracted from launch.css; preview uses local design tokens with literal fallbacks.",
+      "css": ".ds-tool-search{margin-bottom:18px;font-family:'DM Sans',sans-serif}.ds-tool-search:focus-visible{outline:3px solid var(--mint,#c52949);outline-offset:4px}.ds-tool-search:hover{filter:brightness(.98)}@media(prefers-reduced-motion:reduce){.ds-tool-search{transition:none;transform:none}}",
+      "name": "Search field",
+      "html": "<input class=\"ds-tool-search\" aria-label=\"Search tools\" placeholder=\"Search tools\">",
+      "kind": "input"
+    },
+    {
+      "description": "Extracted from launch.css; preview uses local design tokens with literal fallbacks.",
+      "css": ".ds-browse-category{display:flex;align-items:center;gap:9px;padding:14px 0 19px;white-space:nowrap;border:0;border-bottom:2px solid transparent;color:var(--muted);background:none;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif}.ds-browse-category:focus-visible{outline:3px solid var(--mint,#c52949);outline-offset:4px}.ds-browse-category:hover{filter:brightness(.98)}.ds-browse-category[aria-pressed=true]{color:#222;border-bottom-color:#222}@media(prefers-reduced-motion:reduce){.ds-browse-category{transition:none;transform:none}}",
+      "name": "Category navigation",
+      "html": "<button class=\"ds-browse-category\" aria-pressed=\"true\">All tools</button>",
+      "kind": "nav"
+    },
+    {
+      "description": "Extracted from launch.css; preview uses local design tokens with literal fallbacks.",
+      "css": ".ds-local-badge{font-size:11px;font-weight:600;background:#f4f4f4;border-radius:999px;padding:8px 12px;white-space:nowrap;font-family:'DM Sans',sans-serif}.ds-local-badge:focus-visible{outline:3px solid var(--mint,#c52949);outline-offset:4px}.ds-local-badge:hover{filter:brightness(.98)}@media(prefers-reduced-motion:reduce){.ds-local-badge{transition:none;transform:none}}",
+      "name": "Processing badge",
+      "html": "<span class=\"ds-local-badge\">On-device processing</span>",
+      "kind": "chip"
+    },
+    {
+      "description": "Extracted from launch.css; preview uses local design tokens with literal fallbacks.",
+      "css": ".ds-tool-cover{position:relative;display:block;aspect-ratio:1.22;overflow:hidden;border-radius:14px;background:#f3eeee;font-family:'DM Sans',sans-serif}.ds-tool-cover:focus-visible{outline:3px solid var(--mint,#c52949);outline-offset:4px}.ds-tool-cover:hover{filter:brightness(.98)}.ds-card-paper{display:block;margin:20px auto;padding:20px 10px;width:51%;background:white;color:#222;font-size:10px;transform:rotate(-6deg);box-shadow:0 9px 7px #3c29251b}@media(prefers-reduced-motion:reduce){.ds-tool-cover{transition:none;transform:none}}",
+      "name": "Tool card",
+      "html": "<a class=\"ds-tool-cover\" href=\"#workspace\" aria-label=\"Merge PDFs\"><span class=\"ds-card-paper\">Synthetic PDF preview</span></a>",
+      "kind": "card"
+    }
+  ],
+  "schemaVersion": 2,
+  "narrative": {
+    "rules": [],
+    "overview": "The owner-pinned direction makes PDF tasks immediately discoverable through a compact header, task search, category navigation and visual document cards. White surfaces, charcoal typography and restrained coral actions establish a premium consumer utility. The existing static HTML/CSS/module stack remains the implementation authority; there is no approved visual comp.\n\nThis records the built system in `src/pages/home.html`, `src/styles/launch.css` and `src/app/launch.mjs`, constrained by `PRODUCT.md`. The HTML direction contract is tools immediately → browse a task → open its workspace → select a local document → inspect the result.",
+    "donts": [
+      "Don't introduce a marketing detour, invented customer evidence or an Airbnb affiliation.",
+      "Don't replace the static stack or remove working tool states for visual polish.",
+      "Don't claim rendered contrast or comprehensive accessibility validation from the recorded checks."
+    ],
+    "dos": [
+      "Do keep task discovery and file processing immediately available.",
+      "Do preserve local assets, keyboard focus, responsive grids and explicit capability notices.",
+      "Do label synthetic document previews and distinguish processing success from output quality."
+    ],
+    "keyCharacteristics": [
+      "Immediate task discovery and a working workspace on the homepage.",
+      "Quiet surfaces, rounded document imagery and consistent Phosphor icons.",
+      "Explicit processing limits and inspectable output states."
+    ],
+    "northStar": "Airbnb-inspired consumer discovery"
+  },
+  "generatedAt": "2026-10-01T20:36:34.1385633Z",
+  "title": "Design System: FolioCove",
+  "extensions": {
+    "motion": [
+      {
+        "value": "cubic-bezier(.23,1,.32,1)",
+        "name": "ease-out",
+        "purpose": "Paper hover and button press easing"
+      },
+      {
+        "value": "240ms",
+        "name": "preview-duration",
+        "purpose": "Fine-pointer preview hover"
+      }
+    ],
+    "shadows": [
+      {
+        "value": "0 3px 12px #22222209",
+        "name": "search",
+        "purpose": "Quiet search separation"
+      },
+      {
+        "value": "0 9px 7px #3c29251b",
+        "name": "preview-paper",
+        "purpose": "Synthetic paper depth"
+      }
+    ],
+    "breakpoints": [
+      {
+        "value": "1100px",
+        "name": "compact"
+      },
+      {
+        "value": "760px",
+        "name": "mobile"
+      },
+      {
+        "value": "1441px",
+        "name": "wide"
+      }
+    ],
+    "colorMeta": {
+      "selected-bg": {
+        "note": "Illustrative synthesized ramp for the panel; not an implemented palette scale.",
+        "displayName": "selected-bg",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0.02 10)",
+          "oklch(26% 0.02 10)",
+          "oklch(38% 0.02 10)",
+          "oklch(49% 0.02 10)",
+          "oklch(61% 0.02 10)",
+          "oklch(72% 0.02 10)",
+          "oklch(84% 0.02 10)",
+          "oklch(95% 0.02 10)"
+        ]
+      },
+      "coral-hover": {
+        "note": "Illustrative synthesized ramp for the panel; not an implemented palette scale.",
+        "displayName": "coral-hover",
+        "role": "primary",
+        "tonalRamp": [
+          "oklch(15% 0.17 22)",
+          "oklch(26% 0.17 22)",
+          "oklch(38% 0.17 22)",
+          "oklch(49% 0.17 22)",
+          "oklch(61% 0.17 22)",
+          "oklch(72% 0.17 22)",
+          "oklch(84% 0.17 22)",
+          "oklch(95% 0.17 22)"
+        ]
+      },
+      "selected-ink": {
+        "note": "Illustrative synthesized ramp for the panel; not an implemented palette scale.",
+        "displayName": "selected-ink",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0.17 15)",
+          "oklch(26% 0.17 15)",
+          "oklch(38% 0.17 15)",
+          "oklch(49% 0.17 15)",
+          "oklch(61% 0.17 15)",
+          "oklch(72% 0.17 15)",
+          "oklch(84% 0.17 15)",
+          "oklch(95% 0.17 15)"
+        ]
+      },
+      "line": {
+        "note": "Illustrative synthesized ramp for the panel; not an implemented palette scale.",
+        "displayName": "line",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "success": {
+        "note": "Illustrative synthesized ramp for the panel; not an implemented palette scale.",
+        "displayName": "success",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0.07 151)",
+          "oklch(26% 0.07 151)",
+          "oklch(38% 0.07 151)",
+          "oklch(49% 0.07 151)",
+          "oklch(61% 0.07 151)",
+          "oklch(72% 0.07 151)",
+          "oklch(84% 0.07 151)",
+          "oklch(95% 0.07 151)"
+        ]
+      },
+      "danger": {
+        "note": "Illustrative synthesized ramp for the panel; not an implemented palette scale.",
+        "displayName": "danger",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0.17 20)",
+          "oklch(26% 0.17 20)",
+          "oklch(38% 0.17 20)",
+          "oklch(49% 0.17 20)",
+          "oklch(61% 0.17 20)",
+          "oklch(72% 0.17 20)",
+          "oklch(84% 0.17 20)",
+          "oklch(95% 0.17 20)"
+        ]
+      },
+      "coral": {
+        "note": "Illustrative synthesized ramp for the panel; not an implemented palette scale.",
+        "displayName": "coral",
+        "role": "primary",
+        "tonalRamp": [
+          "oklch(15% 0.18 22)",
+          "oklch(26% 0.18 22)",
+          "oklch(38% 0.18 22)",
+          "oklch(49% 0.18 22)",
+          "oklch(61% 0.18 22)",
+          "oklch(72% 0.18 22)",
+          "oklch(84% 0.18 22)",
+          "oklch(95% 0.18 22)"
+        ]
+      },
+      "muted": {
+        "note": "Illustrative synthesized ramp for the panel; not an implemented palette scale.",
+        "displayName": "muted",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "soft-surface": {
+        "note": "Illustrative synthesized ramp for the panel; not an implemented palette scale.",
+        "displayName": "soft-surface",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "ink": {
+        "note": "Illustrative synthesized ramp for the panel; not an implemented palette scale.",
+        "displayName": "ink",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "white": {
+        "note": "Illustrative synthesized ramp for the panel; not an implemented palette scale.",
+        "displayName": "white",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      }
+    }
+  }
+}

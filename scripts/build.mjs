@@ -66,6 +66,19 @@ await fs.writeFile(appBundlePath, cleanGeneratedText(appBundle));
 
 await copyFile(path.join(src, 'app', 'launch.mjs'), path.join(dist, 'launch.mjs'));
 await copyFile(path.join(src, 'styles', 'launch.css'), path.join(dist, 'launch.css'));
+await fs.cp(path.join(src, 'static', 'previews'), path.join(dist, 'previews'), {recursive: true});
+for (const weight of [400, 500, 600, 700]) {
+  await copyFile(path.join(root, 'node_modules', '@fontsource', 'dm-sans', 'files', `dm-sans-latin-${weight}-normal.woff2`), path.join(dist, 'assets', 'fonts', `dm-sans-${weight}.woff2`));
+}
+const designIcons = ['files', 'file-pdf', 'squares-four', 'pencil-simple', 'scan', 'shield-check', 'magnifying-glass', 'upload-simple', 'arrow-up-right', 'arrows-in-simple', 'signature', 'text-aa', 'scissors', 'stack', 'camera', 'eye', 'heart', 'arrows-clockwise'];
+for (const icon of designIcons) {
+  const assetName = icon === 'upload-simple' ? 'choose-files' : icon;
+  await copyFile(path.join(root, 'node_modules', '@phosphor-icons', 'core', 'assets', 'regular', `${icon}.svg`), path.join(dist, 'assets', 'icons', `${assetName}.svg`));
+}
+const brandIcon = await fs.readFile(path.join(dist, 'assets', 'icons', 'files.svg'), 'utf8');
+await writeFile(path.join(dist, 'assets', 'icons', 'files-coral.svg'), brandIcon.replaceAll('currentColor', '#c52949'));
+await copyFile(path.join(root, 'node_modules', '@fontsource', 'dm-sans', 'LICENSE'), path.join(dist, 'assets', 'licenses', 'dm-sans.txt'));
+await copyFile(path.join(root, 'node_modules', '@phosphor-icons', 'core', 'LICENSE'), path.join(dist, 'assets', 'licenses', 'phosphor.txt'));
 await copyFile(path.join(src, 'static', 'manifest.webmanifest'), path.join(dist, 'manifest.webmanifest'));
 await copyFile(path.join(src, 'static', 'sw.js'), path.join(dist, 'sw.js'));
 await copyFile(path.join(src, 'static', 'tester-results.csv'), path.join(dist, 'tester-results.csv'));
