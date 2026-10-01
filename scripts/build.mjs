@@ -52,9 +52,12 @@ await esbuild({
   format: 'esm',
   target: ['es2022'],
   platform: 'browser',
-  external: ['/launch.mjs'],
+  external: ['/launch.mjs', '/assets/extended.js'],
   logLevel: 'silent'
 });
+
+for (const name of ['extended', 'qpdf-worker']) await esbuild({absWorkingDir:root,entryPoints:[path.join(src,'app',`${name}.mjs`)],outfile:`dist/assets/${name}.js`,bundle:true,format:'esm',target:['es2022'],platform:'browser',external:['node:*'],logLevel:'silent'});
+await copyFile(path.join(root,'node_modules','pdfstudio','dist','wasm','qpdf.wasm'),path.join(dist,'assets','qpdf.wasm'));
 
 const appBundlePath = path.join(dist, 'assets', 'app.js');
 let appBundle = await fs.readFile(appBundlePath, 'utf8');

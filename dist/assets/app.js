@@ -114238,8 +114238,9 @@ go.addEventListener("click", async (e) => {
       if (current === "edit") {
         const text = $2("edit-text").value.trim();
         if (!text) throw Error("Enter text to add.");
-        const font = await doc.embedFont(StandardFonts.Helvetica);
-        p.drawText(text, { x: p.getWidth() * ($2("edit-x").value / 100), y: p.getHeight() * (1 - $2("edit-y").value / 100), size: 12, font, color: rgb(0.05, 0.08, 0.12) });
+        const font = await doc.embedFont(StandardFonts[$2("edit-font")?.value || "Helvetica"]), hex = $2("edit-color")?.value || "#0d141f", size = Number($2("edit-size")?.value || 12);
+        if (!Number.isFinite(size) || size < 6 || size > 120) throw Error("Choose a font size between 6 and 120.");
+        p.drawText(text, { x: p.getWidth() * ($2("edit-x").value / 100), y: p.getHeight() * (1 - $2("edit-y").value / 100), size, font, color: rgb(parseInt(hex.slice(1, 3), 16) / 255, parseInt(hex.slice(3, 5), 16) / 255, parseInt(hex.slice(5, 7), 16) / 255) });
         download(await doc.save(), "edited.pdf");
       } else {
         const name = $2("sign-name").value.trim();
@@ -114840,6 +114841,8 @@ go.addEventListener("click", async () => {
 });
 var { initLaunch } = await import("/launch.mjs");
 initLaunch({ configs, select: setupTool, current: () => current, files: () => selected, render });
+var { initExtended } = await import("/assets/extended.js");
+initExtended({ configs, categories, select: setupTool, current: () => current, files: () => selected, go, status, options, downloadBlob, loadPdfJs, extractPdfText, advancedOptions });
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(() => {
 });
 if (document.modelContext?.registerTool) {

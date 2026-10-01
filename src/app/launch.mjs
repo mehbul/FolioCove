@@ -63,7 +63,7 @@ export function initLaunch(api){
  }
  document.querySelectorAll('.tool span').forEach(span=>{const id=span.parentElement.dataset.tool;span.replaceChildren(icon(previews[id]?.[5]||'file-pdf'))});
  let browseCategory='all';
- const groups={organize:'Organize',edit:'Edit & sign',scan:'Scan & OCR',secure:'Privacy'};
+ const groups={organize:'Organize',edit:'Edit & sign',scan:'Scan & OCR',secure:'Privacy',convert:'Convert',intelligence:'Intelligence'};
  const applyBrowse=()=>{const q=$('discover-search').value.trim().toLowerCase();let count=0;grid.querySelectorAll('a').forEach(a=>{const show=(browseCategory==='all'||a.dataset.group===groups[browseCategory])&&a.dataset.search.includes(q);a.hidden=!show;if(show)count++});$('empty-browse').hidden=count>0};
  document.querySelectorAll('.browse-category').forEach(button=>button.addEventListener('click',()=>{browseCategory=button.dataset.category;document.querySelectorAll('.browse-category').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));applyBrowse()}));
  $('discover-search').addEventListener('input',()=>{applyBrowse();$('tool-search').value=$('discover-search').value;$('tool-search').dispatchEvent(new Event('input',{bubbles:true}))});
@@ -99,3 +99,4 @@ export function initLaunch(api){
  window.addEventListener('beforeunload',e=>{if(running){e.preventDefault();e.returnValue=''}});
  if(!window.isSecureContext){$('boot-state').hidden=false;$('boot-state').textContent='Some tools require HTTPS and may not work in this context.'}
 }
+
