@@ -100,7 +100,7 @@ Use 8px corners for controls/file rows, 12px for the dashed upload zone, 14px fo
 
 - **Discovery cards:** 35 linked core and extended tasks; decorative synthetic preview papers, title, short description and Phosphor action marker. Cards navigate to a tool route. Capability badges include English, Experimental and Read only. `/previews/` imagery is synthetic PDF preview material, not customer documents or proof of actual output quality; retain the visible provenance note.
 - **Categories and search:** All tools, Organize, Edit & sign, Scan & OCR and Privacy buttons expose `aria-pressed`. Category selection and case-insensitive title/description substring search intersect. Search also forwards its query to workspace tool search. An empty result message appears when no discovery card matches.
-- **Workspace catalog:** Defaults to all 88 tools, with popular-tool/category filters and local recent/favorite controls retained. The sidebar prioritizes the expanded conversion, forms, editing and password tools. Active tools use the selected palette and weight 700. Phosphor SVG assets are local; decorative images use empty alt text.
+- **Workspace catalog:** Defaults to all 88 tools, with everyday-tool/category filters and local recent/favorite controls retained. The sidebar prioritizes the expanded conversion, forms, editing and password tools. Active tools use the selected palette and weight 700. Phosphor SVG assets are local; decorative images use empty alt text.
 - **Upload and processing:** Dashed drop zone supports file selection, drag feedback and visible keyboard focus. Selected files use compact rows with removal controls; options appear for the current task. Primary processing starts disabled until usable. Running jobs expose progress/cancel and make sidebar/options/files inert; errors and completion appear in textual status. Cancel confirms a reload that clears unsaved selections.
 - **Trust and limits:** On-device badge and task-specific notices remain adjacent to processing. Redaction stays experimental and verified sanitization stays disabled. Do not turn these into broad security certification claims.
 - **Keyboard and motion:** Skip link targets the workspace. Interactive elements receive a 3px coral focus outline with 4px offset; search uses a focus-within border/ring and upload uses focus-within outline. Reduced-motion preference removes transitions/animations, smooth scrolling and active transforms. Hidden content is removed from layout.
@@ -125,6 +125,7 @@ Current verification: desktop 1440×1080 and mobile 390×844 inspection found 35
 - Don't introduce a marketing detour, invented customer evidence or an Airbnb affiliation.
 - Don't replace the static stack or remove working tool states for visual polish.
 - Don't claim rendered contrast or comprehensive accessibility validation from the recorded checks.
+
 
 
 
