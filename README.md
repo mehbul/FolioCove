@@ -31,7 +31,7 @@ The dev server serves `dist/` at `http://localhost:4173/`. Re-run `npm run build
 npm run build
 ```
 
-The build regenerates `dist/`, including the homepage, the 10 core tool routes, the 5 beta/legal documentation routes, local browser dependency bundles, the service worker, manifest, and tester CSV template.
+The build regenerates `dist/`, including the homepage, the 10 core tool routes, the 5 beta/legal documentation routes, static tool directory and AI-readable knowledge files, local browser dependency bundles, the service worker, manifest, and tester CSV template.
 
 ## Testing
 
@@ -91,3 +91,13 @@ Build-time browser dependencies and PDF.js worker/decoder assets are bundled int
 ## Limitations
 
 This private beta is not ready for public launch. The automated browser suite verifies that selected synthetic workflows complete and produce parseable downloads; it does not prove visual fidelity, OCR accuracy, compression quality, redaction security, full sanitization, camera hardware behavior, mobile behavior, Safari compatibility, or human task completion. Keep originals and independently inspect every output.
+
+## AI-friendly project and website
+
+Start coding-agent work with AGENTS.md. Tool definitions live in src/content/tools.mjs and drive both runtime labels and generated capabilities, so browser behavior and discovery documents share their source. Site identity and current private-beta status live in src/content/site.mjs.
+
+The build writes /tools/ (static readable directory), /capabilities.json, /docs/capabilities.md and /llms.txt. They describe product capabilities only, never selected documents. Core routes have distinct descriptions, canonical URLs and JSON-LD; information pages have WebPage metadata. Extended tools can be opened with /?tool=ID, validated against the registry.
+
+Run node scripts/test-ai-readiness.mjs after building. The short mobile/Safari-engine pilot remains available through playwright.pilot.config.mjs; physical devices and actual Safari are a separate uncompleted gate.
+
+The site is still owner-private. All pages remain noindex,nofollow, robots.txt disallows crawling, and no public sitemap is emitted. AI-readable files do not bypass sign-in or guarantee search ranking/citations. On a future authorized public launch, verify contact/policies/device results, change hosting access, update indexing controls and generate a public sitemap together. Do not treat opening crawler access as permission for training on private documents.

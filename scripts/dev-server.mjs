@@ -9,6 +9,8 @@ const port = Number(process.env.PORT || 4173);
 const host = process.env.HOST || '127.0.0.1';
 
 const types = new Map([
+  ['.txt', 'text/plain; charset=utf-8'],
+  ['.md', 'text/plain; charset=utf-8'],
   ['.css', 'text/css; charset=utf-8'],
   ['.csv', 'text/csv; charset=utf-8'],
   ['.html', 'text/html; charset=utf-8'],

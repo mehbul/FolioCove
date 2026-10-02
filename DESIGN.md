@@ -137,3 +137,7 @@ The five information routes use the shared renderer in scripts/build.mjs and src
 ### Visible processing limits
 
 A quiet capability notice appears before the workspace on home/tool routes. Tool-specific limits appear before processing actions; AI summaries explicitly identify browser/model dependence and the local Smart summary alternative. Redaction remains experimental and verified sanitization/PDF-A unavailable. These notices stay in normal reading order at mobile sizes.
+
+### Agent-readable discovery
+
+The /tools/ route extends the existing reading-page shell with a semantic, no-JavaScript directory of native disclosure rows. Visible capability boundaries and links share the app registry. Informational metadata and knowledge files are generated during the build. Search discovery stays disabled for the private beta.

@@ -1,11 +1,11 @@
+import {extendedTools} from '../content/tools.mjs';
 import {localModelStep} from './local-ai.mjs';
 import {createCatalogCard,catalogIcon} from './catalog-design.mjs';
 import {initDesignUI} from './design-ui.mjs';
 export function initExtended(api) {
  initDesignUI();
  const {configs,categories,select,current,files,go,status,options,downloadBlob,loadPdfJs,extractPdfText,advancedOptions}=api;
- const tools={protect:['Protect PDF','Encrypt a PDF with an AES-256 password on this device.'],unlock:['Unlock PDF','Remove encryption using the document password.'],lossless:['Lossless PDF compression','Optimize PDF structure without rasterizing text. Size reduction varies.'],recover:['Recover damaged PDF','Attempt local cross-reference and object recovery. Some damaged files cannot be recovered.'],jpg:['PDF to JPG','Export each page as a JPG in a ZIP file.'],docx:['PDF to Word (DOCX)','Export selectable text into an editable DOCX. Original layouts and images are not preserved.'],xlsx:['PDF to Excel (XLSX)','Export extracted text rows into a real workbook, one sheet per page. Table reconstruction is approximate.'],pptx:['PDF to PowerPoint','Preserve each page visually as a slide image. Slide content is not editable.']};
- Object.assign(tools,{createform:['Create PDF forms','Add a named text field, checkbox, dropdown, or radio group to a PDF. Existing form fields are preserved.'],drawsign:['Draw signature / freehand','Draw an ink signature or annotation and place it on a page. This is a visual mark, not a digital certificate.'],imagewatermark:['Image watermark','Place a PNG or JPG watermark on every PDF page.'],shapes:['Add PDF shapes','Add a colored rectangle, ellipse, or line to a page.'],visualcompare:['Compare PDFs visually','View corresponding pages side by side locally. This does not automatically identify every difference.'],aisummary:['AI Summarizer','Summarize selectable text using the browser’s on-device AI, when supported. A model download may be required.']});
+ const tools=extendedTools;
  for(const [id,[title,copy]] of Object.entries(tools)) {
   configs[id]={title,copy,accept:'application/pdf',multiple:id==='visualcompare',drop:id==='visualcompare'?'Drop exactly two PDFs here':'Drop one PDF here',action:'Process & download'};
   const button=document.createElement('button');button.className='tool';button.dataset.tool=id;

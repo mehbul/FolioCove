@@ -1,0 +1,1177 @@
+{
+  "schemaVersion": 1,
+  "name": "FolioCove",
+  "website": "https://foliocove-tools.mehbulislam81.chatgpt.site",
+  "releaseStatus": "private-beta",
+  "processing": "on-device",
+  "documentUploadEndpoint": null,
+  "maxFileBytes": 104857600,
+  "supportEmail": null,
+  "unavailable": [
+    "Verified secure sanitization",
+    "Validated PDF/A conversion",
+    "Remote signature requests",
+    "Automatic form detection",
+    "Layout-preserving translation"
+  ],
+  "externalResources": [
+    "English OCR language models",
+    "Browser-managed AI summary and translation models"
+  ],
+  "tools": [
+    {
+      "id": "merge",
+      "name": "Merge PDFs",
+      "description": "Combine multiple PDFs in the order you add them.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/merge-pdf/",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": true,
+      "status": "implemented",
+      "limitations": "Combine multiple PDFs in the order you add them.",
+      "processing": "on-device"
+    },
+    {
+      "id": "split",
+      "name": "Extract pages",
+      "description": "Create a new PDF from only the pages you need.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/split-pdf/",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Create a new PDF from only the pages you need.",
+      "processing": "on-device"
+    },
+    {
+      "id": "rotate",
+      "name": "Rotate PDF",
+      "description": "Rotate every page clockwise while keeping quality intact.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=rotate",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Rotate every page clockwise while keeping quality intact.",
+      "processing": "on-device"
+    },
+    {
+      "id": "images",
+      "name": "Images to PDF",
+      "description": "Turn JPG and PNG images into one clean PDF.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=images",
+      "inputMimeTypes": [
+        "image/jpeg",
+        "image/png"
+      ],
+      "multipleFiles": true,
+      "status": "implemented",
+      "limitations": "Turn JPG and PNG images into one clean PDF.",
+      "processing": "on-device"
+    },
+    {
+      "id": "watermark",
+      "name": "Add watermark",
+      "description": "Stamp custom text across every page without uploading.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=watermark",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Stamp custom text across every page without uploading.",
+      "processing": "on-device"
+    },
+    {
+      "id": "numbers",
+      "name": "Add page numbers",
+      "description": "Add clean, centered numbering to every page.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=numbers",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Add clean, centered numbering to every page.",
+      "processing": "on-device"
+    },
+    {
+      "id": "clean",
+      "name": "Clear PDF info fields",
+      "description": "Clear standard title, author, subject, keyword and software fields only. Hidden data is not removed.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=clean",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Clear standard title, author, subject, keyword and software fields only. Hidden data is not removed.",
+      "processing": "on-device"
+    },
+    {
+      "id": "inspect",
+      "name": "Inspect PDF",
+      "description": "Check page count, dimensions and hidden document details.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=inspect",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Check page count, dimensions and hidden document details.",
+      "processing": "on-device"
+    },
+    {
+      "id": "quick",
+      "name": "Quick Action",
+      "description": "Describe several changes once. FolioCove runs them locally in one pass.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=quick",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Describe several changes once. FolioCove runs them locally in one pass.",
+      "processing": "on-device"
+    },
+    {
+      "id": "organize",
+      "name": "Organize pages",
+      "description": "Reorder, remove or duplicate pages with one simple sequence.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=organize",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Reorder, remove or duplicate pages with one simple sequence.",
+      "processing": "on-device"
+    },
+    {
+      "id": "crop",
+      "name": "Crop margins",
+      "description": "Trim whitespace from every page by a precise percentage.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=crop",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Trim whitespace from every page by a precise percentage.",
+      "processing": "on-device"
+    },
+    {
+      "id": "flatten",
+      "name": "Flatten forms",
+      "description": "Lock filled form values into the PDF for reliable sharing.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=flatten",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Lock filled form values into the PDF for reliable sharing.",
+      "processing": "on-device"
+    },
+    {
+      "id": "topng",
+      "name": "PDF page to PNG",
+      "description": "Export any PDF page as a crisp, high-resolution PNG.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=topng",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Export any PDF page as a crisp, high-resolution PNG.",
+      "processing": "on-device"
+    },
+    {
+      "id": "metadata",
+      "name": "Edit metadata",
+      "description": "Set the title, author and subject stored inside your PDF.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=metadata",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Set the title, author and subject stored inside your PDF.",
+      "processing": "on-device"
+    },
+    {
+      "id": "header",
+      "name": "Header & footer",
+      "description": "Add consistent document labels across every page.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=header",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Add consistent document labels across every page.",
+      "processing": "on-device"
+    },
+    {
+      "id": "reverse",
+      "name": "Reverse page order",
+      "description": "Flip the entire document from last page to first.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=reverse",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Flip the entire document from last page to first.",
+      "processing": "on-device"
+    },
+    {
+      "id": "oddeven",
+      "name": "Odd / even pages",
+      "description": "Create a new PDF containing only odd or even pages.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=oddeven",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Create a new PDF containing only odd or even pages.",
+      "processing": "on-device"
+    },
+    {
+      "id": "interleave",
+      "name": "Interleave PDFs",
+      "description": "Alternate pages from two PDFs—perfect for front/back scans.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=interleave",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": true,
+      "status": "implemented",
+      "limitations": "Alternate pages from two PDFs—perfect for front/back scans.",
+      "processing": "on-device"
+    },
+    {
+      "id": "resize",
+      "name": "Resize pages",
+      "description": "Fit every page cleanly onto A4 or US Letter paper.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=resize",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Fit every page cleanly onto A4 or US Letter paper.",
+      "processing": "on-device"
+    },
+    {
+      "id": "twoup",
+      "name": "Two-up layout",
+      "description": "Place two document pages side by side on each sheet.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=twoup",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Place two document pages side by side on each sheet.",
+      "processing": "on-device"
+    },
+    {
+      "id": "bates",
+      "name": "Bates numbering",
+      "description": "Add a prefixed, zero-padded identifier to every page.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=bates",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Add a prefixed, zero-padded identifier to every page.",
+      "processing": "on-device"
+    },
+    {
+      "id": "compress",
+      "name": "Compress PDF",
+      "description": "Shrink a PDF locally by rebuilding pages at a chosen quality.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=compress",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Pages become images. Text selection, forms and accessibility information are lost.",
+      "processing": "on-device"
+    },
+    {
+      "id": "allpng",
+      "name": "All pages to PNG",
+      "description": "Export every PDF page into one convenient ZIP file.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=allpng",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Export every PDF page into one convenient ZIP file.",
+      "processing": "on-device"
+    },
+    {
+      "id": "chunk",
+      "name": "Split into chunks",
+      "description": "Break a long PDF into smaller PDFs inside one ZIP.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=chunk",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Break a long PDF into smaller PDFs inside one ZIP.",
+      "processing": "on-device"
+    },
+    {
+      "id": "blank",
+      "name": "Insert blank page",
+      "description": "Add a blank A4 page at the end of your document.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=blank",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Add a blank A4 page at the end of your document.",
+      "processing": "on-device"
+    },
+    {
+      "id": "text",
+      "name": "Extract text",
+      "description": "Save selectable PDF text as a clean TXT file.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=text",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Save selectable PDF text as a clean TXT file.",
+      "processing": "on-device"
+    },
+    {
+      "id": "markdown",
+      "name": "PDF to Markdown",
+      "description": "Turn selectable PDF text into page-structured Markdown.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=markdown",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Turn selectable PDF text into page-structured Markdown.",
+      "processing": "on-device"
+    },
+    {
+      "id": "stats",
+      "name": "Reading statistics",
+      "description": "Count words, characters and estimated reading time locally.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=stats",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Count words, characters and estimated reading time locally.",
+      "processing": "on-device"
+    },
+    {
+      "id": "datestamp",
+      "name": "Date stamp",
+      "description": "Add today’s date to the bottom of every PDF page.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=datestamp",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Add today’s date to the bottom of every PDF page.",
+      "processing": "on-device"
+    },
+    {
+      "id": "annotations",
+      "name": "Remove annotations",
+      "description": "Remove comments, links and interactive annotations from every page.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=annotations",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Remove comments, links and interactive annotations from every page.",
+      "processing": "on-device"
+    },
+    {
+      "id": "margins",
+      "name": "Add print margins",
+      "description": "Place each page on a larger white canvas for safer printing.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=margins",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Place each page on a larger white canvas for safer printing.",
+      "processing": "on-device"
+    },
+    {
+      "id": "grayscale",
+      "name": "Grayscale PDF",
+      "description": "Create a black-and-white friendly copy for printing and archiving.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=grayscale",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Create a black-and-white friendly copy for printing and archiving.",
+      "processing": "on-device"
+    },
+    {
+      "id": "findtext",
+      "name": "Find text",
+      "description": "Find every page containing a word or phrase without uploading.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=findtext",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Find every page containing a word or phrase without uploading.",
+      "processing": "on-device"
+    },
+    {
+      "id": "compare",
+      "name": "Compare PDFs",
+      "description": "Compare page text from two PDFs and identify changed pages.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=compare",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": true,
+      "status": "implemented",
+      "limitations": "Compare page text from two PDFs and identify changed pages.",
+      "processing": "on-device"
+    },
+    {
+      "id": "checksum",
+      "name": "File fingerprint",
+      "description": "Generate a SHA-256 fingerprint to verify document integrity.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=checksum",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Generate a SHA-256 fingerprint to verify document integrity.",
+      "processing": "on-device"
+    },
+    {
+      "id": "tojson",
+      "name": "PDF to JSON",
+      "description": "Export page-by-page text as structured JSON for automation.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=tojson",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Export page-by-page text as structured JSON for automation.",
+      "processing": "on-device"
+    },
+    {
+      "id": "removeblank",
+      "name": "Remove blank pages",
+      "description": "Visually detect and remove empty pages from a PDF.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=removeblank",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Visually detect and remove empty pages from a PDF.",
+      "processing": "on-device"
+    },
+    {
+      "id": "ocr",
+      "name": "OCR scanned PDF",
+      "description": "Recognize English text from scanned pages and download it as TXT.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=ocr",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "English OCR only. Results can contain recognition errors. Large scans can exhaust browser memory.",
+      "processing": "on-device"
+    },
+    {
+      "id": "contrast",
+      "name": "Enhance scanned PDF",
+      "description": "Increase grayscale contrast for clearer printing and reading.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=contrast",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Increase grayscale contrast for clearer printing and reading.",
+      "processing": "on-device"
+    },
+    {
+      "id": "trimheads",
+      "name": "Remove headers & footers",
+      "description": "Cover the outer header and footer bands on every page.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=trimheads",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Covers regions with white rectangles; underlying text remains recoverable. This is NOT redaction.",
+      "processing": "on-device"
+    },
+    {
+      "id": "spreads",
+      "name": "Split scanned spreads",
+      "description": "Turn each landscape two-page scan into separate left and right pages.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=spreads",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Turn each landscape two-page scan into separate left and right pages.",
+      "processing": "on-device"
+    },
+    {
+      "id": "edit",
+      "name": "Edit PDF",
+      "description": "Place new text precisely on any page.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/edit-pdf/",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Adds text overlays only; it does not edit existing PDF text. Standard fonts have limited language support.",
+      "processing": "on-device"
+    },
+    {
+      "id": "sign",
+      "name": "Sign PDF",
+      "description": "Add a typed signature and date to any page.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/sign-pdf/",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Adds a typed visual mark only. No cryptographic signature, identity verification, signature requests or audit trail.",
+      "processing": "on-device"
+    },
+    {
+      "id": "redact",
+      "name": "Secure redact",
+      "description": "Permanently rasterize and black out a selected page region.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/redact-pdf/",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "experimental",
+      "limitations": "Experimental raster redaction. The requested page and region are validated before output; verify the downloaded result independently before sharing sensitive material.",
+      "processing": "on-device"
+    },
+    {
+      "id": "fillform",
+      "name": "Fill PDF forms",
+      "description": "Fill named text, checkbox and choice fields from one simple list.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=fillform",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Fill named text, checkbox and choice fields from one simple list.",
+      "processing": "on-device"
+    },
+    {
+      "id": "searchableocr",
+      "name": "Searchable OCR PDF",
+      "description": "Create a searchable scanned PDF with an invisible English text layer.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/ocr-pdf/",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "English OCR only. Invisible text is not precisely aligned with the scan. Check recognition accuracy; OCR language models may need internet to load.",
+      "processing": "on-device"
+    },
+    {
+      "id": "repair",
+      "name": "Repair PDF",
+      "description": "Rebuild readable objects and save a clean PDF copy.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=repair",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Resaves PDFs the parser can already read. Severely corrupted or encrypted PDFs may fail.",
+      "processing": "on-device"
+    },
+    {
+      "id": "summary",
+      "name": "Smart summary",
+      "description": "Create a private extractive summary without sending text to an AI server.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=summary",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Extractive sentence ranking, not an AI-written summary.",
+      "processing": "on-device"
+    },
+    {
+      "id": "translate",
+      "name": "Translate PDF text",
+      "description": "Translate extracted text with your browser’s on-device translation engine when available.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=translate",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "browser-dependent",
+      "limitations": "Requires the browser Translator API and supported language models; not available in every browser. English source text only; TXT output.",
+      "processing": "on-device"
+    },
+    {
+      "id": "htmltopdf",
+      "name": "HTML to PDF",
+      "description": "Convert an HTML or text document into a clean, printable PDF.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=htmltopdf",
+      "inputMimeTypes": [
+        "text/html",
+        "text/plain"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Extracts local HTML text only; no webpage URL fetching, CSS layout or embedded images.",
+      "processing": "on-device"
+    },
+    {
+      "id": "wordtopdf",
+      "name": "Word to PDF",
+      "description": "Convert DOCX text into a private browser-generated PDF.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=wordtopdf",
+      "inputMimeTypes": [
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "DOCX text extraction only; layout, images and tables are not preserved.",
+      "processing": "on-device"
+    },
+    {
+      "id": "exceltopdf",
+      "name": "Excel to PDF",
+      "description": "Render spreadsheet cell values into paginated PDF tables.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=exceltopdf",
+      "inputMimeTypes": [
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/vnd.ms-excel"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Exports spreadsheet cell values as text. Formatting, charts and formula layout are not preserved.",
+      "processing": "on-device"
+    },
+    {
+      "id": "ppttopdf",
+      "name": "PowerPoint to PDF",
+      "description": "Extract slide text and create one clean PDF page per slide.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=ppttopdf",
+      "inputMimeTypes": [
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Exports slide text only; visual slide layout and graphics are not preserved.",
+      "processing": "on-device"
+    },
+    {
+      "id": "pdftoword",
+      "name": "PDF to Word",
+      "description": "Export selectable PDF text as an editable Word-compatible document.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=pdftoword",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Exports text as HTML in a .doc wrapper, not a native DOCX conversion. Word may show a format warning.",
+      "processing": "on-device"
+    },
+    {
+      "id": "pdftoexcel",
+      "name": "PDF to Excel",
+      "description": "Export page text into an editable spreadsheet with one row per line.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=pdftoexcel",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Exports text to CSV, not native XLSX or accurate table reconstruction. Spreadsheet-triggering values are prefixed as text.",
+      "processing": "on-device"
+    },
+    {
+      "id": "duplicate",
+      "name": "Duplicate pages",
+      "description": "Repeat selected pages immediately after their originals.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=duplicate",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Repeat selected pages immediately after their originals.",
+      "processing": "on-device"
+    },
+    {
+      "id": "deletepages",
+      "name": "Delete pages",
+      "description": "Remove selected pages and keep everything else.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=deletepages",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Remove selected pages and keep everything else.",
+      "processing": "on-device"
+    },
+    {
+      "id": "splitcustom",
+      "name": "Split every N pages",
+      "description": "Create a ZIP containing consistently sized PDF chunks.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=splitcustom",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Create a ZIP containing consistently sized PDF chunks.",
+      "processing": "on-device"
+    },
+    {
+      "id": "booklet",
+      "name": "Booklet layout",
+      "description": "Impose pages for double-sided folding and saddle-stitch printing.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=booklet",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Impose pages for double-sided folding and saddle-stitch printing.",
+      "processing": "on-device"
+    },
+    {
+      "id": "fourup",
+      "name": "Four-up handout",
+      "description": "Place four document pages on each landscape sheet.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=fourup",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Place four document pages on each landscape sheet.",
+      "processing": "on-device"
+    },
+    {
+      "id": "stamp",
+      "name": "Approval stamp",
+      "description": "Add a dated approval, review or draft stamp to every page.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=stamp",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Add a dated approval, review or draft stamp to every page.",
+      "processing": "on-device"
+    },
+    {
+      "id": "qrstamp",
+      "name": "QR code stamp",
+      "description": "Place a scannable URL or reference code onto every page.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=qrstamp",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Place a scannable URL or reference code onto every page.",
+      "processing": "on-device"
+    },
+    {
+      "id": "sanitize",
+      "name": "Sanitization unavailable",
+      "description": "Verified hidden-data removal is paused until output cleanup can be independently proven.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=sanitize",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "unavailable",
+      "limitations": "Verified secure sanitization is currently unavailable. This tool will not create a PDF download.",
+      "processing": "on-device"
+    },
+    {
+      "id": "contacts",
+      "name": "Extract contacts",
+      "description": "Find email addresses, phone numbers and web links in selectable text.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=contacts",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Find email addresses, phone numbers and web links in selectable text.",
+      "processing": "on-device"
+    },
+    {
+      "id": "deskew",
+      "name": "Deskew scans",
+      "description": "Correct a consistent small tilt across scanned pages.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=deskew",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Correct a consistent small tilt across scanned pages.",
+      "processing": "on-device"
+    },
+    {
+      "id": "visualorganize",
+      "name": "Visual page organizer",
+      "description": "Drag thumbnail pages into order, rotate them or remove them.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/organize-pdf/",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Use thumbnail buttons to move, rotate or remove pages. Keep at least one page.",
+      "processing": "on-device"
+    },
+    {
+      "id": "targetcompress",
+      "name": "Compress to target size",
+      "description": "Aim for a specific upload limit with automatic quality selection.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/compress-pdf/",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Lossy conversion: pages become images, selectable text and forms are lost, and the target size is not guaranteed. Check readability before uploading.",
+      "processing": "on-device"
+    },
+    {
+      "id": "camerascanner",
+      "name": "Camera document scanner",
+      "description": "Capture or select document photos, trim white borders and enhance contrast.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/scan-pdf/",
+      "inputMimeTypes": [
+        "image/jpeg",
+        "image/png",
+        "image/webp"
+      ],
+      "multipleFiles": true,
+      "status": "implemented",
+      "limitations": "Photo capture depends on your device. Trims near-white borders; does not correct perspective or detect document corners.",
+      "processing": "on-device"
+    },
+    {
+      "id": "privacycheck",
+      "name": "Privacy Inspector",
+      "description": "Inspect hidden-data signals before sharing. No sanitized copy is created.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/privacy-inspector/",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Limited structural inspection, not a security audit. Sanitized sharing downloads are disabled until hidden-data removal can be independently verified.",
+      "processing": "on-device"
+    },
+    {
+      "id": "workflow",
+      "name": "Workflow builder",
+      "description": "Combine repeatable document actions and save the recipe on this device.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=workflow",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Saves one recipe locally on this browser. Grayscale rasterizes pages and removes searchable text.",
+      "processing": "on-device"
+    },
+    {
+      "id": "sensitive",
+      "name": "Sensitive data finder",
+      "description": "Find common personal-data patterns and permanently redact confirmed matches.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=sensitive",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "experimental",
+      "limitations": "Experimental pattern matching, not complete personal-data detection. False positives and missed matches are possible. Review each result independently.",
+      "processing": "on-device"
+    },
+    {
+      "id": "qualitycheck",
+      "name": "Document quality check",
+      "description": "Detect mixed page sizes, blank pages, low text coverage and scan-quality problems.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=qualitycheck",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Heuristic checks for blank pages, contrast and text coverage; not an accessibility or print-compliance audit.",
+      "processing": "on-device"
+    },
+    {
+      "id": "askpdf",
+      "name": "Ask PDF locally",
+      "description": "Find the most relevant passages for a question without uploading document text.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=askpdf",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Keyword passage retrieval, not AI reasoning or a generated answer. Results may be irrelevant.",
+      "processing": "on-device"
+    },
+    {
+      "id": "opendoc",
+      "name": "OpenDocument / EPUB to PDF",
+      "description": "Convert ODT, ODS, ODP, EPUB and RTF text into a clean PDF.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=opendoc",
+      "inputMimeTypes": [
+        "application/epub+zip",
+        "application/rtf",
+        "text/rtf",
+        "application/vnd.oasis.opendocument.text",
+        "application/vnd.oasis.opendocument.spreadsheet",
+        "application/vnd.oasis.opendocument.presentation"
+      ],
+      "multipleFiles": false,
+      "status": "experimental",
+      "limitations": "Text-only experimental conversion. Layout and ebook reading order may not be preserved.",
+      "processing": "on-device"
+    },
+    {
+      "id": "protect",
+      "name": "Protect PDF",
+      "description": "Encrypt a PDF with an AES-256 password on this device.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=protect",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Encrypt a PDF with an AES-256 password on this device.",
+      "processing": "on-device"
+    },
+    {
+      "id": "unlock",
+      "name": "Unlock PDF",
+      "description": "Remove encryption using the document password.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=unlock",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Remove encryption using the document password.",
+      "processing": "on-device"
+    },
+    {
+      "id": "lossless",
+      "name": "Lossless PDF compression",
+      "description": "Optimize PDF structure without rasterizing text. Size reduction varies.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=lossless",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Optimize PDF structure without rasterizing text. Size reduction varies.",
+      "processing": "on-device"
+    },
+    {
+      "id": "recover",
+      "name": "Recover damaged PDF",
+      "description": "Attempt local cross-reference and object recovery. Some damaged files cannot be recovered.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=recover",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Attempt local cross-reference and object recovery. Some damaged files cannot be recovered.",
+      "processing": "on-device"
+    },
+    {
+      "id": "jpg",
+      "name": "PDF to JPG",
+      "description": "Export each page as a JPG in a ZIP file.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=jpg",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Export each page as a JPG in a ZIP file.",
+      "processing": "on-device"
+    },
+    {
+      "id": "docx",
+      "name": "PDF to Word (DOCX)",
+      "description": "Export selectable text into an editable DOCX. Original layouts and images are not preserved.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=docx",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Export selectable text into an editable DOCX. Original layouts and images are not preserved.",
+      "processing": "on-device"
+    },
+    {
+      "id": "xlsx",
+      "name": "PDF to Excel (XLSX)",
+      "description": "Export extracted text rows into a real workbook, one sheet per page. Table reconstruction is approximate.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=xlsx",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Export extracted text rows into a real workbook, one sheet per page. Table reconstruction is approximate.",
+      "processing": "on-device"
+    },
+    {
+      "id": "pptx",
+      "name": "PDF to PowerPoint",
+      "description": "Preserve each page visually as a slide image. Slide content is not editable.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=pptx",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Preserve each page visually as a slide image. Slide content is not editable.",
+      "processing": "on-device"
+    },
+    {
+      "id": "createform",
+      "name": "Create PDF forms",
+      "description": "Add a named text field, checkbox, dropdown, or radio group to a PDF. Existing form fields are preserved.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=createform",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Add a named text field, checkbox, dropdown, or radio group to a PDF. Existing form fields are preserved.",
+      "processing": "on-device"
+    },
+    {
+      "id": "drawsign",
+      "name": "Draw signature / freehand",
+      "description": "Draw an ink signature or annotation and place it on a page. This is a visual mark, not a digital certificate.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=drawsign",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Draw an ink signature or annotation and place it on a page. This is a visual mark, not a digital certificate.",
+      "processing": "on-device"
+    },
+    {
+      "id": "imagewatermark",
+      "name": "Image watermark",
+      "description": "Place a PNG or JPG watermark on every PDF page.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=imagewatermark",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Place a PNG or JPG watermark on every PDF page.",
+      "processing": "on-device"
+    },
+    {
+      "id": "shapes",
+      "name": "Add PDF shapes",
+      "description": "Add a colored rectangle, ellipse, or line to a page.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=shapes",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "implemented",
+      "limitations": "Add a colored rectangle, ellipse, or line to a page.",
+      "processing": "on-device"
+    },
+    {
+      "id": "visualcompare",
+      "name": "Compare PDFs visually",
+      "description": "View corresponding pages side by side locally. This does not automatically identify every difference.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=visualcompare",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": true,
+      "status": "implemented",
+      "limitations": "View corresponding pages side by side locally. This does not automatically identify every difference.",
+      "processing": "on-device"
+    },
+    {
+      "id": "aisummary",
+      "name": "AI Summarizer",
+      "description": "Summarize selectable text using the browser’s on-device AI, when supported. A model download may be required.",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=aisummary",
+      "inputMimeTypes": [
+        "application/pdf"
+      ],
+      "multipleFiles": false,
+      "status": "browser-dependent",
+      "limitations": "Browser-dependent on-device AI. Requires a supported browser and available English model; a model download may be needed. If unavailable, use Smart summary instead.",
+      "processing": "on-device"
+    }
+  ]
+}

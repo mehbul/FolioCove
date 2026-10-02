@@ -1,0 +1,16 @@
+# FolioCove
+
+> Browser PDF tools with on-device document processing. Owner-private beta; not yet publicly indexed.
+
+## Product and guides
+
+- [Tool directory](https://foliocove-tools.mehbulislam81.chatgpt.site/tools/): all 88 tools, purposes and limits
+- [How it works](https://foliocove-tools.mehbulislam81.chatgpt.site/testing/): local processing and beta status
+- [Capabilities](https://foliocove-tools.mehbulislam81.chatgpt.site/docs/capabilities.md): complete plain-text capability guide
+- [Machine-readable catalog](https://foliocove-tools.mehbulislam81.chatgpt.site/capabilities.json): tool IDs, input formats, URLs and status
+- [Limitations](https://foliocove-tools.mehbulislam81.chatgpt.site/limitations/): experimental and unavailable features
+- [Privacy](https://foliocove-tools.mehbulislam81.chatgpt.site/privacy/): storage and network requests
+
+## Important boundaries
+
+AI summary and translation are browser-dependent. Redaction is experimental. Verified sanitization and PDF/A conversion are unavailable. There is no document-upload endpoint or remote processing API. Support email and physical-device validation remain pending.

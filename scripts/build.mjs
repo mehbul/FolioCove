@@ -3,6 +3,9 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {build as esbuild} from 'esbuild';
 import {core, pages} from '../src/content/routes.mjs';
+import {baseTools} from '../src/content/tools.mjs';
+import {site} from '../src/content/site.mjs';
+import {capabilityData,toolDirectory,pageMetadata,knowledgeMarkdown,escapeHtml} from '../src/content/ai.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const src = path.join(root, 'src');
@@ -39,8 +42,9 @@ function cleanGeneratedText(content) {
 
 function renderDocPage(slug, page) {
   const links=[['testing','How it works'],['privacy','Privacy'],['security','Processing & security'],['limitations','Tool limitations'],['terms','Use notice']];
+  links.push(['tools','Tool directory']);
   const navigation=links.map(([id,label])=>`<a href="/${id}/"${id===slug?' aria-current="page"':''}>${label}</a>`).join('');
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="description" content="${page.intro}"><title>${page.title} — FolioCove</title><link rel="stylesheet" href="/information.css"></head><body><a class="skip-link" href="#content">Skip to content</a><header class="site-header"><div class="header-inner"><a class="brand" href="/" aria-label="FolioCove home"><img src="/assets/icons/files-coral.svg" width="28" height="28" alt="">FolioCove</a><span class="beta-label">Private beta</span><a class="tools-button" href="/">Browse tools<img src="/assets/icons/arrow-up-right.svg" width="18" height="18" alt=""></a></div></header><div class="reading-layout"><aside><nav class="guide-nav" aria-label="FolioCove guide">${navigation}</nav></aside><main id="content"><div class="page-intro"><h1>${page.title}</h1><p>${page.intro}</p></div><article class="reader" aria-label="${page.title}">${page.body}</article><div class="return-to-tools"><h2>Ready for a little less paperwork?</h2><a class="primary-link" href="/">Find your PDF tool<img src="/assets/icons/arrow-up-right.svg" width="18" height="18" alt=""></a></div></main></div><footer><div class="footer-inner"><p>FolioCove · Documents stay on your device.</p><nav aria-label="Footer">${navigation}</nav></div></footer></body></html>`;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="description" content="${page.intro}"><title>${page.title} — FolioCove</title>${pageMetadata(`/${slug}/`,page.title,page.intro)}<link rel="stylesheet" href="/information.css"></head><body><a class="skip-link" href="#content">Skip to content</a><header class="site-header"><div class="header-inner"><a class="brand" href="/" aria-label="FolioCove home"><img src="/assets/icons/files-coral.svg" width="28" height="28" alt="">FolioCove</a><span class="beta-label">Private beta</span><a class="tools-button" href="/">Browse tools<img src="/assets/icons/arrow-up-right.svg" width="18" height="18" alt=""></a></div></header><div class="reading-layout"><aside><nav class="guide-nav" aria-label="FolioCove guide">${navigation}</nav></aside><main id="content"><div class="page-intro"><h1>${page.title}</h1><p>${page.intro}</p></div><article class="reader" aria-label="${page.title}">${page.body}</article><div class="return-to-tools"><h2>Ready for a little less paperwork?</h2><a class="primary-link" href="/">Find your PDF tool<img src="/assets/icons/arrow-up-right.svg" width="18" height="18" alt=""></a></div></main></div><footer><div class="footer-inner"><p>FolioCove · Documents stay on your device.</p><nav aria-label="Footer">${navigation}</nav></div></footer></body></html>`;
 }
 
 await fs.rm(dist, {recursive: true, force: true});
@@ -118,14 +122,21 @@ await fs.writeFile(tesseractWorkerPath, cleanGeneratedText(tesseractWorker));
 
 let homepage = await fs.readFile(path.join(src, 'pages', 'home.html'), 'utf8');
 homepage = homepage.replace('%%APP_SCRIPT%%', '/assets/app.js');
+const homepageDescription='FolioCove processes selected PDFs on your device. Merge, organize, convert and edit files, with browser-dependent AI and clearly stated tool limits.';
+homepage=homepage.replace(/<meta name="description" content="[^"]*">/,`<meta name="description" content="${homepageDescription}">`);
+const homepageSource=homepage;
+homepage=homepage.replace('</head>',pageMetadata('/',site.name+' — Private PDF tools',homepageDescription,true)+'</head>');
 await writeFile(path.join(dist, 'index.html'), homepage);
 
-const routeSource = homepage
+const routeSource = homepageSource
   .replace(/<title>.*?<\/title>/, '<title>%%TITLE%% — FolioCove</title>')
   .replace('What do you need to do?', '%%TITLE%%');
 
-for (const [, slug, title] of core) {
-  await writeFile(path.join(dist, slug, 'index.html'), routeSource.replaceAll('%%TITLE%%', title));
+for (const [id, slug, title] of core) {
+  const description=baseTools[id].copy+' Keep your original and review the tool limitations.';
+  let html=routeSource.replaceAll('%%TITLE%%',title).replace(/<meta name="description" content="[^"]*">/,`<meta name="description" content="${escapeHtml(description)}">`);
+  html=html.replace('</head>',pageMetadata(`/${slug}/`,title,description,true)+'</head>');
+  await writeFile(path.join(dist,slug,'index.html'),html);
 }
 
 for (const [slug, page] of Object.entries(pages)) {
@@ -133,3 +144,10 @@ for (const [slug, page] of Object.entries(pages)) {
 }
 
 console.log(`Generated ${core.length} tool routes and ${Object.keys(pages).length} beta information pages.`);
+
+const capabilities=capabilityData(core);
+await writeFile(path.join(dist,'capabilities.json'),JSON.stringify(capabilities,null,2)+'\n');
+await writeFile(path.join(dist,'tools','index.html'),renderDocPage('tools',{title:'Every tool, with its limits',intro:'A complete guide to FolioCove’s browser PDF tools and supported capabilities.',body:toolDirectory(capabilities)}));
+await writeFile(path.join(dist,'docs','capabilities.md'),knowledgeMarkdown(capabilities));
+await writeFile(path.join(dist,'llms.txt'),'# FolioCove\n\n> Browser PDF tools with on-device document processing. Owner-private beta; not yet publicly indexed.\n\n## Product and guides\n\n- [Tool directory]('+site.origin+'/tools/): all 88 tools, purposes and limits\n- [How it works]('+site.origin+'/testing/): local processing and beta status\n- [Capabilities]('+site.origin+'/docs/capabilities.md): complete plain-text capability guide\n- [Machine-readable catalog]('+site.origin+'/capabilities.json): tool IDs, input formats, URLs and status\n- [Limitations]('+site.origin+'/limitations/): experimental and unavailable features\n- [Privacy]('+site.origin+'/privacy/): storage and network requests\n\n## Important boundaries\n\nAI summary and translation are browser-dependent. Redaction is experimental. Verified sanitization and PDF/A conversion are unavailable. There is no document-upload endpoint or remote processing API. Support email and physical-device validation remain pending.\n');
+await writeFile(path.join(dist,'robots.txt'),'# Owner-private beta; enable discovery only after public-launch approval.\nUser-agent: *\nDisallow: /\n');

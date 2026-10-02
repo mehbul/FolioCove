@@ -1,0 +1,3 @@
+# Owner-private beta; enable discovery only after public-launch approval.
+User-agent: *
+Disallow: /
