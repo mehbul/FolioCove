@@ -1,0 +1,1351 @@
+{
+  "date": "2026-10-02",
+  "scope": "One synthetic representative input per catalog tool; parseability does not establish fidelity or edge-case correctness.",
+  "results": [
+    {
+      "id": "merge",
+      "label": "Merge PDFs",
+      "outcome": "output-parseable",
+      "seconds": 0.175,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 6
+        }
+      ]
+    },
+    {
+      "id": "split",
+      "label": "Extract pages",
+      "outcome": "output-parseable",
+      "seconds": 0.101,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 1
+        }
+      ]
+    },
+    {
+      "id": "targetcompress",
+      "label": "Compress to target size NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.198,
+      "state": {
+        "class": "status ok",
+        "text": "Created 25 KB PDF"
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "docx",
+      "label": "PDF to Word (DOCX)",
+      "outcome": "output-parseable",
+      "seconds": 0.189,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your local download is ready."
+      },
+      "outputs": [
+        {
+          "format": ".docx",
+          "entries": 22
+        }
+      ]
+    },
+    {
+      "id": "xlsx",
+      "label": "PDF to Excel (XLSX)",
+      "outcome": "output-parseable",
+      "seconds": 0.151,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your local download is ready."
+      },
+      "outputs": [
+        {
+          "format": ".xlsx",
+          "entries": 12
+        }
+      ]
+    },
+    {
+      "id": "pptx",
+      "label": "PDF to PowerPoint",
+      "outcome": "output-parseable",
+      "seconds": 0.208,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your local download is ready."
+      },
+      "outputs": [
+        {
+          "format": ".pptx",
+          "entries": 50
+        }
+      ]
+    },
+    {
+      "id": "wordtopdf",
+      "label": "Word to PDF NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.133,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 1
+        }
+      ]
+    },
+    {
+      "id": "exceltopdf",
+      "label": "Excel to PDF NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.1,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 1
+        }
+      ]
+    },
+    {
+      "id": "ppttopdf",
+      "label": "PowerPoint to PDF NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.1,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 1
+        }
+      ]
+    },
+    {
+      "id": "jpg",
+      "label": "PDF to JPG",
+      "outcome": "output-parseable",
+      "seconds": 0.182,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your local download is ready."
+      },
+      "outputs": [
+        {
+          "format": ".zip",
+          "entries": 3
+        }
+      ]
+    },
+    {
+      "id": "images",
+      "label": "Images to PDF",
+      "outcome": "output-parseable",
+      "seconds": 0.104,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 1
+        }
+      ]
+    },
+    {
+      "id": "edit",
+      "label": "Edit PDF NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.105,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "shapes",
+      "label": "Add PDF shapes",
+      "outcome": "output-parseable",
+      "seconds": 0.109,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your local download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "sign",
+      "label": "Sign PDF NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.116,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "drawsign",
+      "label": "Draw signature / freehand",
+      "outcome": "output-parseable",
+      "seconds": 0.125,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your local download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "createform",
+      "label": "Create PDF forms",
+      "outcome": "output-parseable",
+      "seconds": 0.113,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your local download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "fillform",
+      "label": "Fill PDF forms NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.109,
+      "state": {
+        "class": "status ok",
+        "text": "Filled 1 field and downloaded the PDF."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "protect",
+      "label": "Protect PDF",
+      "outcome": "output-parseable",
+      "seconds": 0.163,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your local download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "encrypted": true
+        }
+      ]
+    },
+    {
+      "id": "unlock",
+      "label": "Unlock PDF",
+      "outcome": "output-parseable",
+      "seconds": 0.16,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your local download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "watermark",
+      "label": "Watermark",
+      "outcome": "output-parseable",
+      "seconds": 0.098,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "imagewatermark",
+      "label": "Image watermark",
+      "outcome": "output-parseable",
+      "seconds": 0.12,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your local download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "numbers",
+      "label": "Page numbers",
+      "outcome": "output-parseable",
+      "seconds": 0.098,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "rotate",
+      "label": "Rotate PDF",
+      "outcome": "output-parseable",
+      "seconds": 0.096,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "crop",
+      "label": "Crop margins",
+      "outcome": "output-parseable",
+      "seconds": 0.098,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "visualorganize",
+      "label": "Visual organizer NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.099,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "searchableocr",
+      "label": "Searchable OCR PDF NEW",
+      "outcome": "output-parseable",
+      "seconds": 8.247,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "visualcompare",
+      "label": "Compare PDFs visually",
+      "outcome": "status-only",
+      "seconds": 0.213,
+      "state": {
+        "class": "status ok",
+        "text": "Done — local previews are ready."
+      },
+      "outputs": []
+    },
+    {
+      "id": "aisummary",
+      "label": "AI Summarizer",
+      "outcome": "expected-limitation",
+      "seconds": 0.455,
+      "state": {
+        "class": "status error",
+        "text": "The on-device AI model is unavailable. Use Smart summary instead.\nKeep the original. Try a smaller, unencrypted file; report only the tool and error category, not document contents."
+      },
+      "outputs": []
+    },
+    {
+      "id": "translate",
+      "label": "Translate PDF text NEW",
+      "outcome": "expected-limitation",
+      "seconds": 5.125,
+      "state": {
+        "class": "status error",
+        "text": "The on-device AI model is not ready. Retry after its browser-managed download completes, or use another local tool.\nKeep the original. Try a smaller, unencrypted file; report only the tool and error category, not document contents."
+      },
+      "outputs": []
+    },
+    {
+      "id": "markdown",
+      "label": "PDF to Markdown",
+      "outcome": "output-parseable",
+      "seconds": 0.214,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your Markdown file is ready."
+      },
+      "outputs": [
+        {
+          "format": ".md",
+          "bytes": 344
+        }
+      ]
+    },
+    {
+      "id": "lossless",
+      "label": "Lossless PDF compression",
+      "outcome": "output-parseable",
+      "seconds": 0.191,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your local download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "recover",
+      "label": "Recover damaged PDF",
+      "outcome": "output-parseable",
+      "seconds": 0.26,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your local download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "clean",
+      "label": "Clear info fields",
+      "outcome": "output-parseable",
+      "seconds": 0.123,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "inspect",
+      "label": "Inspect PDF",
+      "outcome": "status-only",
+      "seconds": 0.071,
+      "state": {
+        "class": "status ok",
+        "text": "3 pages · 420 × 540 pt · Title: Synthetic audit · No author metadata"
+      },
+      "outputs": []
+    },
+    {
+      "id": "quick",
+      "label": "Quick Action",
+      "outcome": "output-parseable",
+      "seconds": 0.197,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "organize",
+      "label": "Organize pages",
+      "outcome": "output-parseable",
+      "seconds": 0.145,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 1
+        }
+      ]
+    },
+    {
+      "id": "flatten",
+      "label": "Flatten forms",
+      "outcome": "output-parseable",
+      "seconds": 0.15,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "topng",
+      "label": "PDF to PNG",
+      "outcome": "output-parseable",
+      "seconds": 0.249,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your PNG is ready."
+      },
+      "outputs": [
+        {
+          "format": ".png",
+          "bytes": 39387
+        }
+      ]
+    },
+    {
+      "id": "metadata",
+      "label": "Edit metadata",
+      "outcome": "output-parseable",
+      "seconds": 0.123,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "header",
+      "label": "Header & footer",
+      "outcome": "output-parseable",
+      "seconds": 0.145,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "reverse",
+      "label": "Reverse pages",
+      "outcome": "output-parseable",
+      "seconds": 0.121,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "oddeven",
+      "label": "Odd / even pages",
+      "outcome": "output-parseable",
+      "seconds": 0.127,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 2
+        }
+      ]
+    },
+    {
+      "id": "interleave",
+      "label": "Interleave PDFs",
+      "outcome": "output-parseable",
+      "seconds": 0.118,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 6
+        }
+      ]
+    },
+    {
+      "id": "resize",
+      "label": "Resize pages",
+      "outcome": "output-parseable",
+      "seconds": 0.123,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "twoup",
+      "label": "Two-up layout",
+      "outcome": "output-parseable",
+      "seconds": 0.125,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 2
+        }
+      ]
+    },
+    {
+      "id": "bates",
+      "label": "Bates numbering",
+      "outcome": "output-parseable",
+      "seconds": 0.123,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "compress",
+      "label": "Compress PDF",
+      "outcome": "output-parseable",
+      "seconds": 0.245,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "allpng",
+      "label": "Pages to PNG ZIP",
+      "outcome": "output-parseable",
+      "seconds": 0.216,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": ".zip",
+          "entries": 3
+        }
+      ]
+    },
+    {
+      "id": "chunk",
+      "label": "Split into ZIP",
+      "outcome": "output-parseable",
+      "seconds": 0.119,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": ".zip",
+          "entries": 1
+        }
+      ]
+    },
+    {
+      "id": "blank",
+      "label": "Insert blank page",
+      "outcome": "output-parseable",
+      "seconds": 0.129,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 4
+        }
+      ]
+    },
+    {
+      "id": "text",
+      "label": "Extract text",
+      "outcome": "output-parseable",
+      "seconds": 0.166,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your text file is ready."
+      },
+      "outputs": [
+        {
+          "format": ".txt",
+          "bytes": 301
+        }
+      ]
+    },
+    {
+      "id": "stats",
+      "label": "Reading statistics",
+      "outcome": "status-only",
+      "seconds": 0.124,
+      "state": {
+        "class": "status ok",
+        "text": "30 words · 301 characters · about 1 min read · 3 pages"
+      },
+      "outputs": []
+    },
+    {
+      "id": "datestamp",
+      "label": "Date stamp",
+      "outcome": "output-parseable",
+      "seconds": 0.132,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "annotations",
+      "label": "Remove annotations",
+      "outcome": "output-parseable",
+      "seconds": 0.147,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "margins",
+      "label": "Add margins",
+      "outcome": "output-parseable",
+      "seconds": 0.136,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "grayscale",
+      "label": "Grayscale PDF",
+      "outcome": "output-parseable",
+      "seconds": 0.218,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "findtext",
+      "label": "Find text",
+      "outcome": "status-only",
+      "seconds": 0.123,
+      "state": {
+        "class": "status ok",
+        "text": "3 matches · page 1 (1) · page 2 (1) · page 3 (1)"
+      },
+      "outputs": []
+    },
+    {
+      "id": "compare",
+      "label": "Compare PDFs",
+      "outcome": "status-only",
+      "seconds": 0.12,
+      "state": {
+        "class": "status ok",
+        "text": "No text differences found."
+      },
+      "outputs": []
+    },
+    {
+      "id": "checksum",
+      "label": "File fingerprint",
+      "outcome": "status-only",
+      "seconds": 0.074,
+      "state": {
+        "class": "status ok",
+        "text": "SHA-256: 8f84f667560317c75544d14a6460fed5f009ed8c4a4a290b5f517adfd4ea3774"
+      },
+      "outputs": []
+    },
+    {
+      "id": "tojson",
+      "label": "PDF to JSON",
+      "outcome": "output-parseable",
+      "seconds": 0.153,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your structured JSON is ready."
+      },
+      "outputs": [
+        {
+          "format": ".json",
+          "bytes": 511
+        }
+      ]
+    },
+    {
+      "id": "removeblank",
+      "label": "Remove blank pages",
+      "outcome": "output-parseable",
+      "seconds": 0.248,
+      "state": {
+        "class": "status ok",
+        "text": "Removed 0 blank pages."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "ocr",
+      "label": "OCR scanned PDF",
+      "outcome": "output-parseable",
+      "seconds": 0.844,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": ".txt",
+          "bytes": 301
+        }
+      ]
+    },
+    {
+      "id": "contrast",
+      "label": "Enhance scan",
+      "outcome": "output-parseable",
+      "seconds": 0.235,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "trimheads",
+      "label": "Remove headers/footers",
+      "outcome": "output-parseable",
+      "seconds": 0.114,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "spreads",
+      "label": "Split scanned spreads",
+      "outcome": "output-parseable",
+      "seconds": 0.107,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "redact",
+      "label": "Secure redact NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.22,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "repair",
+      "label": "Repair PDF NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.127,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "summary",
+      "label": "Smart summary NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.161,
+      "state": {
+        "class": "status ok",
+        "text": "Private summary created without uploading document text."
+      },
+      "outputs": [
+        {
+          "format": ".txt",
+          "bytes": 169
+        }
+      ]
+    },
+    {
+      "id": "htmltopdf",
+      "label": "HTML to PDF NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.096,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 1
+        }
+      ]
+    },
+    {
+      "id": "pdftoword",
+      "label": "PDF to Word NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.141,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": ".doc",
+          "bytes": 411
+        }
+      ]
+    },
+    {
+      "id": "pdftoexcel",
+      "label": "PDF to Excel NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.146,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": ".csv",
+          "bytes": 367
+        }
+      ]
+    },
+    {
+      "id": "duplicate",
+      "label": "Duplicate pages NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.114,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 4
+        }
+      ]
+    },
+    {
+      "id": "deletepages",
+      "label": "Delete pages NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.115,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 2
+        }
+      ]
+    },
+    {
+      "id": "splitcustom",
+      "label": "Split every N pages NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.113,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": ".zip",
+          "entries": 1
+        }
+      ]
+    },
+    {
+      "id": "booklet",
+      "label": "Booklet layout NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.098,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 2
+        }
+      ]
+    },
+    {
+      "id": "fourup",
+      "label": "Four-up handout NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.098,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 1
+        }
+      ]
+    },
+    {
+      "id": "stamp",
+      "label": "Approval stamp NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.1,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "qrstamp",
+      "label": "QR code stamp NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.121,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "sanitize",
+      "label": "Sanitization unavailable NEW",
+      "outcome": "expected-limitation",
+      "seconds": 0.074,
+      "state": {
+        "class": "status error",
+        "text": "Verified sanitization is unavailable; no PDF was created. Use Privacy Inspector for a read-only report.\nKeep the original. Try a smaller, unencrypted file; report only the tool and error category, not document contents."
+      },
+      "outputs": []
+    },
+    {
+      "id": "contacts",
+      "label": "Extract contacts NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.15,
+      "state": {
+        "class": "status ok",
+        "text": "Found 1 emails, 0 phone numbers and 0 links."
+      },
+      "outputs": [
+        {
+          "format": ".csv",
+          "bytes": 43
+        }
+      ]
+    },
+    {
+      "id": "deskew",
+      "label": "Deskew scans NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.223,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "camerascanner",
+      "label": "Camera scanner NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.13,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 1
+        }
+      ]
+    },
+    {
+      "id": "privacycheck",
+      "label": "Privacy Inspector NEW",
+      "outcome": "status-only",
+      "seconds": 0.073,
+      "state": {
+        "class": "status ok",
+        "text": "Privacy report\n• 1 populated standard Info fields\n• 3 pages with annotations or links\n• 1 interactive form fields\n• No automatic document actions detected\n• No named resource dictionary\nNo sanitized sharing copy was created."
+      },
+      "outputs": []
+    },
+    {
+      "id": "workflow",
+      "label": "Workflow builder NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.116,
+      "state": {
+        "class": "status ok",
+        "text": "Done — your private download is ready."
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 3
+        }
+      ]
+    },
+    {
+      "id": "sensitive",
+      "label": "Sensitive data finder NEW",
+      "outcome": "status-only",
+      "seconds": 0.124,
+      "state": {
+        "class": "status ok",
+        "text": "Sensitive-data report\n• 3 possible matches on pages 1, 2, 3\nReview the result before enabling automatic redaction."
+      },
+      "outputs": []
+    },
+    {
+      "id": "qualitycheck",
+      "label": "Document quality check NEW",
+      "outcome": "status-only",
+      "seconds": 0.169,
+      "state": {
+        "class": "status ok",
+        "text": "Quality report\n• 3 pages with consistent page size\n• No likely blank pages\n• Every page contains searchable text\n• Possible low-contrast pages: 2, 3"
+      },
+      "outputs": []
+    },
+    {
+      "id": "askpdf",
+      "label": "Ask PDF locally NEW",
+      "outcome": "status-only",
+      "seconds": 0.098,
+      "state": {
+        "class": "status ok",
+        "text": "Most relevant local passages:\n• Page 1: Payment due Friday.\n• Page 2: Payment due Friday.\n• Page 3: Payment due Friday."
+      },
+      "outputs": []
+    },
+    {
+      "id": "opendoc",
+      "label": "OpenDocument / EPUB to PDF NEW",
+      "outcome": "output-parseable",
+      "seconds": 0.118,
+      "state": {
+        "class": "status ok",
+        "text": "Working privately on this device…"
+      },
+      "outputs": [
+        {
+          "format": "PDF",
+          "pages": 1
+        }
+      ]
+    }
+  ],
+  "pageErrors": [],
+  "networkViolations": []
+}

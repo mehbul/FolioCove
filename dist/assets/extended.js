@@ -1,5 +1,21 @@
 import "./chunk-QGM4M3NI.js";
 
+// src/app/local-ai.mjs
+function localModelStep(promise, milliseconds = 2e4) {
+  let timer, expired = false;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => {
+      expired = true;
+      reject(Error("The on-device AI model is not ready. Retry after its browser-managed download completes, or use another local tool."));
+    }, milliseconds);
+  });
+  const operation = Promise.resolve(promise).then((value) => {
+    if (expired) value?.destroy?.();
+    return value;
+  });
+  return Promise.race([operation, timeout]).finally(() => clearTimeout(timer));
+}
+
 // src/app/catalog-design.mjs
 var cards = {
   protect: ["proposal", null, "lock-simple", "Keep a document behind a password.", "AES-256", "Protect PDF"],
@@ -201,14 +217,15 @@ function initExtended(api) {
       let password = document.getElementById("local-password")?.value;
       if (id === "protect" && (!password || password !== document.getElementById("confirm-password").value)) throw Error("Enter matching, non-empty passwords.");
       if (id === "aisummary") {
-        if (!globalThis.Summarizer) throw Error("This browser does not support on-device AI summaries. Use Smart summary for an extractive summary.");
-        const model = await Summarizer.create({ type: "key-points", format: "markdown", length: "medium", expectedInputLanguages: ["en"], outputLanguage: "en", monitor: (m) => m.addEventListener("downloadprogress", (e) => {
+        if (!globalThis.Summarizer || typeof Summarizer.availability !== "function" || await localModelStep(Summarizer.availability({ expectedInputLanguages: ["en"], outputLanguage: "en" }), 5e3) === "unavailable") throw Error("This browser does not support on-device AI summaries. Use Smart summary for an extractive summary.");
+        const model = await localModelStep(Summarizer.create({ type: "key-points", format: "markdown", length: "medium", expectedInputLanguages: ["en"], outputLanguage: "en", monitor: (m) => m.addEventListener("downloadprogress", (e) => {
           status.textContent = `Downloading local AI model: ${Math.round(e.loaded * 100)}%`;
-        }) });
+        }) }));
         try {
           const text = (await extractPdfText(file)).join("\n");
           if (!text.trim()) throw Error("No selectable text found. Run OCR first.");
-          const summary = await model.summarize(text);
+          const summary = await localModelStep(model.summarize(text));
+          if (!summary?.trim() || /^Model not available in /i.test(summary.trim())) throw Error("The on-device AI model is unavailable. Use Smart summary instead.");
           downloadBlob(new Blob([summary], { type: "text/markdown;charset=utf-8" }), "ai-summary.md");
         } finally {
           model.destroy();

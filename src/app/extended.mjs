@@ -1,3 +1,4 @@
+import {localModelStep} from './local-ai.mjs';
 import {createCatalogCard,catalogIcon} from './catalog-design.mjs';
 import {initDesignUI} from './design-ui.mjs';
 export function initExtended(api) {
@@ -35,9 +36,9 @@ export function initExtended(api) {
    let password=document.getElementById('local-password')?.value;
    if(id==='protect'&&(!password||password!==document.getElementById('confirm-password').value))throw Error('Enter matching, non-empty passwords.');
    if(id==='aisummary'){
-    if(!globalThis.Summarizer)throw Error('This browser does not support on-device AI summaries. Use Smart summary for an extractive summary.');
-    const model=await Summarizer.create({type:'key-points',format:'markdown',length:'medium',expectedInputLanguages:['en'],outputLanguage:'en',monitor:m=>m.addEventListener('downloadprogress',e=>{status.textContent=`Downloading local AI model: ${Math.round(e.loaded*100)}%`;})});
-    try{const text=(await extractPdfText(file)).join('\n');if(!text.trim())throw Error('No selectable text found. Run OCR first.');const summary=await model.summarize(text);downloadBlob(new Blob([summary],{type:'text/markdown;charset=utf-8'}),'ai-summary.md');}finally{model.destroy();}
+    if(!globalThis.Summarizer||typeof Summarizer.availability!=='function'||await localModelStep(Summarizer.availability({expectedInputLanguages:['en'],outputLanguage:'en'}),5000)==='unavailable')throw Error('This browser does not support on-device AI summaries. Use Smart summary for an extractive summary.');
+    const model=await localModelStep(Summarizer.create({type:'key-points',format:'markdown',length:'medium',expectedInputLanguages:['en'],outputLanguage:'en',monitor:m=>m.addEventListener('downloadprogress',e=>{status.textContent=`Downloading local AI model: ${Math.round(e.loaded*100)}%`;})}));
+    try{const text=(await extractPdfText(file)).join('\n');if(!text.trim())throw Error('No selectable text found. Run OCR first.');const summary=await localModelStep(model.summarize(text));if(!summary?.trim()||/^Model not available in /i.test(summary.trim()))throw Error('The on-device AI model is unavailable. Use Smart summary instead.');downloadBlob(new Blob([summary],{type:'text/markdown;charset=utf-8'}),'ai-summary.md');}finally{model.destroy();}
    }else if(id==='visualcompare'){
     if(files().length!==2)throw Error('Choose exactly two PDFs.');const pdfjs=await loadPdfJs(),panel=document.getElementById('visual-panel');panel.replaceChildren();panel.classList.add('show');
     for(const source of files()){const task=pdfjs.getDocument({data:new Uint8Array(await source.arrayBuffer())}),pdf=await task.promise;try{const n=Number(document.getElementById('compare-page').value);if(!Number.isInteger(n)||n<1||n>pdf.numPages)throw Error(`Page ${n} is not present in both files.`);const page=await pdf.getPage(n),viewport=page.getViewport({scale:1}),canvas=document.createElement('canvas');if(viewport.width*viewport.height>12000000)throw Error('Page too large to preview.');canvas.width=viewport.width;canvas.height=viewport.height;canvas.style.width='100%';const figure=document.createElement('figure'),caption=document.createElement('figcaption');caption.textContent=`${source.name} · page ${n} of ${pdf.numPages}`;figure.append(caption,canvas);panel.append(figure);await page.render({canvasContext:canvas.getContext('2d'),viewport,background:'white'}).promise;}finally{await task.destroy();}}

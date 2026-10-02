@@ -258,7 +258,7 @@ test.describe('core workflow downloads', () => {
 
     await page.goto('/');
     await page.getByLabel('Tool category').selectOption('all');
-    await page.getByRole('button', { name: /PDF to Excel/ }).click();
+    await page.locator('[data-tool="pdftoexcel"]').click();
     await page.getByTestId('file-input').setInputFiles(formulaPdf);
     const spreadsheet = await runAndSaveDownload(page, dir, 'document.csv');
     const spreadsheetCsv = await fs.readFile(spreadsheet, 'utf8');

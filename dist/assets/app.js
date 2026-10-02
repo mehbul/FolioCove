@@ -98123,6 +98123,22 @@ var require_src = __commonJS({
   }
 });
 
+// src/app/local-ai.mjs
+function localModelStep(promise, milliseconds = 2e4) {
+  let timer, expired = false;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => {
+      expired = true;
+      reject(Error("The on-device AI model is not ready. Retry after its browser-managed download completes, or use another local tool."));
+    }, milliseconds);
+  });
+  const operation = Promise.resolve(promise).then((value) => {
+    if (expired) value?.destroy?.();
+    return value;
+  });
+  return Promise.race([operation, timeout]).finally(() => clearTimeout(timer));
+}
+
 // node_modules/tslib/tslib.es6.js
 var extendStatics = function(d, b) {
   extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function(d2, b3) {
@@ -113651,7 +113667,7 @@ favorite.addEventListener("click", () => {
 });
 refreshRecent();
 function add(next) {
-  const c = configs[current], accepted = c.accept.split(","), valid = next.filter((f) => accepted.includes(f.type) || !f.type && accepted.includes("application/pdf") && /\.pdf$/i.test(f.name));
+  const c = configs[current], accepted = c.accept.split(","), valid = next.filter((f) => accepted.includes(f.type) || current === "opendoc" && ["text/plain", "application/msword"].includes(f.type) && /\.rtf$/i.test(f.name) || (!f.type || f.type === "application/octet-stream") && Object.entries({ "application/pdf": ["pdf"], "application/rtf": ["rtf"], "application/epub+zip": ["epub"], "application/vnd.oasis.opendocument.text": ["odt"], "application/vnd.oasis.opendocument.spreadsheet": ["ods"], "application/vnd.oasis.opendocument.presentation": ["odp"], "image/png": ["png"], "image/jpeg": ["jpg", "jpeg"], "text/html": ["html", "htm"], "text/plain": ["txt"], "application/vnd.openxmlformats-officedocument.wordprocessingml.document": ["docx"], "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": ["xlsx"], "application/vnd.ms-excel": ["xls"], "application/vnd.openxmlformats-officedocument.presentationml.presentation": ["pptx"] }).some(([mime, extensions]) => accepted.includes(mime) && extensions.includes(f.name.split(".").pop().toLowerCase())));
   if (valid.length !== next.length) {
     status.className = "status error";
     status.textContent = "Some files were not accepted. Choose the file type shown by this tool.";
@@ -114286,13 +114302,20 @@ go.addEventListener("click", async (e) => {
         const rows = [["Page", "Line"], ...pages.flatMap((p, i) => p.split(/(?<=[.!?])\s+/).filter((line) => line.trim()).map((line) => [i + 1, line]))];
         downloadCsv(rows, "document.csv");
       } else {
-        if (!("Translator" in self)) throw Error("On-device translation is not available in this browser yet. Try Chrome with built-in AI enabled.");
-        const translator = await Translator.create({ sourceLanguage: "en", targetLanguage: $2("target-lang").value }), translated = [];
-        for (let i = 0; i < pages.length; i++) {
-          status.textContent = `Translating page ${i + 1} of ${pages.length}\u2026`;
-          translated.push(await translator.translate(pages[i]));
+        const settings = { sourceLanguage: "en", targetLanguage: $2("target-lang").value };
+        if (!globalThis.Translator || typeof Translator.availability !== "function" || await localModelStep(Translator.availability(settings), 5e3) === "unavailable") throw Error("On-device translation is unavailable for this language in your browser. Your document has not been uploaded.");
+        const translator = await localModelStep(Translator.create(settings)), translated = [];
+        try {
+          for (let i = 0; i < pages.length; i++) {
+            status.textContent = `Translating page ${i + 1} of ${pages.length}\u2026`;
+            const result = await localModelStep(translator.translate(pages[i]));
+            if (/^Model not available in /i.test(result.trim())) throw Error("The on-device translation model is unavailable.");
+            translated.push(result);
+          }
+          downloadBlob(new Blob([translated.join("\n\n")], { type: "text/plain;charset=utf-8" }), "translated.txt");
+        } finally {
+          translator.destroy();
         }
-        downloadBlob(new Blob([translated.join("\n\n")], { type: "text/plain;charset=utf-8" }), "translated.txt");
       }
     } else if (current === "htmltopdf" || current === "wordtopdf" || current === "exceltopdf" || current === "ppttopdf") {
       let sections = [];
