@@ -5,6 +5,7 @@
   <base href="/">
   <meta name="robots" content="noindex,nofollow">
   <link rel="stylesheet" href="/launch.css">
+  <link rel="stylesheet" href="/catalog.css">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="Edit, convert, sign, OCR, redact, organize and transform PDFs privately in your browser. Files never leave your device.">
   <link rel="manifest" href="manifest.webmanifest">
@@ -23,7 +24,7 @@
 <header class="site-header"><div class="shell top"><a class="brand" href="/"><img src="/assets/icons/files-coral.svg" alt="" width="32" height="32">FolioCove<small>PRIVATE BETA</small></a><span class="header-tag">A little less paperwork.</span><nav class="header-nav" aria-label="Main navigation"><a href="/security/">Processing &amp; privacy</a><a class="guide-link" href="/testing/">How it works</a></nav></div></header>
   <main class="shell">
 <section class="intro"><div><h1>Typed signature</h1><p>A simpler way to work with PDFs. Choose a tool, make it yours.</p></div><label class="discovery-search"><img src="/assets/icons/magnifying-glass.svg" alt="" width="22" height="22"><input id="discover-search" type="search" placeholder="Find your next PDF tool" aria-label="Find a PDF tool"></label></section>
-    <div class="browse-bar"><nav class="browse-categories" aria-label="Browse core tools">
+    <div class="browse-bar"><nav class="browse-categories" aria-label="Browse PDF tools">
       <button class="browse-category" data-category="all" aria-pressed="true"><img src="/assets/icons/squares-four.svg" alt="">All tools</button>
       <button class="browse-category" data-category="organize" aria-pressed="false"><img src="/assets/icons/files.svg" alt="">Organize</button>
       <button class="browse-category" data-category="convert" aria-pressed="false"><img src="/assets/icons/file-pdf.svg" alt="">Convert</button>
@@ -32,12 +33,12 @@
       <button class="browse-category" data-category="secure" aria-pressed="false"><img src="/assets/icons/shield-check.svg" alt="">Privacy</button>
       <button class="browse-category" data-category="intelligence" aria-pressed="false"><img src="/assets/icons/magnifying-glass.svg" alt="">Intelligence</button>
     </nav><span class="browse-note">Documents stay on your device</span></div>
-    <section id="core-tools" class="core-tools" aria-label="Ten core tools"></section>
-    <p class="empty-browse" id="empty-browse" role="status" hidden>No core tools match. Explore the full catalog below.</p><p class="preview-note">Previews use synthetic example documents. Keep originals and check every result.</p>
+    <section id="core-tools" class="core-tools" aria-label="PDF tool catalog"></section>
+    <p class="empty-browse" id="empty-browse" role="status" hidden>No tools match. Try a different search or category.</p><p class="preview-note">Previews use synthetic example documents. Keep originals and check every result.</p>
     <div class="workspace-heading"><div><h2>Your document, your workspace.</h2><p>Start with a core tool or explore the full catalog.</p></div><a href="/limitations/">Tool limitations</a></div>
     <p id="boot-state" role="status">Preparing your on-device workspace…</p>
     <section id="workspace" class="app" aria-label="PDF tool workspace">
-      <nav class="sidebar" aria-label="PDF tools"><h2>Your tools</h2><select class="tool-filter" id="tool-filter" aria-label="Tool category"><option value="all">All categories</option><option value="favorite">★ Favorites</option><option value="organize">Organize</option><option value="convert">Convert</option><option value="edit">Edit & sign</option><option value="secure">Secure</option><option value="scan">Scan & OCR</option><option value="intelligence">Intelligence</option></select><select class="recent-select" id="recent-select" aria-label="Recently used tools"><option value="">Recently used</option></select><input class="tool-search" id="tool-search" type="search" placeholder="Search 74 tools" aria-label="Search tools">
+      <nav class="sidebar" aria-label="PDF tools"><h2>Your tools</h2><select class="tool-filter" id="tool-filter" aria-label="Tool category"><option value="all">All categories</option><option value="favorite">★ Favorites</option><option value="organize">Organize</option><option value="convert">Convert</option><option value="edit">Edit & sign</option><option value="secure">Secure</option><option value="scan">Scan & OCR</option><option value="intelligence">Intelligence</option></select><select class="recent-select" id="recent-select" aria-label="Recently used tools"><option value="">Recently used</option></select><input class="tool-search" id="tool-search" type="search" placeholder="Search all 88 tools" aria-label="Search tools">
         <button class="tool active" data-tool="merge"><span>⊕</span> Merge PDFs</button>
         <button class="tool" data-tool="split"><span>✂</span> Extract pages</button>
         <button class="tool" data-tool="rotate"><span>↻</span> Rotate PDF</button>
@@ -114,7 +115,7 @@
         <button class="tool" data-tool="opendoc"><span>O</span> OpenDocument / EPUB to PDF <b class="new-tag">NEW</b></button>
       </nav>
       <div class="workspace">
-        <div class="title-row"><div><h2 id="tool-title" data-testid="tool-title">Merge PDFs</h2><p id="tool-copy">Combine multiple PDFs in the order you add them.</p></div><span class="local-badge">On-device processing</span></div>
+        <div class="title-row"><div><h2 tabindex="-1" id="tool-title" data-testid="tool-title">Merge PDFs</h2><p id="tool-copy">Combine multiple PDFs in the order you add them.</p></div><span class="local-badge">On-device processing</span></div>
         <label class="drop" id="drop"><input class="file-input" id="picker" data-testid="file-input" type="file" accept="application/pdf" multiple><div><div class="upload-icon"><img src="/assets/icons/choose-files.svg" alt="" width="27" height="27"></div><h3 id="drop-title">Drop PDFs here</h3><p id="drop-copy">or select files from your device</p><span class="choose">Choose files</span></div></label>
         <div class="files" id="files"></div>
         <div class="options" id="options" data-testid="tool-options"></div><div class="visual-panel" id="visual-panel" data-testid="visual-panel"></div>
@@ -130,3 +131,4 @@
   <script>setTimeout(()=>{const el=document.getElementById('boot-state');if(el&&!el.hidden)el.textContent='Tools have not loaded. Check that local application assets are available, then reload. No document has been selected or uploaded.'},15000);</script>
   <script type="module" src="/assets/app.js"></script>
 </body></html>
+

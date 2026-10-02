@@ -56,7 +56,7 @@ await esbuild({
   logLevel: 'silent'
 });
 
-for (const name of ['extended', 'qpdf-worker']) await esbuild({absWorkingDir:root,entryPoints:[path.join(src,'app',`${name}.mjs`)],outfile:`dist/assets/${name}.js`,bundle:true,format:'esm',target:['es2022'],platform:'browser',external:['node:*'],logLevel:'silent'});
+await esbuild({absWorkingDir:root,entryPoints:['extended','qpdf-worker'].map(name=>path.join(src,'app',`${name}.mjs`)),outdir:'dist/assets',splitting:true,bundle:true,format:'esm',target:['es2022'],platform:'browser',external:['node:*'],logLevel:'silent'});
 await copyFile(path.join(root,'node_modules','pdfstudio','dist','wasm','qpdf.wasm'),path.join(dist,'assets','qpdf.wasm'));
 
 const appBundlePath = path.join(dist, 'assets', 'app.js');
@@ -69,11 +69,12 @@ await fs.writeFile(appBundlePath, cleanGeneratedText(appBundle));
 
 await copyFile(path.join(src, 'app', 'launch.mjs'), path.join(dist, 'launch.mjs'));
 await copyFile(path.join(src, 'styles', 'launch.css'), path.join(dist, 'launch.css'));
+await copyFile(path.join(src, 'styles', 'catalog.css'), path.join(dist, 'catalog.css'));
 await fs.cp(path.join(src, 'static', 'previews'), path.join(dist, 'previews'), {recursive: true});
 for (const weight of [400, 500, 600, 700]) {
   await copyFile(path.join(root, 'node_modules', '@fontsource', 'dm-sans', 'files', `dm-sans-latin-${weight}-normal.woff2`), path.join(dist, 'assets', 'fonts', `dm-sans-${weight}.woff2`));
 }
-const designIcons = ['files', 'file-pdf', 'squares-four', 'pencil-simple', 'scan', 'shield-check', 'magnifying-glass', 'upload-simple', 'arrow-up-right', 'arrows-in-simple', 'signature', 'text-aa', 'scissors', 'stack', 'camera', 'eye', 'heart', 'arrows-clockwise'];
+const designIcons = ['files', 'file-pdf', 'squares-four', 'pencil-simple', 'scan', 'shield-check', 'magnifying-glass', 'upload-simple', 'arrow-up-right', 'arrows-in-simple', 'signature', 'text-aa', 'scissors', 'stack', 'camera', 'eye', 'heart', 'arrows-clockwise', 'lock-simple', 'lock-simple-open', 'image', 'file-doc', 'file-xls', 'file-ppt', 'textbox', 'shapes', 'columns', 'sparkle', 'code', 'list-numbers', 'crop', 'translate'];
 for (const icon of designIcons) {
   const assetName = icon === 'upload-simple' ? 'choose-files' : icon;
   await copyFile(path.join(root, 'node_modules', '@phosphor-icons', 'core', 'assets', 'regular', `${icon}.svg`), path.join(dist, 'assets', 'icons', `${assetName}.svg`));
