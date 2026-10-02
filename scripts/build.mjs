@@ -93,6 +93,7 @@ await copyFile(path.join(root, 'node_modules', '@phosphor-icons', 'core', 'LICEN
 await copyFile(path.join(src, 'static', 'manifest.webmanifest'), path.join(dist, 'manifest.webmanifest'));
 await copyFile(path.join(src, 'static', 'sw.js'), path.join(dist, 'sw.js'));
 await copyFile(path.join(src, 'static', 'tester-results.csv'), path.join(dist, 'tester-results.csv'));
+await copyFile(path.join(src, 'static', 'device-pilot.csv'), path.join(dist, 'device-pilot.csv'));
 
 await copyFile(
   path.join(root, 'node_modules', 'pdfjs-dist', 'build', 'pdf.worker.min.mjs'),

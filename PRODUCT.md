@@ -12,7 +12,7 @@ Browser PDF utilities. The owner confirmed that visitors should choose a tool an
 
 ## Capabilities and Constraints
 
-Ten core routes and a wider catalog of 88 tools. Documents are processed on the device. There are no document-upload endpoints or remote analytics. English OCR may download a language model. Keep existing tool behavior, IDs, downloads, error states, accessibility and local preferences. Full sanitization is disabled and redaction is experimental. The current site is owner-private; public operator details remain undecided.
+Ten core routes and a wider catalog of 88 tools. Documents are processed on the device. There are no document-upload endpoints or remote analytics. English OCR may download a language model. Keep existing tool behavior, IDs, downloads, error states, accessibility and local preferences. Full sanitization is disabled and redaction is experimental. The current site is owner-private. The owner supplied the operator name FolioCove and country India; a working public support email remains pending.
 
 ## Brand Commitments
 

@@ -1,0 +1,4 @@
+platform,device_model,os_version,browser_version,camera_offered,camera_captured,selected_file_type,scan_saved,scan_opened,orientation_correct,merge_saved,merge_opened,page_order_correct,picker_cancel_safe,return_from_camera_responsive,limits_visible,result,issue_category
+Android,,,,,,,,,,,,,,,,pending,
+iPhone Safari,,,,,,,,,,,,,,,,pending,
+macOS Safari,,,,,,,,,,,,,,,,pending,
