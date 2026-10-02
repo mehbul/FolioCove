@@ -38,7 +38,9 @@ function cleanGeneratedText(content) {
 }
 
 function renderDocPage(slug, page) {
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>${page.title} — FolioCove</title><link rel="stylesheet" href="/launch.css"></head><body class="policy"><nav><a href="/">← FolioCove tools</a></nav><h1>${page.title}</h1>${page.body}<footer><a href="/privacy/">Privacy</a> · <a href="/security/">Security</a> · <a href="/limitations/">Limitations</a> · <a href="/testing/">Testing</a></footer></body></html>`;
+  const links=[['testing','How it works'],['privacy','Privacy'],['security','Processing & security'],['limitations','Tool limitations'],['terms','Use notice']];
+  const navigation=links.map(([id,label])=>`<a href="/${id}/"${id===slug?' aria-current="page"':''}>${label}</a>`).join('');
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="description" content="${page.intro}"><title>${page.title} — FolioCove</title><link rel="stylesheet" href="/information.css"></head><body><a class="skip-link" href="#content">Skip to content</a><header class="site-header"><div class="header-inner"><a class="brand" href="/" aria-label="FolioCove home"><img src="/assets/icons/files-coral.svg" width="28" height="28" alt="">FolioCove</a><span class="beta-label">Private beta</span><a class="tools-button" href="/">Browse tools<img src="/assets/icons/arrow-up-right.svg" width="18" height="18" alt=""></a></div></header><div class="reading-layout"><aside><nav class="guide-nav" aria-label="FolioCove guide">${navigation}</nav></aside><main id="content"><div class="page-intro"><h1>${page.title}</h1><p>${page.intro}</p></div><article class="reader" aria-label="${page.title}">${page.body}</article><div class="return-to-tools"><h2>Ready for a little less paperwork?</h2><a class="primary-link" href="/">Find your PDF tool<img src="/assets/icons/arrow-up-right.svg" width="18" height="18" alt=""></a></div></main></div><footer><div class="footer-inner"><p>FolioCove · Documents stay on your device.</p><nav aria-label="Footer">${navigation}</nav></div></footer></body></html>`;
 }
 
 await fs.rm(dist, {recursive: true, force: true});
@@ -70,6 +72,7 @@ await fs.writeFile(appBundlePath, cleanGeneratedText(appBundle));
 await copyFile(path.join(src, 'app', 'launch.mjs'), path.join(dist, 'launch.mjs'));
 await copyFile(path.join(src, 'styles', 'launch.css'), path.join(dist, 'launch.css'));
 await copyFile(path.join(src, 'styles', 'catalog.css'), path.join(dist, 'catalog.css'));
+await copyFile(path.join(src, 'styles', 'information.css'), path.join(dist, 'information.css'));
 await fs.cp(path.join(src, 'static', 'previews'), path.join(dist, 'previews'), {recursive: true});
 for (const weight of [400, 500, 600, 700]) {
   await copyFile(path.join(root, 'node_modules', '@fontsource', 'dm-sans', 'files', `dm-sans-latin-${weight}-normal.woff2`), path.join(dist, 'assets', 'fonts', `dm-sans-${weight}.woff2`));
