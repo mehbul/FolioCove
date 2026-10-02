@@ -67,7 +67,7 @@ export function initLaunch(api){
  const applyBrowse=()=>{const q=$('discover-search').value.trim().toLowerCase();let count=0;grid.querySelectorAll('a').forEach(a=>{const show=(browseCategory==='all'||a.dataset.group===groups[browseCategory])&&a.dataset.search.includes(q);a.hidden=!show;if(show)count++});$('empty-browse').hidden=count>0};
  document.querySelectorAll('.browse-category').forEach(button=>button.addEventListener('click',()=>{browseCategory=button.dataset.category;document.querySelectorAll('.browse-category').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));applyBrowse()}));
  $('discover-search').addEventListener('input',()=>{applyBrowse();$('tool-search').value=$('discover-search').value;$('tool-search').dispatchEvent(new Event('input',{bubbles:true}))});
- const filter=$('tool-filter'),option=document.createElement('option');option.value='core';option.textContent='10 core tools';filter.prepend(option);filter.value='core';
+ const filter=$('tool-filter'),option=document.createElement('option');option.value='core';option.textContent='Popular tools';filter.prepend(option);filter.value='all';
  const coreIds=new Set(core.map(x=>x[0]));
  const applyCore=()=>{if(filter.value!=='core')return;const q=$('tool-search').value.trim().toLowerCase();document.querySelectorAll('.tool').forEach(b=>b.style.display=(q?b.textContent.toLowerCase().includes(q):coreIds.has(b.dataset.tool))?'flex':'none')};
  filter.addEventListener('change',applyCore);$('tool-search').addEventListener('input',applyCore);applyCore();
@@ -99,4 +99,5 @@ export function initLaunch(api){
  window.addEventListener('beforeunload',e=>{if(running){e.preventDefault();e.returnValue=''}});
  if(!window.isSecureContext){$('boot-state').hidden=false;$('boot-state').textContent='Some tools require HTTPS and may not work in this context.'}
 }
+
 

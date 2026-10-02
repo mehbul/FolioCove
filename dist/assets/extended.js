@@ -366,6 +366,19 @@ function initExtended(api) {
     }
   }, true);
   document.getElementById("tool-filter").dispatchEvent(new Event("change", { bubbles: true }));
+  const sidebar = document.querySelector(".sidebar"), priority = ["merge", "split", "targetcompress", "docx", "xlsx", "pptx", "wordtopdf", "exceltopdf", "ppttopdf", "jpg", "images", "edit", "shapes", "sign", "drawsign", "createform", "fillform", "protect", "unlock", "watermark", "imagewatermark", "numbers", "rotate", "crop", "visualorganize", "searchableocr", "visualcompare", "aisummary", "translate", "markdown", "lossless", "recover"];
+  const buttons = [...sidebar.querySelectorAll(".tool")];
+  buttons.sort((a, b) => {
+    const rank = (id) => {
+      const i = priority.indexOf(id);
+      return i < 0 ? priority.length : i;
+    };
+    return rank(a.dataset.tool) - rank(b.dataset.tool);
+  }).forEach((button) => sidebar.append(button));
+  const count = document.createElement("span");
+  count.className = "catalog-count";
+  count.textContent = String(buttons.length);
+  sidebar.querySelector("h2").append(count);
 }
 export {
   initExtended
