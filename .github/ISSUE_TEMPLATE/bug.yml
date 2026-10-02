@@ -1,0 +1,43 @@
+name: Bug report
+description: Report a problem using a synthetic example
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This report is public. Do not attach personal PDFs, document contents, passwords, credentials, or private contact details. Reproduce with a synthetic document if possible. Redaction is experimental; sanitization and validated PDF/A are unavailable.
+  - type: input
+    id: tool
+    attributes:
+      label: Tool name
+      placeholder: Merge PDFs
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Device, operating system and browser version
+      placeholder: Android / Chrome, or Windows / Edge
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Describe a synthetic file's format and page count; omit its contents.
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Expected and actual result
+      description: Include the tool error category without personal information.
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy check
+      options:
+        - label: This report contains no personal documents, credentials or private information.
+          required: true

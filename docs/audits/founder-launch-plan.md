@@ -1,5 +1,7 @@
 # FolioCove 30-day founder launch plan
 
+Historical planning document. The current public-beta operating plan is ../OPERATIONS.md; this document's private-beta status and 74-tool counts describe the earlier baseline.
+
 Date: 2026-09-22
 
 FolioCove is ready for a disciplined private beta, not a public launch. The product already has a credible wedge: private, browser-first PDF utilities that process documents on the user's device, with no accounts, payments, document-upload endpoint, or remote analytics. The current build includes ten launch-focus routes, five beta/legal documentation routes, optional local-only beta metrics, a 100 MB per-file beta limit, and a wider 74-tool catalog behind the same workspace.
