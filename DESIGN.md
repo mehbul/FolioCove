@@ -133,3 +133,7 @@ Current verification: desktop 1440×1080 and mobile 390×844 inspection found 35
 ### Information pages
 
 The five information routes use the shared renderer in scripts/build.mjs and src/styles/information.css: local DM Sans, coral identity/actions, a desktop guide sidebar and wrapping mobile navigation, readable article content and a return-to-tools action. /testing/ is the user-facing How it works guide; pilot/audit details are a disclosure below the practical steps. Privacy, processing/security, limitations and use notice share navigation and preserve current beta boundaries. No document processing scripts run on these reading pages.
+
+### Visible processing limits
+
+A quiet capability notice appears before the workspace on home/tool routes. Tool-specific limits appear before processing actions; AI summaries explicitly identify browser/model dependence and the local Smart summary alternative. Redaction remains experimental and verified sanitization/PDF-A unavailable. These notices stay in normal reading order at mobile sizes.

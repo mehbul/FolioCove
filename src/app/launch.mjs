@@ -23,6 +23,7 @@ export const notices={
  htmltopdf:'Extracts local HTML text only; no webpage URL fetching, CSS layout or embedded images.',
  opendoc:'Text-only experimental conversion. Layout and ebook reading order may not be preserved.',
  translate:'Requires the browser Translator API and supported language models; not available in every browser. English source text only; TXT output.',
+ aisummary:'Browser-dependent on-device AI. Requires a supported browser and available English model; a model download may be needed. If unavailable, use Smart summary instead.',
  askpdf:'Keyword passage retrieval, not AI reasoning or a generated answer. Results may be irrelevant.',
  summary:'Extractive sentence ranking, not an AI-written summary.',
  qualitycheck:'Heuristic checks for blank pages, contrast and text coverage; not an accessibility or print-compliance audit.',

@@ -14,3 +14,5 @@ button:not(:disabled):active,.core-tools a:active{transform:scale(.98)}button:fo
 
 .visual-panel.show figure{margin:0;min-width:0}.visual-panel.show figcaption{font-size:13px;padding:10px;overflow-wrap:anywhere}
 
+
+.capability-note{margin:28px 0 12px;padding:18px 0;border-block:1px solid var(--line);font-size:14px;line-height:1.7;color:#555}.capability-note p{margin:0;max-width:85ch}.capability-note a{color:var(--mint);text-underline-offset:3px}.workspace .notice{margin-top:22px;margin-bottom:20px}

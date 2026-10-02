@@ -35,6 +35,7 @@
     </nav><span class="browse-note">Documents stay on your device</span></div>
     <section id="core-tools" class="core-tools" aria-label="PDF tool catalog"></section>
     <p class="empty-browse" id="empty-browse" role="status" hidden>No tools match. Try a different search or category.</p><p class="preview-note">Previews use synthetic example documents. Keep originals and check every result.</p>
+    <aside class="capability-note" aria-label="Important feature limits"><p>AI summary and translation depend on your browser. Redaction is experimental. Verified sanitization and PDF/A conversion are unavailable. <a href="/limitations/">Read tool limitations</a>.</p></aside>
     <div class="workspace-heading"><div><h2>Choose a tool. Make it yours.</h2><p>Convert, edit, organize and protect PDFs on your device.</p></div><a href="/limitations/">Tool limitations</a></div>
     <p id="boot-state" role="status">Preparing your on-device workspace…</p>
     <section id="workspace" class="app" aria-label="PDF tool workspace">
@@ -119,15 +120,15 @@
         <label class="drop" id="drop"><input class="file-input" id="picker" data-testid="file-input" type="file" accept="application/pdf" multiple><div><div class="upload-icon"><img src="/assets/icons/choose-files.svg" alt="" width="27" height="27"></div><h3 id="drop-title">Drop PDFs here</h3><p id="drop-copy">or select files from your device</p><span class="choose">Choose files</span></div></label>
         <div class="files" id="files"></div>
         <div class="options" id="options" data-testid="tool-options"></div><div class="visual-panel" id="visual-panel" data-testid="visual-panel"></div>
+        <p id="tool-limit" data-testid="tool-limit" class="notice"></p>
         <div class="actions"><button class="favorite" id="favorite" type="button">☆ Favorite</button><button class="go" id="go" data-testid="run-tool" disabled>Merge & download</button></div>
         <div class="status" id="status" data-testid="status" aria-live="polite"></div>
-        <p id="tool-limit" data-testid="tool-limit" class="notice"></p>
         <div id="job-controls" hidden><progress id="job-progress" aria-label="Processing progress"></progress><span id="job-stage">Processing…</span><button id="cancel-job" type="button">Cancel and reload</button></div>
       </div>
     </section>
 
     <details class="beta-metrics"><summary>Optional testing metrics · stored on this device only</summary><p>No filenames, document text or error messages are recorded. Nothing is sent to us. Export a report only if you choose to share it.</p><label><input type="checkbox" id="metrics-optin"> Record tool starts, outcomes and durations locally</label><p id="metrics-summary"></p><button id="export-metrics">Export metrics</button> <button id="clear-metrics">Clear metrics</button></details>
-  </main><footer><div class="footer-inner"><span>© 2026 FolioCove · Keep your originals.</span><div class="footer-links"><a href="/privacy/">Privacy</a> · <a href="/security/">Security & verification</a> · <a href="/limitations/">Limitations</a> · <a href="/terms/">Beta use notice</a> · <a href="/testing/">Tester guide</a></div></div></footer>
+  </main><footer><div class="footer-inner"><span>© 2026 FolioCove · Keep your originals.</span><div class="footer-links"><a href="/privacy/">Privacy</a> · <a href="/security/">Security & verification</a> · <a href="/limitations/">Limitations</a> · <a href="/terms/">Beta use notice</a> · <a href="/testing/">How it works</a></div></div></footer>
   <script>setTimeout(()=>{const el=document.getElementById('boot-state');if(el&&!el.hidden)el.textContent='Tools have not loaded. Check that local application assets are available, then reload. No document has been selected or uploaded.'},15000);</script>
   <script type="module" src="/assets/app.js"></script>
 </body></html>
