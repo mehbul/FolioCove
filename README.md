@@ -1,5 +1,11 @@
 # FolioCove
 
+## GitHub Pages beta
+
+The owner selected GitHub Pages for free open-source hosting. The Pages workflow builds from main, runs handler and AI-readability checks, adapts paths for /FolioCove/, verifies PDF downloads/rendering/local workers at that subpath, then deploys the artifact. The expected project address is https://mehbul.github.io/FolioCove/; a successful Pages deployment establishes availability.
+
+Run node scripts/build-pages.mjs followed by npx playwright test --config=playwright.pages.config.mjs to verify this target. Run npm run build afterwards to restore the ordinary root-path Sites build. The existing Sites project is preserved. Pages publishes a public beta with GitHub Issues as its bug-report channel; search indexing stays disabled, sensitive feedback must not be attached, and physical-device testing remains incomplete. Source is MIT licensed; dependencies retain their own licenses.
+
 Previously named PrivyPDF. Existing browser preferences and optional local metrics retain their original storage keys so an update does not erase them.
 
 FolioCove is a private beta PDF utility that runs document processing in the browser. The existing Sites host serves static files from `dist/`; editable source lives in `src/` and is built reproducibly with npm.

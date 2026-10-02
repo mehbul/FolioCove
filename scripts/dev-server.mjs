@@ -7,6 +7,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dist = path.join(root, 'dist');
 const port = Number(process.env.PORT || 4173);
 const host = process.env.HOST || '127.0.0.1';
+const basePath = process.env.FOLIOCOVE_BASE_PATH || '';
 
 const types = new Map([
   ['.txt', 'text/plain; charset=utf-8'],
@@ -35,7 +36,10 @@ function resolveDistPath(urlPathname) {
 const server = http.createServer(async (request, response) => {
   try {
     const url = new URL(request.url || '/', `http://${request.headers.host || 'localhost'}`);
-    const candidate = resolveDistPath(url.pathname);
+    if (basePath && !url.pathname.startsWith(basePath+'/')) {
+      response.writeHead(404); response.end('Not found'); return;
+    }
+    const candidate = resolveDistPath(url.pathname.slice(basePath.length));
     if (!candidate) {
       response.writeHead(403);
       response.end('Forbidden');
