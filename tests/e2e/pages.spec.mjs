@@ -12,7 +12,9 @@ test('Pages subpath loads tools, navigation, PDF renderer and local worker downl
  await page.getByTestId('file-input').setInputFiles([a,b]);expect(await pdfPageCount(await runAndSaveDownload(page,dir,'merged.pdf'))).toBe(2);
  await page.goto('/FolioCove/?tool=lossless');
  await page.getByTestId('file-input').setInputFiles(a);expect(await pdfPageCount(await runAndSaveDownload(page,dir,'lossless.pdf'))).toBe(1);
- await page.goto('/FolioCove/organize-pdf/');await page.getByTestId('file-input').setInputFiles(a);
+ await page.goto('/FolioCove/organize-pdf/');
+ await expect(page.locator('#tool-title')).toHaveText('Visual page organizer');
+ await page.getByTestId('file-input').setInputFiles(a);
  await expect(page.getByTestId('page-thumb').locator('canvas').first()).toBeVisible();
  expect(failures).toEqual([]);
 });
