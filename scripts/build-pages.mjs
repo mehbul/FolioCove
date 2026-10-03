@@ -4,6 +4,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {site} from '../src/content/site.mjs';
 import {core,pages} from '../src/content/routes.mjs';
+import {buildDiscovery} from '../src/content/discovery.mjs';
 const base='/FolioCove';
 const origin='https://mehbul.github.io'+base;
 async function adapt(directory){
@@ -32,7 +33,8 @@ await fs.mkdir('dist/demo',{recursive:true});
 await fs.copyFile('src/static/demo/merge.webm','dist/demo/merge.webm');
 await fs.writeFile('dist/demo/index.html',`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FolioCove demo — Merge PDFs on your device</title><meta name="description" content="Watch a short real workflow merging two synthetic PDFs locally in FolioCove."><meta name="robots" content="index,follow"><link rel="canonical" href="${origin}/demo/"><link rel="stylesheet" href="${base}/launch.css"></head><body><main style="max-width:1100px;margin:40px auto;padding:24px"><a href="${base}/">← Open FolioCove</a><h1>Two PDFs. One document.</h1><p>A short recording of a real browser workflow using synthetic sample files. No document uploads.</p><video controls preload="metadata" style="width:100%;border-radius:16px" aria-label="FolioCove PDF merge demonstration"><source src="merge.webm" type="video/webm"><track kind="captions" src="captions.vtt" srclang="en" label="English" default></video><h2>Demo transcript</h2><ol><li>Browse FolioCove and open Merge PDFs.</li><li>Select two synthetic PDFs from the device.</li><li>Choose Merge &amp; download.</li><li>The browser downloads the combined PDF. This demo’s output was checked to contain two pages.</li></ol><p>Public beta: inspect your outputs. Redaction is experimental; browser AI is conditional; verified sanitization and PDF/A are unavailable.</p></main></body></html>`);
 await fs.writeFile('dist/demo/captions.vtt','WEBVTT\n\n00:00.000 --> 00:06.000\nBrowse free PDF tools in FolioCove.\n\n00:06.000 --> 00:11.000\nOpen Merge PDFs. Documents stay on your device.\n\n00:11.000 --> 00:19.000\nChoose two synthetic sample PDFs.\n\n00:19.000 --> 00:32.000\nMerge and download the combined PDF. Inspect the result.\n');
-const urls=['',...core.map(x=>x[1]),...Object.keys(pages),'tools','demo'];
+const guideUrls=await buildDiscovery();
+const urls=['',...core.map(x=>x[1]),...Object.keys(pages),'tools','demo',...guideUrls];
 await fs.writeFile('dist/sitemap.xml','<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+urls.map(slug=>`<url><loc>${origin}/${slug?slug+'/':''}</loc></url>`).join('\n')+'\n</urlset>\n');
 // robots.txt belongs at the host root; this project copy is informational.
 await fs.writeFile('dist/robots.txt',`User-agent: *\nAllow: /\nSitemap: ${origin}/sitemap.xml\n`);

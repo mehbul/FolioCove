@@ -4,6 +4,8 @@ Free, open-source PDF tools that process documents on your device. No account is
 
 [Use FolioCove](https://mehbul.github.io/FolioCove/) · [Watch the demo](https://mehbul.github.io/FolioCove/demo/) · [Tool capabilities](https://mehbul.github.io/FolioCove/tools/) · [Report a bug](https://github.com/mehbul/FolioCove/issues) · [Launch kit](docs/LAUNCH-KIT.md)
 
+[Practical PDF guides](https://mehbul.github.io/FolioCove/guides/) explain merging without uploads, extracting page ranges and choosing compression. Public tool-page instructions and guide metadata live in `src/content/discovery.mjs`; the Pages build generates them alongside the sitemap. They are not published to the separate owner-private Sites host.
+
 Merge, split, organize, edit and sign PDFs, with a wider catalog for conversion, OCR and forms. Check each tool’s limits before processing: redaction is experimental, browser AI is conditional, and verified sanitization and PDF/A are unavailable. Keep your originals and inspect outputs.
 
 ## GitHub Pages beta

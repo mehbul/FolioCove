@@ -28,3 +28,22 @@ test('Pages subpath loads tools, navigation, PDF renderer and local worker downl
  await expect(page.getByTestId('page-thumb').locator('canvas').first()).toBeVisible();
  expect(failures).toEqual([]);
 });
+test('Public PDF guides link to functioning workspaces and expose truthful crawlable content',async({page})=>{
+ await page.goto('/FolioCove/');
+ await page.locator('.search-guide').getByRole('link',{name:'How to merge PDFs without uploading your files'}).click();
+ await expect(page.locator('h1')).toHaveText('How to merge PDFs without uploading your files');
+ await expect(page.locator('meta[name=robots]')).toHaveAttribute('content','index,follow');
+ await page.getByRole('link',{name:'Merge PDFs',exact:true}).click();
+ await expect(page.getByTestId('tool-title')).toHaveText('Merge PDFs');
+ await expect(page.locator('.search-guide')).toContainText('No account is required');
+ const schema=JSON.parse(await page.locator('script[type="application/ld+json"]').textContent());
+ expect(schema['@graph'].find(x=>x['@type']==='WebApplication').isAccessibleForFree).toBe(true);
+ for(const slug of ['extract-pages-from-pdf','reduce-pdf-size']){
+  await page.goto('/FolioCove/guides/'+slug+'/');
+  await expect(page.locator('article')).toBeVisible();
+  await page.setViewportSize({width:390,height:844});
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ }
+ const sitemap=await(await page.request.get('/FolioCove/sitemap.xml')).text();
+ expect(sitemap).toContain('https://mehbul.github.io/FolioCove/guides/reduce-pdf-size/');
+});
