@@ -1,14 +1,20 @@
 # FolioCove
 
+Free, open-source PDF tools that process documents on your device. No account is required and the app does not upload your documents.
+
+[Use FolioCove](https://mehbul.github.io/FolioCove/) · [Watch the demo](https://mehbul.github.io/FolioCove/demo/) · [Tool capabilities](https://mehbul.github.io/FolioCove/tools/) · [Report a bug](https://github.com/mehbul/FolioCove/issues) · [Launch kit](docs/LAUNCH-KIT.md)
+
+Merge, split, organize, edit and sign PDFs, with a wider catalog for conversion, OCR and forms. Check each tool’s limits before processing: redaction is experimental, browser AI is conditional, and verified sanitization and PDF/A are unavailable. Keep your originals and inspect outputs.
+
 ## GitHub Pages beta
 
 The owner selected GitHub Pages for free open-source hosting. The Pages workflow builds from main, runs handler and AI-readability checks, adapts paths for /FolioCove/, verifies PDF downloads/rendering/local workers at that subpath, then deploys the artifact. The expected project address is https://mehbul.github.io/FolioCove/; a successful Pages deployment establishes availability.
 
-Run node scripts/build-pages.mjs followed by npx playwright test --config=playwright.pages.config.mjs to verify this target. Run npm run build afterwards to restore the ordinary root-path Sites build. The existing Sites project is preserved. Pages publishes a public beta with GitHub Issues as its bug-report channel; search indexing stays disabled, sensitive feedback must not be attached, and physical-device testing remains incomplete. Source is MIT licensed; dependencies retain their own licenses.
+Run node scripts/build-pages.mjs followed by npx playwright test --config=playwright.pages.config.mjs to verify this target. Run npm run build afterwards to restore the ordinary root-path Sites build. The existing Sites project is preserved. Pages publishes a public beta with GitHub Issues as its bug-report channel; search indexing is enabled for Pages, sensitive feedback must not be attached, and physical-device testing remains incomplete. Source is MIT licensed; dependencies retain their own licenses.
 
 Previously named PrivyPDF. Existing browser preferences and optional local metrics retain their original storage keys so an update does not erase them.
 
-FolioCove is a private beta PDF utility that runs document processing in the browser. The existing Sites host serves static files from `dist/`; editable source lives in `src/` and is built reproducibly with npm.
+FolioCove is a public beta PDF utility that runs document processing in the browser. The separate Sites host remains owner-private. Editable source lives in `src/` and is built reproducibly with npm.
 
 ## Windows Setup
 
@@ -96,7 +102,7 @@ Build-time browser dependencies and PDF.js worker/decoder assets are bundled int
 
 ## Limitations
 
-This private beta is not ready for public launch. The automated browser suite verifies that selected synthetic workflows complete and produce parseable downloads; it does not prove visual fidelity, OCR accuracy, compression quality, redaction security, full sanitization, camera hardware behavior, mobile behavior, Safari compatibility, or human task completion. Keep originals and independently inspect every output.
+This is a public beta with incomplete physical-device validation. The automated browser suite verifies that selected synthetic workflows complete and produce parseable downloads; it does not prove visual fidelity, OCR accuracy, compression quality, redaction security, full sanitization, camera hardware behavior, mobile behavior, Safari compatibility, or human task completion. Keep originals and independently inspect every output.
 
 ## AI-friendly project and website
 
@@ -106,4 +112,4 @@ The build writes /tools/ (static readable directory), /capabilities.json, /docs/
 
 Run node scripts/test-ai-readiness.mjs after building. The short mobile/Safari-engine pilot remains available through playwright.pilot.config.mjs; physical devices and actual Safari are a separate uncompleted gate.
 
-The site is still owner-private. All pages remain noindex,nofollow, robots.txt disallows crawling, and no public sitemap is emitted. AI-readable files do not bypass sign-in or guarantee search ranking/citations. On a future authorized public launch, verify contact/policies/device results, change hosting access, update indexing controls and generate a public sitemap together. Do not treat opening crawler access as permission for training on private documents.
+The public GitHub Pages build enables indexing and emits a sitemap. The separate Sites build remains owner-private with noindex,nofollow. AI-readable files do not guarantee search ranking or citations. Opening crawler access to product pages does not authorize training on private documents.

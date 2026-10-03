@@ -14,7 +14,7 @@ FolioCove is a static browser PDF workspace. Read README.md, PRODUCT.md and DESI
 
 Keep document processing on-device. Do not introduce document uploads, remote AI processing, remote analytics or private-file training use unless the owner explicitly changes that preference. Model downloads are distinct from document uploads. Never expose credentials or real customer documents in fixtures, logs or public knowledge files.
 
-Keep tool IDs, local preference keys, accessible controls and output names stable unless the task requires a change. Show fidelity and browser requirements before processing. Sanitization and PDF/A are unavailable, redaction is experimental, and browser AI is conditional. The owner authorized a public GitHub Pages beta and public source/history on 2 October 2026. Search indexing remains disabled. The separate Sites publication remains owner-private; preserve its audience.
+Keep tool IDs, local preference keys, accessible controls and output names stable unless the task requires a change. Show fidelity and browser requirements before processing. Sanitization and PDF/A are unavailable, redaction is experimental, and browser AI is conditional. The owner authorized a public GitHub Pages beta and public source/history on 2 October 2026. The owner authorized search indexing for the public Pages beta on 3 October 2026. The separate Sites publication remains owner-private; preserve its audience.
 
 ## Verification
 

@@ -22,6 +22,8 @@ const types = new Map([
   ['.png', 'image/png'],
   ['.woff2', 'font/woff2'],
   ['.wasm', 'application/wasm'],
+  ['.webm', 'video/webm'],
+  ['.vtt', 'text/vtt; charset=utf-8'],
   ['.webmanifest', 'application/manifest+json; charset=utf-8']
 ]);
 

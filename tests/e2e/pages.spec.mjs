@@ -6,6 +6,15 @@ test('Pages subpath loads tools, navigation, PDF renderer and local worker downl
  const failures=[];page.on('pageerror',e=>failures.push(e.message));page.on('response',r=>{if(r.status()>=400)failures.push(r.url())});
  await page.goto('/FolioCove/');await expect(page.locator('#core-tools a')).toHaveCount(35);
  await expect(page.locator('.brand')).toContainText('PUBLIC BETA');
+ await expect(page.locator('meta[name=robots]')).toHaveAttribute('content','index,follow');
+ await expect(page.locator('meta[name=google-site-verification]')).toHaveAttribute('content','DvS9BP2Rzh2vGhwIWFxLYanLAzH4cOliBGzBFmZpxzY');
+ expect((await page.request.get('/FolioCove/sitemap.xml')).status()).toBe(200);
+ const sitemap=await (await page.request.get('/FolioCove/sitemap.xml')).text();
+ expect(sitemap).toContain('https://mehbul.github.io/FolioCove/merge-pdf/');
+ await page.goto('/FolioCove/demo/');
+ await expect(page.locator('video')).toBeVisible();
+ expect((await page.request.get('/FolioCove/demo/merge.webm')).headers()['content-type']).toContain('video/webm');
+ await page.goto('/FolioCove/');
  await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href','https://mehbul.github.io/FolioCove/');
  await page.goto('/FolioCove/tools/');await expect(page.locator('.directory-list details')).toHaveCount(88);
  await page.goto('/FolioCove/merge-pdf/');await expect(page.locator('#tool-title')).toHaveText('Merge PDFs');
