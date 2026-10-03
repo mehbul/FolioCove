@@ -47,3 +47,21 @@ test('Public PDF guides link to functioning workspaces and expose truthful crawl
  const sitemap=await(await page.request.get('/FolioCove/sitemap.xml')).text();
  expect(sitemap).toContain('https://mehbul.github.io/FolioCove/guides/reduce-pdf-size/');
 });
+test('Comparison blog is discoverable, sourced and usable on mobile',async({page})=>{
+ await page.goto('/FolioCove/');
+ await page.getByRole('link',{name:'A free iLovePDF alternative for on-device PDF tasks',exact:true}).click();
+ await expect(page.locator('h1')).toContainText('iLovePDF alternative');
+ await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href','https://mehbul.github.io/FolioCove/blog/ilovepdf-alternative/');
+ await expect(page.locator('article')).toContainText('not affiliated with iLovePDF');
+ await expect(page.locator('article a[href="https://www.ilovepdf.com/help/privacy"]')).toHaveCount(1);
+ await expect(page.locator('article')).toContainText('redaction is experimental');
+ const schemas=await page.locator('script[type="application/ld+json"]').allTextContents();
+ expect(schemas.map(x=>JSON.parse(x)).find(x=>x['@type']==='BlogPosting').headline).toBe(await page.locator('h1').textContent());
+ await page.setViewportSize({width:390,height:844});
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ for(const slug of ['pdf-tools-privacy','open-source-pdf-tools']){
+  await page.goto('/FolioCove/blog/'+slug+'/');await expect(page.locator('article')).toBeVisible();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ }
+ await page.goto('/FolioCove/blog/');await expect(page.locator('h1')).toHaveText('PDF comparisons & privacy');
+});

@@ -25,8 +25,8 @@ export const guides={
 };
 
 const guideLinks=()=>Object.entries(guides).map(([slug,g])=>`<li><a href="${base}/guides/${slug}/">${e(g.title)}</a></li>`).join('');
-function guidePage(slug,title,intro,body){
- const url=`${origin}/guides/${slug?slug+'/':''}`;
+export function guidePage(slug,title,intro,body,section='guides'){
+ const url=`${origin}/${section}/${slug?slug+'/':''}`;
  const schema={'@context':'https://schema.org','@type':'WebPage',name:title,description:intro,url};
  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="index,follow"><title>${e(title)} — FolioCove</title><meta name="description" content="${e(intro)}"><link rel="canonical" href="${url}"><link rel="stylesheet" href="${base}/information.css"><script type="application/ld+json">${JSON.stringify(schema).replaceAll('<','\\u003c')}</script></head><body><a class="skip-link" href="#content">Skip to content</a><header class="site-header"><div class="header-inner"><a class="brand" href="${base}/">FolioCove</a><span class="beta-label">Public beta</span><a class="tools-button" href="${base}/">Browse tools</a></div></header><div class="reading-layout"><aside><nav class="guide-nav" aria-label="PDF guides"><a href="${base}/guides/">All guides</a><a href="${base}/limitations/">Tool limitations</a></nav></aside><main id="content"><div class="page-intro"><h1>${e(title)}</h1><p>${e(intro)}</p></div><article class="reader">${body}<h2>More PDF guides</h2><ul>${guideLinks()}</ul><p>Public beta. Keep originals and inspect outputs. Redaction is experimental; browser AI is conditional; verified sanitization and PDF/A are unavailable.</p></article></main></div><footer><div class="footer-inner"><a href="${base}/">Open FolioCove</a> · <a href="${base}/privacy/">Privacy</a></div></footer></body></html>`;
 }
