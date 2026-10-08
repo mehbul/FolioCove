@@ -33,6 +33,7 @@ export const notices={
 export function classifyOutcome(className){return className.includes('error')?'failure':className.includes('ok')?'completed':null}
 export function safeMetric(tool,outcome,elapsed){return {tool,outcome,durationMs:Math.max(0,Math.round(elapsed))}}
 export function initLaunch(api){
+ const pageTitle=document.title;
  const $=id=>document.getElementById(id), status=$('status'),go=$('go');
  const read=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
  $('boot-state').hidden=true;
@@ -79,7 +80,7 @@ export function initLaunch(api){
  const record=(tool,outcome,ms)=>{if(!$('metrics-optin').checked)return;const a=read('privypdf-beta-metrics',[]);a.push(safeMetric(tool,outcome,ms));write('privypdf-beta-metrics',a.slice(-1000));summary()};
  $('clear-metrics').onclick=()=>{write('privypdf-beta-metrics',[]);summary()};
  $('export-metrics').onclick=()=>{const blob=new Blob([JSON.stringify(read('privypdf-beta-metrics',[]),null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='foliocove-beta-metrics.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),2000)};summary();
- const showLimit=()=>{const tool=api.current();$('tool-limit').textContent=notices[tool]||'Private beta. Keep your original and inspect the output. Large, malformed or password-protected files may fail.';document.title=(api.configs[tool]?.title||'PDF tools')+' — FolioCove';document.querySelectorAll('#options input,#options select,#options textarea').forEach(el=>{if(!el.getAttribute('aria-label')&&!el.labels?.length){el.setAttribute('aria-label',el.previousElementSibling?.textContent||el.placeholder||el.id)}})};
+ const showLimit=()=>{const tool=api.current();$('tool-limit').textContent=notices[tool]||'Private beta. Keep your original and inspect the output. Large, malformed or password-protected files may fail.';document.title=new URLSearchParams(location.search).has('tool')?(api.configs[tool]?.title||'PDF tools')+' — FolioCove':pageTitle;document.querySelectorAll('#options input,#options select,#options textarea').forEach(el=>{if(!el.getAttribute('aria-label')&&!el.labels?.length){el.setAttribute('aria-label',el.previousElementSibling?.textContent||el.placeholder||el.id)}})};
  document.addEventListener('privypdf:tool',showLimit);
  // Old per-button option handlers still exist; run after them to label fresh controls.
  document.querySelector('.sidebar').addEventListener('click',()=>queueMicrotask(showLimit));

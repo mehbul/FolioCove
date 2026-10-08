@@ -5,6 +5,11 @@ test.skip(!process.env.FOLIOCOVE_PAGES_TEST,'Only run against the Pages subpath 
 test('Pages subpath loads tools, navigation, PDF renderer and local worker downloads',async({page})=>{
  const failures=[];page.on('pageerror',e=>failures.push(e.message));page.on('response',r=>{if(r.status()>=400)failures.push(r.url())});
  await page.goto('/FolioCove/');await expect(page.locator('#core-tools a')).toHaveCount(35);
+ await expect(page).toHaveTitle('FolioCove — Free, open-source PDF tools');
+ await expect(page.locator('h1')).toHaveText('FolioCove PDF tools');
+ await page.locator('.sidebar [data-tool="split"]').click();
+ await expect(page.locator('#tool-title')).toHaveText('Extract pages');
+ await expect(page).toHaveTitle('FolioCove — Free, open-source PDF tools');
  await expect(page.locator('.brand')).toContainText('PUBLIC BETA');
  await expect(page.locator('meta[name=robots]')).toHaveAttribute('content','index,follow');
  await expect(page.locator('meta[name=google-site-verification]')).toHaveAttribute('content','DvS9BP2Rzh2vGhwIWFxLYanLAzH4cOliBGzBFmZpxzY');
