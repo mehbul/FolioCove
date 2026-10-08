@@ -1,15 +1,40 @@
 import {test,expect} from '@playwright/test';
 import path from 'node:path';
 import {makeFixtureDir,createPdf,runAndSaveDownload,pdfPageCount} from './helpers.mjs';
+import {core} from '../../src/content/routes.mjs';
 test.skip(!process.env.FOLIOCOVE_PAGES_TEST,'Only run against the Pages subpath server');
+
+test('PDF task links and matching metadata are available without JavaScript',async({browser,baseURL})=>{
+ const context=await browser.newContext({baseURL,javaScriptEnabled:false});
+ try{
+  const page=await context.newPage();await page.goto('/FolioCove/');
+  await expect(page.getByRole('navigation',{name:'PDF task links'}).locator('a')).toHaveCount(core.length);
+  const title=await page.title(),description=await page.locator('meta[name=description]').getAttribute('content');
+  await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content',title);
+  await expect(page.locator('meta[property="og:description"]')).toHaveAttribute('content',description);
+  const schema=JSON.parse(await page.locator('script[type="application/ld+json"]').textContent());
+  const app=schema['@graph'].find(x=>x['@type']==='WebApplication');
+  expect(app.description).toBe(description);expect(app.isAccessibleForFree).toBe(true);
+  for(const [,slug] of core){
+   await expect(page.getByRole('navigation',{name:'PDF task links'}).locator(`a[href="/FolioCove/${slug}/"]`)).toHaveCount(1);
+  }
+  await page.getByRole('navigation',{name:'PDF task links'}).getByRole('link',{name:'Extract pages',exact:true}).click();
+  await expect(page.locator('h1')).toHaveText('Extract PDF pages free on your device');
+  await expect(page).toHaveTitle('Extract PDF pages free on your device — FolioCove');
+  await expect(page.locator('.intro p')).toContainText('pages');
+  await page.goto('/FolioCove/testing/');
+  await expect(page.locator('article')).toContainText('FolioCove is available as a public beta');
+  await expect(page.locator('article')).not.toContainText('Public launch is pending');
+ }finally{await context.close();}
+});
 test('Pages subpath loads tools, navigation, PDF renderer and local worker downloads',async({page})=>{
  const failures=[];page.on('pageerror',e=>failures.push(e.message));page.on('response',r=>{if(r.status()>=400)failures.push(r.url())});
  await page.goto('/FolioCove/');await expect(page.locator('#core-tools a')).toHaveCount(35);
- await expect(page).toHaveTitle('FolioCove — Free, open-source PDF tools');
+ await expect(page).toHaveTitle('FolioCove — Free PDF tools to merge, split & compress');
  await expect(page.locator('h1')).toHaveText('FolioCove PDF tools');
  await page.locator('.sidebar [data-tool="split"]').click();
  await expect(page.locator('#tool-title')).toHaveText('Extract pages');
- await expect(page).toHaveTitle('FolioCove — Free, open-source PDF tools');
+ await expect(page).toHaveTitle('FolioCove — Free PDF tools to merge, split & compress');
  await expect(page.locator('.brand')).toContainText('PUBLIC BETA');
  await expect(page.locator('meta[name=robots]')).toHaveAttribute('content','index,follow');
  await expect(page.locator('meta[name=google-site-verification]')).toHaveAttribute('content','DvS9BP2Rzh2vGhwIWFxLYanLAzH4cOliBGzBFmZpxzY');

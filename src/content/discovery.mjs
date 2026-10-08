@@ -5,6 +5,17 @@ import {notices} from '../app/launch.mjs';
 import {escapeHtml as e} from './ai.mjs';
 
 const base='/FolioCove',origin='https://mehbul.github.io'+base;
+const homeTitle='FolioCove — Free PDF tools to merge, split & compress';
+const homeDescription='Free, open-source PDF tools to merge, split, compress, organize and add text to PDFs. Documents stay on your device. No account required. Review tool limits.';
+function searchMetadata(html,title,description,name=title){
+ html=html.replace(/<title>.*?<\/title>/,`<title>${e(title)}</title>`).replace(/<meta name="description" content="[^"]*">/,`<meta name="description" content="${e(description)}">`);
+ html=html.replace(/<meta property="og:title" content="[^"]*">/,`<meta property="og:title" content="${e(title)}">`).replace(/<meta property="og:description" content="[^"]*">/,`<meta property="og:description" content="${e(description)}">`);
+ return html.replace(/<script type="application\/ld\+json">(.*?)<\/script>/g,(_,raw)=>{
+  const schema=JSON.parse(raw);
+  for(const item of schema['@graph']||[]){if(item['@type']==='WebApplication'){item.name=name;item.description=description;item.isAccessibleForFree=true;}}
+  return `<script type="application/ld+json">${JSON.stringify(schema).replaceAll('<','\\u003c')}</script>`;
+ });
+}
 const advice={
  merge:['Merge PDFs free without uploading','Select at least two PDFs in the order you want them combined. Remove a file and add it again if you need to change the selection order. Choose Merge & download, then check the page order in the downloaded document.','One PDF combining the selected pages. Keep the originals; merging does not verify signatures or remove hidden document content.'],
  split:['Extract PDF pages free on your device','Select one PDF, enter the page numbers or range you need, and choose Extract & download. For example, use 1-3 to keep the first three pages. Open the output to check that you selected the correct pages.','A new PDF containing the selected pages. This tool extracts a selection; it does not automatically create a separate file for every page.'],
@@ -37,16 +48,16 @@ export async function buildDiscovery(){
   const [title,steps,result]=advice[id],tool=registry[id];
   const description=`${tool.copy} Free browser tool with on-device processing. ${id==='redact'?'Experimental; independent verification required.':'Keep originals and inspect outputs.'}`;
   const file=`dist/${slug}/index.html`;let html=await fs.readFile(file,'utf8');
-  html=html.replace(/<title>.*?<\/title>/,`<title>${e(title)} — FolioCove</title>`).replace(/<meta name="description" content="[^"]*">/,`<meta name="description" content="${e(description)}">`);
-  // Keep visible and structured descriptions consistent without changing tool controls.
-  html=html.replace(/<meta property="og:title" content="[^"]*">/,`<meta property="og:title" content="${e(title)}">`).replace(/<meta property="og:description" content="[^"]*">/,`<meta property="og:description" content="${e(description)}">`);
-  html=html.replace(/<script type="application\/ld\+json">(.*?)<\/script>/g,(_,raw)=>{const schema=JSON.parse(raw);for(const item of schema['@graph']||[]){if(item['@type']==='WebApplication'){item.name=title;item.description=description;item.isAccessibleForFree=true;}}return `<script type="application/ld+json">${JSON.stringify(schema).replaceAll('<','\\u003c')}</script>`;});
+  html=searchMetadata(html,title+' — FolioCove',description,title);
+  html=html.replace(/(<section class="intro"><div><h1>).*?(<\/h1><p>).*?(<\/p>)/,(_,start,middle,end)=>start+e(title)+middle+e(tool.copy)+end);
   const content=`<section class="search-guide" aria-label="${e(tool.title)} guide"><h2>${e(title)}</h2><p>${e(tool.copy)}</p><h3>How to use this tool</h3><p>${e(steps)}</p><h3>What to expect</h3><p>${e(result)}</p><p><strong>Tool boundary:</strong> ${e(notices[id]||tool.copy)}</p><h3>Are documents uploaded?</h3><p>Selected documents are processed in your browser. FolioCove has no document-upload endpoint. The host serves app assets; OCR and browser AI may download models. Local processing does not mean zero network traffic.</p><h3>Is it free?</h3><p>FolioCove is free and open source. No account is required. Device memory and browser support can limit processing; keep your originals and review downloads.</p><p><a href="${base}/guides/">Read the practical PDF guides</a> · <a href="${base}/limitations/">See all limitations</a></p></section>`;
   html=html.replace('</main>',content+'</main>');await fs.writeFile(file,html);
  }
  for(const [slug,g] of Object.entries(guides)){await fs.mkdir(`dist/guides/${slug}`,{recursive:true});await fs.writeFile(`dist/guides/${slug}/index.html`,guidePage(slug,g.title,g.intro,g.body));}
  await fs.mkdir('dist/guides',{recursive:true});await fs.writeFile('dist/guides/index.html',guidePage('','Practical PDF guides','Choose a local PDF workflow and understand its output before you start.',`<p>These guides explain real FolioCove workflows with their tradeoffs. Start with a task below, then open the matching tool.</p><ul>${guideLinks()}</ul>`));
- const home='dist/index.html';let html=await fs.readFile(home,'utf8');html=html.replace('</main>',`<section class="search-guide" aria-label="Practical PDF guides"><h2>A little help with your next PDF</h2><ul>${guideLinks()}</ul></section></main>`);await fs.writeFile(home,html);
+ const taskLinks=core.map(([id,slug])=>`<li><a href="${base}/${slug}/">${e(registry[id].title)}</a> — ${e(registry[id].copy)}</li>`).join('');
+ const home='dist/index.html';let html=searchMetadata(await fs.readFile(home,'utf8'),homeTitle,homeDescription,'FolioCove PDF tools');
+ html=html.replace('</main>',`<section class="search-guide" aria-label="Free PDF tasks"><h2>Free PDF tools, without document uploads</h2><p>FolioCove is a free, open-source PDF workspace. Merge PDFs, extract selected pages, reduce file size or add text in your browser. No account is required; selected documents are processed on your device.</p><nav aria-label="PDF task links"><ul>${taskLinks}</ul></nav><h3>Which PDF compression should I choose?</h3><p>Try <a href="${base}/?tool=lossless">lossless PDF compression</a> when preserving page content matters. <a href="${base}/compress-pdf/">Target-size compression</a> turns pages into images and loses selectable text, forms and accessibility information; the target is best effort.</p><h3>Can I edit or sign a PDF?</h3><p><a href="${base}/edit-pdf/">Add text to a PDF</a> places an overlay; it does not rewrite existing text. <a href="${base}/sign-pdf/">Add a typed signature</a> creates a visual mark, with no identity verification or certificate-based signing.</p><p>Public beta: the file limit is 100 MB per file, and device memory may impose lower limits. Browser AI is conditional, redaction is experimental, and verified sanitization and PDF/A are unavailable. <a href="${base}/limitations/">Read the full tool limitations</a>.</p></section><section class="search-guide" aria-label="Practical PDF guides"><h2>A little help with your next PDF</h2><ul>${guideLinks()}</ul></section></main>`);await fs.writeFile(home,html);
  await fs.appendFile('dist/launch.css','\n.search-guide{max-width:850px;margin:48px auto;padding:28px 0;border-top:1px solid #e7e7e7;color:#222}.search-guide h2{font-size:26px;line-height:1.25}.search-guide h3{font-size:18px;margin-top:24px}.search-guide p,.search-guide li{font-size:15px;line-height:1.65}.search-guide a{color:#a9223e;text-decoration:underline}.search-guide ul{padding-left:22px}\n');
  await fs.appendFile('dist/llms.txt',`\n## Practical PDF guides\n\n${Object.entries(guides).map(([slug,g])=>`- [${g.title}](${origin}/guides/${slug}/): ${g.intro}`).join('\n')}\n`);
  return ['guides',...Object.keys(guides).map(slug=>'guides/'+slug)];

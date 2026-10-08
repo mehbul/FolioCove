@@ -1,5 +1,11 @@
 # Organic discovery
 
+## PDF task discovery
+
+The Pages build now aligns the homepage title, description, Open Graph fields and WebApplication metadata around free PDF tools for merging, splitting and compression. The visible introduction describes those tasks, local processing and account requirements. All ten core routes have task-specific H1 headings and introductions from the shared registry. A visible task navigation section is available in the initial HTML without JavaScript, while the interactive catalog stays intact. Google can also crawl JavaScript-generated links; this change improves initial availability rather than removing a confirmed indexing block.
+
+Focused verification covers the initial-HTML links with JavaScript disabled, metadata consistency, navigation to the extraction tool and accurate public beta status on How it works. Existing Pages checks exercise initialized title stability, PDF downloads, local workers, guides and mobile blog layout. These changes do not establish ranking for generic PDF searches. Use Search Console impressions, queries and landing pages to decide subsequent content improvements; no remote document analytics or keyword-volume claims are introduced.
+
 FolioCove's public homepage is indexed according to the owner's Google Search Console inspection on 3 October 2026. Index membership does not guarantee appearance for a particular query or ranking.
 
 The public Pages build now adds distinct titles, descriptions, practical instructions, output expectations and privacy answers to the ten core tool routes. Visible descriptions and WebApplication metadata stay consistent. Content comes from src/content/discovery.mjs, the shared tool registry and current notices; the private Sites build is preserved.
