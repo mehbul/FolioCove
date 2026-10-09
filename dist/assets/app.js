@@ -97806,7 +97806,7 @@ var require_createWorker = __commonJS({
         action: "FS",
         payload: { method: "readFile", args: [path, { encoding: "utf8" }] }
       }));
-      const removeFile = (path, jobId) => startJob(createJob({
+      const removeFile2 = (path, jobId) => startJob(createJob({
         id: jobId,
         action: "FS",
         payload: { method: "unlink", args: [path] }
@@ -97927,7 +97927,7 @@ var require_createWorker = __commonJS({
         load,
         writeText,
         readText,
-        removeFile,
+        removeFile: removeFile2,
         FS,
         loadLanguage,
         initialize,
@@ -98151,6 +98151,146 @@ function localModelStep(promise, milliseconds = 2e4) {
     return value;
   });
   return Promise.race([operation, timeout]).finally(() => clearTimeout(timer));
+}
+
+// src/app/file-order.mjs
+function formatSize(bytes) {
+  if (bytes < 1024) return `${bytes} B`;
+  const unit = bytes < 1024 * 1024 ? "KB" : "MB";
+  const amount = bytes / (unit === "KB" ? 1024 : 1024 * 1024);
+  return `${amount.toLocaleString(void 0, { maximumFractionDigits: 1 })} ${unit}`;
+}
+function createFileSelectionView(container, { onMove, onRemove }) {
+  const summary = document.createElement("p");
+  summary.className = "file-selection-summary";
+  const hint = document.createElement("p");
+  hint.className = "file-selection-hint";
+  const rows = document.createElement("div");
+  rows.className = "selected-file-list";
+  const announcement = document.createElement("p");
+  announcement.className = "file-order-announcement";
+  announcement.setAttribute("role", "status");
+  announcement.setAttribute("aria-live", "polite");
+  container.append(summary, hint, rows, announcement);
+  return {
+    render(selected2, { canOrder = false, needsAnother = false, message = "" } = {}) {
+      summary.hidden = hint.hidden = selected2.length === 0;
+      summary.textContent = selected2.length ? `${selected2.length} ${selected2.length === 1 ? "file" : "files"} \xB7 ${formatSize(selected2.reduce((total, file) => total + file.size, 0))} total` : "";
+      hint.textContent = needsAnother ? "Add another PDF to merge." : canOrder && selected2.length > 1 ? "Files will be processed from top to bottom. Use Move up or Move down to change the order." : "";
+      hint.hidden = !hint.textContent;
+      announcement.textContent = message;
+      rows.innerHTML = "";
+      selected2.forEach((file, index) => {
+        const row = document.createElement("div");
+        row.className = "file";
+        const main = document.createElement("div");
+        main.className = "file-main";
+        const icon = document.createElement("span");
+        icon.setAttribute("aria-hidden", "true");
+        const details = document.createElement("div");
+        details.className = "file-details";
+        const name = document.createElement("div");
+        name.className = "file-name";
+        name.id = `selected-file-name-${index}`;
+        name.textContent = file.name;
+        name.title = file.name;
+        const size = document.createElement("div");
+        size.className = "file-size";
+        size.textContent = `${canOrder ? `${index + 1} of ${selected2.length} \xB7 ` : ""}${formatSize(file.size)}`;
+        details.append(name, size);
+        main.append(icon, details);
+        const actions = document.createElement("div");
+        actions.className = "file-actions";
+        if (canOrder) {
+          for (const [action, label, delta, disabled] of [
+            ["up", "Move up", -1, index === 0],
+            ["down", "Move down", 1, index === selected2.length - 1]
+          ]) {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "file-move";
+            button.dataset.act = action;
+            button.textContent = label;
+            button.setAttribute("aria-label", `${label}: ${file.name}`);
+            button.disabled = disabled;
+            button.onclick = () => {
+              if (!container.inert) onMove(index, delta);
+            };
+            actions.append(button);
+          }
+        }
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "remove";
+        remove.dataset.act = "remove";
+        remove.textContent = "\xD7";
+        remove.setAttribute("aria-label", "Remove file");
+        remove.setAttribute("aria-describedby", name.id);
+        remove.title = `Remove ${file.name}`;
+        remove.onclick = () => {
+          if (!container.inert) onRemove(index);
+        };
+        actions.append(remove);
+        row.append(main, actions);
+        rows.append(row);
+      });
+    },
+    focus(index, action) {
+      const row = rows.children[index];
+      const control = row?.querySelector(`[data-act="${action}"]:not(:disabled)`) || row?.querySelector("button:not(:disabled)");
+      control?.focus({ preventScroll: true });
+    }
+  };
+}
+
+// src/app/results.mjs
+function readableBytes(bytes) {
+  if (bytes < 1024) return `${bytes} B`;
+  return `${(bytes / (bytes < 1024 * 1024 ? 1024 : 1024 * 1024)).toLocaleString(void 0, { maximumFractionDigits: 1 })} ${bytes < 1024 * 1024 ? "KB" : "MB"}`;
+}
+function initResults() {
+  const status2 = document.getElementById("status");
+  const panel = document.createElement("section");
+  panel.className = "download-result";
+  panel.hidden = true;
+  panel.setAttribute("aria-label", "Prepared download");
+  status2.after(panel);
+  let url = null;
+  const clear = () => {
+    if (url) URL.revokeObjectURL(url);
+    url = null;
+    panel.hidden = true;
+    panel.replaceChildren();
+  };
+  document.addEventListener("privypdf:tool", clear);
+  document.addEventListener("privypdf:files", clear);
+  document.addEventListener("privypdf:download", ({ detail }) => {
+    clear();
+    const { blob, name, tool, inputBytes } = detail;
+    const heading = document.createElement("h3");
+    heading.textContent = "Your download is prepared";
+    const details = document.createElement("p");
+    details.className = "download-details";
+    details.textContent = `${name} \xB7 ${readableBytes(blob.size)}`;
+    const note = document.createElement("p");
+    note.textContent = "Open the downloaded file and check the result. Keep your original.";
+    panel.append(heading, details);
+    if (["compress", "targetcompress", "lossless"].includes(tool) && inputBytes > 0) {
+      const comparison = document.createElement("p");
+      const delta = (inputBytes - blob.size) / inputBytes * 100;
+      comparison.textContent = `Original ${readableBytes(inputBytes)} \u2192 output ${readableBytes(blob.size)}. ${delta > 0 ? `${delta.toFixed(1)}% smaller.` : delta < 0 ? `${Math.abs(delta).toFixed(1)}% larger; this output did not reduce file size.` : "File size is unchanged."}`;
+      panel.append(comparison);
+    }
+    const again = document.createElement("a");
+    again.className = "download-again";
+    url = URL.createObjectURL(blob);
+    again.href = url;
+    again.download = name;
+    again.textContent = "Download again";
+    panel.append(note, again);
+    panel.hidden = false;
+  });
+  window.addEventListener("pagehide", clear);
 }
 
 // node_modules/tslib/tslib.es6.js
@@ -113562,6 +113702,7 @@ var go = $2("go");
 var status = $2("status");
 var visualPanel = $2("visual-panel");
 var favorite = $2("favorite");
+var fileSelection = createFileSelectionView(files, { onMove: moveFile, onRemove: removeFile });
 var categories = { organize: ["merge", "split", "organize", "visualorganize", "duplicate", "deletepages", "reverse", "oddeven", "interleave", "chunk", "splitcustom", "blank", "booklet", "fourup", "twoup"], convert: ["images", "topng", "allpng", "htmltopdf", "wordtopdf", "exceltopdf", "ppttopdf", "pdftoword", "pdftoexcel", "markdown", "tojson", "opendoc"], edit: ["edit", "sign", "watermark", "numbers", "crop", "header", "bates", "stamp", "qrstamp", "metadata", "datestamp", "margins", "resize", "flatten"], secure: ["clean", "sanitize", "privacycheck", "sensitive", "redact", "checksum", "annotations", "trimheads"], scan: ["camerascanner", "ocr", "searchableocr", "contrast", "deskew", "spreads", "removeblank", "grayscale", "qualitycheck"], intelligence: ["inspect", "summary", "translate", "contacts", "findtext", "compare", "stats", "text", "workflow", "quick", "targetcompress", "askpdf"] };
 var stored = (key, fallback) => {
   try {
@@ -113672,13 +113813,38 @@ favorite.addEventListener("click", () => {
   filterTools();
 });
 refreshRecent();
+function clearSelectionStatus() {
+  status.className = "status";
+  status.textContent = "";
+}
+function moveFile(index, delta) {
+  if (files.inert) return;
+  const target = index + delta;
+  if (target < 0 || target >= selected.length) return;
+  const [file] = selected.splice(index, 1);
+  selected.splice(target, 0, file);
+  clearSelectionStatus();
+  render(`${file.name} moved to position ${target + 1} of ${selected.length}.`);
+  fileSelection.focus(target, delta < 0 ? "up" : "down");
+}
+function removeFile(index) {
+  if (files.inert) return;
+  const [file] = selected.splice(index, 1);
+  clearSelectionStatus();
+  render(`${file.name} removed. ${selected.length} ${selected.length === 1 ? "file remains" : "files remain"}.`);
+  if (selected.length) fileSelection.focus(Math.min(index, selected.length - 1), "remove");
+  else picker.focus();
+}
 function add(next) {
+  if (files.inert) return;
   const c = configs2[current], accepted = c.accept.split(","), valid = next.filter((f) => accepted.includes(f.type) || current === "opendoc" && ["text/plain", "application/msword"].includes(f.type) && /\.rtf$/i.test(f.name) || (!f.type || f.type === "application/octet-stream") && Object.entries({ "application/pdf": ["pdf"], "application/rtf": ["rtf"], "application/epub+zip": ["epub"], "application/vnd.oasis.opendocument.text": ["odt"], "application/vnd.oasis.opendocument.spreadsheet": ["ods"], "application/vnd.oasis.opendocument.presentation": ["odp"], "image/png": ["png"], "image/jpeg": ["jpg", "jpeg"], "text/html": ["html", "htm"], "text/plain": ["txt"], "application/vnd.openxmlformats-officedocument.wordprocessingml.document": ["docx"], "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": ["xlsx"], "application/vnd.ms-excel": ["xls"], "application/vnd.openxmlformats-officedocument.presentationml.presentation": ["pptx"] }).some(([mime, extensions]) => accepted.includes(mime) && extensions.includes(f.name.split(".").pop().toLowerCase())));
+  if (valid.length) clearSelectionStatus();
   if (valid.length !== next.length) {
     status.className = "status error";
     status.textContent = "Some files were not accepted. Choose the file type shown by this tool.";
   }
   selected = c.multiple ? [...selected, ...valid] : valid.slice(0, 1);
+  picker.value = "";
   render();
   if (current === "visualorganize" && selected[0]) {
     organizer = null;
@@ -113688,20 +113854,10 @@ function add(next) {
     });
   }
 }
-function render() {
-  files.innerHTML = "";
-  selected.forEach((f, i) => {
-    const row = document.createElement("div");
-    row.className = "file";
-    row.innerHTML = `<div class="file-main"><span>\u25A4</span><div><div class="file-name"></div><div class="file-size">${(f.size / 1048576).toFixed(2)} MB</div></div></div><button class="remove" aria-label="Remove file">\xD7</button>`;
-    row.querySelector(".file-name").textContent = f.name;
-    row.querySelector(".remove").onclick = () => {
-      selected.splice(i, 1);
-      render();
-    };
-    files.append(row);
-  });
+function render(message = "") {
+  fileSelection.render(selected, { canOrder: configs2[current].multiple, needsAnother: current === "merge" && selected.length === 1, message });
   go.disabled = !selected.length || current === "merge" && selected.length < 2 || ["interleave", "compare"].includes(current) && selected.length !== 2;
+  document.dispatchEvent(new CustomEvent("privypdf:files"));
 }
 function initWorkflow() {
   const saved = stored("privypdf-workflow", null), note = $2("workflow-saved");
@@ -113791,11 +113947,7 @@ async function renderOrganizer(file) {
   }
 }
 function download(bytes, name) {
-  const blob = new Blob([bytes], { type: "application/pdf" }), url = URL.createObjectURL(blob), a = document.createElement("a");
-  a.href = url;
-  a.download = name;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 2e3);
+  downloadBlob(new Blob([bytes], { type: "application/pdf" }), name);
 }
 function pageIndexes(spec, count) {
   const out = /* @__PURE__ */ new Set();
@@ -113863,6 +114015,7 @@ function downloadBlob(blob, name) {
   a.href = url;
   a.download = name;
   a.click();
+  document.dispatchEvent(new CustomEvent("privypdf:download", { detail: { blob, name, tool: current, inputBytes: selected.reduce((sum2, file) => sum2 + file.size, 0) } }));
   setTimeout(() => URL.revokeObjectURL(url), 2500);
 }
 async function extractPdfText(file) {
@@ -114870,6 +115023,7 @@ go.addEventListener("click", async () => {
 });
 var { initLaunch } = await import("/launch.mjs");
 initLaunch({ configs: configs2, select: setupTool, current: () => current, files: () => selected, render });
+initResults();
 var { initExtended } = await import("/assets/extended.js");
 initExtended({ configs: configs2, categories, select: setupTool, current: () => current, files: () => selected, go, status, options, downloadBlob, loadPdfJs, extractPdfText, advancedOptions });
 var linkedTool = new URLSearchParams(location.search).get("tool");

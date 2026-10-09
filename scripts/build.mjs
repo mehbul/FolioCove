@@ -76,6 +76,8 @@ await fs.writeFile(appBundlePath, cleanGeneratedText(appBundle));
 await copyFile(path.join(src, 'app', 'launch.mjs'), path.join(dist, 'launch.mjs'));
 await copyFile(path.join(src, 'styles', 'launch.css'), path.join(dist, 'launch.css'));
 await copyFile(path.join(src, 'styles', 'catalog.css'), path.join(dist, 'catalog.css'));
+await copyFile(path.join(src, 'styles', 'file-order.css'), path.join(dist, 'file-order.css'));
+await copyFile(path.join(src, 'styles', 'results.css'), path.join(dist, 'results.css'));
 await copyFile(path.join(src, 'styles', 'information.css'), path.join(dist, 'information.css'));
 await fs.cp(path.join(src, 'static', 'previews'), path.join(dist, 'previews'), {recursive: true});
 for (const weight of [400, 500, 600, 700]) {

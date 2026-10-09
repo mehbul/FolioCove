@@ -22,5 +22,7 @@ FolioCove. The owner requested a premium website inspired by real design such as
 
 Existing functional code, ten tool routes, generated PDF checks and browser workflow tests. No customer testimonials or commercial usage numbers have been supplied.
 
+Selected-file ordering, actual download sizes and repeat-download recovery support the immediate tool workflow. Public guides include downloadable synthetic merge/extraction examples with reference page labels. Public help routes general feedback to GitHub Issues and security vulnerabilities to GitHub's enabled private reporting channel. These channels do not establish a response-time guarantee or replace the pending general-support email.
+
 Local expansion: AES-256 protection/unlocking, lossless qpdf compression and recovery, JPG ZIP, native text DOCX/XLSX, image-slide PPTX, form authoring, drawn ink, image watermarking, shapes, side-by-side comparison, and browser-dependent AI summaries. No validated PDF/A or remote signature workflow. Office layout fidelity, auto form detection, URL fetching and layout-preserving translation remain unavailable.
 

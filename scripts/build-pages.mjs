@@ -6,6 +6,7 @@ import {site} from '../src/content/site.mjs';
 import {core,pages} from '../src/content/routes.mjs';
 import {buildDiscovery} from '../src/content/discovery.mjs';
 import {buildBlog} from '../src/content/blog.mjs';
+import {buildSupport} from '../src/content/support.mjs';
 const base='/FolioCove';
 const origin='https://mehbul.github.io'+base;
 async function adapt(directory){
@@ -30,6 +31,7 @@ async function adapt(directory){
  }
 }
 await adapt('dist');
+await fs.cp('src/static/examples','dist/examples',{recursive:true});
 await fs.writeFile('dist/.nojekyll','');
 await fs.mkdir('dist/demo',{recursive:true});
 await fs.copyFile('src/static/demo/merge.webm','dist/demo/merge.webm');
@@ -37,7 +39,15 @@ await fs.writeFile('dist/demo/index.html',`<!doctype html><html lang="en"><head>
 await fs.writeFile('dist/demo/captions.vtt','WEBVTT\n\n00:00.000 --> 00:06.000\nBrowse free PDF tools in FolioCove.\n\n00:06.000 --> 00:11.000\nOpen Merge PDFs. Documents stay on your device.\n\n00:11.000 --> 00:19.000\nChoose two synthetic sample PDFs.\n\n00:19.000 --> 00:32.000\nMerge and download the combined PDF. Inspect the result.\n');
 const guideUrls=await buildDiscovery();
 const blogUrls=await buildBlog();
-const urls=['',...core.map(x=>x[1]),...Object.keys(pages),'tools','demo',...guideUrls,...blogUrls];
+await buildSupport();
+// The support page is public-only; retain the private Sites publication's audience.
+for(const slug of ['',...core.map(x=>x[1]),...Object.keys(pages),'tools','demo',...guideUrls,...blogUrls]){
+ const file=`dist/${slug?slug+'/':''}index.html`;
+ const html=await fs.readFile(file,'utf8');
+ await fs.writeFile(file,html.replace('</footer>',`<p style="text-align:center;padding:8px"><a href="${base}/support/">Help and feedback</a></p></footer>`));
+}
+await fs.appendFile('dist/llms.txt',`\n## Support\n\n- [Help and feedback](${origin}/support/): Public bug reports, private vulnerability reporting and current support limits.\n`);
+const urls=['',...core.map(x=>x[1]),...Object.keys(pages),'tools','demo','support',...guideUrls,...blogUrls];
 await fs.writeFile('dist/sitemap.xml','<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+urls.map(slug=>`<url><loc>${origin}/${slug?slug+'/':''}</loc></url>`).join('\n')+'\n</urlset>\n');
 // robots.txt belongs at the host root; this project copy is informational.
 await fs.writeFile('dist/robots.txt',`User-agent: *\nAllow: /\nSitemap: ${origin}/sitemap.xml\n`);

@@ -1,6 +1,6 @@
 # FolioCove operating plan
 
-Updated 2 October 2026. Public beta: https://mehbul.github.io/FolioCove/. Source and bug reports: https://github.com/mehbul/FolioCove. The public source and history were authorized by the owner. The separate Sites host remains private. The owner authorized search indexing for the public Pages beta on 3 October 2026.
+Updated 9 October 2026. Public beta: https://mehbul.github.io/FolioCove/. Source and bug reports: https://github.com/mehbul/FolioCove. The public source and history were authorized by the owner. The separate Sites host remains private. The owner authorized search indexing for the public Pages beta on 3 October 2026.
 
 ## Responsibilities and boundaries
 
@@ -17,7 +17,7 @@ The latest Pages and general CI runs both succeeded. GitHub Pages loads without 
 1. Investigate reproducible crashes, missing downloads, document transmission or misleading security claims first. Preserve originals and use synthetic fixtures.
 2. Obtain real-device evidence when hardware access exists. Record observations in device-pilot.csv; never substitute emulation results.
 3. Improve fidelity/error handling based on real bug reports. Do not advertise unsupported Office reconstruction, PDF/A, sanitization or universal AI.
-4. Establish a private support channel and finalize public-business notices before expanding beyond a controlled beta. GitHub Issues covers public bug reports only; sensitive reports must not be posted there.
+4. Establish a general-support inbox and finalize public-business notices before expanding beyond a controlled beta. GitHub Issues covers public bug reports. Private vulnerability reporting is enabled for security reports only; follow SECURITY.md and never request customer documents or credentials there.
 5. Review indexing and broader launch communication after evidence/contact requirements are resolved. No paid domain, mail plan, analytics or remote AI service is required for the current beta.
 
 ## Release and incident procedure
@@ -29,3 +29,9 @@ If a release breaks a supported workflow, revert the responsible commit through 
 ## Success measures
 
 Use reproducible issue outcomes, parseable downloads and scoped browser evidence. Remote analytics are not configured; traffic, customer counts, conversion rates and user satisfaction are unknown. Do not invent business metrics. Local optional metrics stay on the user's device.
+
+## Growth priorities
+
+First make the common merge, extract and compression workflows reliable and easy to verify. Reproducible guide examples and public help support that goal. Maintain useful task pages and sourced comparisons instead of publishing thin duplicate keyword pages. Submit factual entries only to relevant directories; inclusion is their maintainers' decision.
+
+Use Search Console's actual impressions, clicks and indexed-page reports to choose the next content improvement when account access is available. Review resolved public issues and real-device reports for product priorities. Do not treat indexing, directory submission or catalog size as evidence of top-five market position. No ranking, traffic, adoption or retention milestone has been established.

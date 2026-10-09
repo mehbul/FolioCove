@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Tool limitations
+    url: https://mehbul.github.io/FolioCove/limitations/
+    about: Check browser requirements, approximate conversions, and unavailable features before reporting.
+  - name: Report a security vulnerability privately
+    url: https://github.com/mehbul/FolioCove/security/advisories/new
+    about: GitHub private vulnerability reporting is for security problems, using synthetic proof only. Never attach customer documents or secrets.

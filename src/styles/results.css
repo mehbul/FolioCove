@@ -1,0 +1,7 @@
+.download-result{margin-top:20px;padding-block:20px;border-block:1px solid var(--line);color:var(--text,#222)}
+.download-result h3{font-size:17px;line-height:1.4;margin:0 0 8px;font-weight:600;letter-spacing:-.02em}
+.download-result p{font-size:14px;line-height:1.6;margin:6px 0;max-width:70ch;overflow-wrap:anywhere}
+.download-details{font-weight:600;font-variant-numeric:tabular-nums}
+.download-again{display:inline-flex;align-items:center;min-height:44px;margin-top:8px;padding:8px 14px;border:1px solid #ddd;border-radius:8px;color:#222;background:#fff;font-size:14px;text-underline-offset:3px}
+.download-again:hover{background:#f7f7f7}
+.download-again:focus-visible{outline:3px solid var(--mint);outline-offset:4px}
