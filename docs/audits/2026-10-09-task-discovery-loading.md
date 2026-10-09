@@ -32,10 +32,12 @@ The script is about 32% smaller. First contentful paint stayed around one second
 - Desktop 1440×1080 and mobile 390×844 inspection of both help sections found readable table/copy, no horizontal page overflow, missing sample links or page errors. No visual-world replacement was made.
 - The ordinary root build was restored after Pages checks, preserving the separate owner-private Sites publication's generated audience and routes.
 
-Deployment completion and live availability require the release's successful Pages workflow and live check; these local checks alone do not establish deployment success.
+Release 81a87b0 completed [Pages deployment 37894992207](https://github.com/mehbul/FolioCove/actions/runs/37894992207) and [CI 37894992073](https://github.com/mehbul/FolioCove/actions/runs/37894992073) successfully. Live checks confirmed both updated tool pages return HTTP 200 with the new help, sample links and FolioCove application names, with no hidden preview requests or page errors at desktop and mobile widths. A live synthetic merge produced the expected three page labels and an identical repeat download, with no observed non-GET/HEAD requests. A read-only source-diff review found no actionable regression; it was not an independent security or physical-device audit.
 
 ## Search evidence and limits
 
 Search Console's 28-day Web view still showed two impressions and zero clicks, with only the homepage in the page table and no query details available. Data shown covered 30 September–6 October. Homepage inspection confirmed index membership. That does not establish ranking for generic PDF searches; see SEARCH-DISCOVERY.md for the manual query observations and next decision criteria.
+
+URL Inspection subsequently reported both /merge-pdf/ and /split-pdf/ unknown to Google's index. Google accepted indexing requests for both on 9 October, visibly confirming that each URL was added to its priority crawl queue. Crawling, indexing and ranking remain pending external outcomes; repeated submission does not improve queue position.
 
 Documents still process on-device. Redaction remains experimental, browser AI conditional, sanitization and PDF/A unavailable. Physical camera capture, native phone downloads, Apple's Safari application and a general-support inbox remain unverified or pending. No monitoring schedule, paid listing, outreach campaign or analytics script was created.
