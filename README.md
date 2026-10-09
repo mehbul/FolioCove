@@ -1,4 +1,6 @@
-# FolioCove
+# FolioCove PDF
+
+FolioCove PDF (also written FolioCovePDF) is the product display name; FolioCove remains the operator and the existing repository and website path.
 
 Free, open-source PDF tools that process documents on your device. No account is required and the app does not upload your documents.
 

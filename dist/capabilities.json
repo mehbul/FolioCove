@@ -1,6 +1,10 @@
 {
   "schemaVersion": 1,
-  "name": "FolioCove",
+  "name": "FolioCove PDF",
+  "alternateNames": [
+    "FolioCove",
+    "FolioCovePDF"
+  ],
   "website": "https://foliocove-tools.mehbulislam81.chatgpt.site",
   "releaseStatus": "private-beta",
   "processing": "on-device",

@@ -1,4 +1,4 @@
-# FolioCove
+# FolioCove PDF
 
 <!-- impeccable:product-schema 1 -->
 
@@ -16,7 +16,7 @@ Ten core routes and a wider catalog of 88 tools. Documents are processed on the 
 
 ## Brand Commitments
 
-FolioCove. The owner requested a premium website inspired by real design such as Airbnb, using design-taste-frontend, impeccable and emil-design-eng. This is inspiration, not an Airbnb affiliation or use of its proprietary assets.
+FolioCove PDF, also written FolioCovePDF; the established FolioCove name remains an alias and the supplied operator identity. The existing repository and public URL stay stable. The owner requested a premium website inspired by real design such as Airbnb, using design-taste-frontend, impeccable and emil-design-eng. This is inspiration, not an Airbnb affiliation or use of its proprietary assets.
 
 ## Evidence on Hand
 

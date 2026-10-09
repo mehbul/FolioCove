@@ -15,26 +15,54 @@ test('PDF task links and matching metadata are available without JavaScript',asy
   const schema=JSON.parse(await page.locator('script[type="application/ld+json"]').textContent());
   const app=schema['@graph'].find(x=>x['@type']==='WebApplication');
   expect(app.description).toBe(description);expect(app.isAccessibleForFree).toBe(true);
+  const website=schema['@graph'].find(x=>x['@type']==='WebSite');
+  expect(website.name).toBe('FolioCove PDF');expect(website.alternateName).toEqual(['FolioCove','FolioCovePDF']);
+  expect(schema['@graph'].find(x=>x['@type']==='Organization').name).toBe('FolioCove');
+  await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute('content','FolioCove PDF');
+  await expect(page.getByRole('region',{name:'Free PDF tasks'})).toContainText('FolioCovePDF');
   for(const [,slug] of core){
    await expect(page.getByRole('navigation',{name:'PDF task links'}).locator(`a[href="/FolioCove/${slug}/"]`)).toHaveCount(1);
   }
   await page.getByRole('navigation',{name:'PDF task links'}).getByRole('link',{name:'Extract pages',exact:true}).click();
   await expect(page.locator('h1')).toHaveText('Extract PDF pages free on your device');
-  await expect(page).toHaveTitle('Extract PDF pages free on your device — FolioCove');
+  await expect(page).toHaveTitle('Extract PDF pages free on your device — FolioCove PDF');
   await expect(page.locator('.intro p')).toContainText('pages');
   await page.goto('/FolioCove/testing/');
   await expect(page.locator('article')).toContainText('FolioCove is available as a public beta');
   await expect(page.locator('article')).not.toContainText('Public launch is pending');
  }finally{await context.close();}
 });
+
+test('PDF brand stays readable across public pages and tool navigation',async({page})=>{
+ const failures=[];page.on('pageerror',e=>failures.push(e.message));
+ for(const width of [360,390,1440]){
+  await page.setViewportSize({width,height:844});
+  for(const slug of ['','merge-pdf/','guides/merge-pdfs-without-uploading/','blog/','support/','testing/']){
+   await page.goto('/FolioCove/'+slug);
+   await expect(page.locator('.brand')).toContainText('FolioCove PDF');
+   await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute('content','FolioCove PDF');
+   expect(await page.title()).toContain('FolioCove PDF');
+   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  }
+ }
+ await page.goto('/FolioCove/?tool=lossless');
+ await expect(page.getByTestId('file-input')).toBeEnabled();
+ await expect(page).toHaveTitle('Lossless PDF compression — FolioCove PDF');
+ const catalog=await (await page.request.get('/FolioCove/capabilities.json')).json();
+ expect(catalog.name).toBe('FolioCove PDF');expect(catalog.alternateNames).toContain('FolioCovePDF');
+ expect(catalog.documentUploadEndpoint).toBe(null);expect(catalog.supportEmail).toBe(null);
+ const manifest=await (await page.request.get('/FolioCove/manifest.webmanifest')).json();
+ expect(manifest.name).toBe('FolioCove PDF');
+ expect(failures).toEqual([]);
+});
 test('Pages subpath loads tools, navigation, PDF renderer and local worker downloads',async({page})=>{
  const failures=[];page.on('pageerror',e=>failures.push(e.message));page.on('response',r=>{if(r.status()>=400)failures.push(r.url())});
  await page.goto('/FolioCove/');await expect(page.locator('#core-tools a')).toHaveCount(35);
- await expect(page).toHaveTitle('FolioCove — Free PDF tools to merge, split & compress');
+ await expect(page).toHaveTitle('FolioCove PDF — Free tools to merge, split & compress');
  await expect(page.locator('h1')).toHaveText('FolioCove PDF tools');
  await page.locator('.sidebar [data-tool="split"]').click();
  await expect(page.locator('#tool-title')).toHaveText('Extract pages');
- await expect(page).toHaveTitle('FolioCove — Free PDF tools to merge, split & compress');
+ await expect(page).toHaveTitle('FolioCove PDF — Free tools to merge, split & compress');
  await expect(page.locator('.brand')).toContainText('PUBLIC BETA');
  await expect(page.locator('meta[name=robots]')).toHaveAttribute('content','index,follow');
  await expect(page.locator('meta[name=google-site-verification]')).toHaveAttribute('content','DvS9BP2Rzh2vGhwIWFxLYanLAzH4cOliBGzBFmZpxzY');

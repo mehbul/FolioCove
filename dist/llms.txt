@@ -1,4 +1,4 @@
-# FolioCove
+# FolioCove PDF
 
 > Browser PDF tools with on-device document processing. Owner-private beta; not yet publicly indexed.
 

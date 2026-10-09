@@ -1,5 +1,5 @@
 ---
-name: FolioCove
+name: FolioCove PDF
 description: Premium consumer discovery for private browser PDF tools
 colors:
   coral: "#c52949"
@@ -51,7 +51,7 @@ components:
     padding: "11px 12px"
 ---
 
-# Design System: FolioCove
+# Design System: FolioCove PDF
 
 ## Overview
 

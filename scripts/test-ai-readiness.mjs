@@ -4,6 +4,7 @@ import {core,pages} from '../src/content/routes.mjs';
 import {toolRegistry} from '../src/content/tools.mjs';
 import {site} from '../src/content/site.mjs';
 const catalog=JSON.parse(await fs.readFile('dist/capabilities.json','utf8'));
+assert.equal(catalog.name,site.name);assert.deepEqual(catalog.alternateNames,site.alternateNames);
 assert.equal(catalog.tools.length,88);assert.equal(new Set(catalog.tools.map(t=>t.id)).size,88);
 assert.deepEqual(catalog.tools.map(t=>t.id).sort(),Object.keys(toolRegistry()).sort());
 assert.equal(catalog.tools.find(t=>t.id==='sanitize').status,'unavailable');
@@ -15,11 +16,15 @@ for(const slug of ['',...core.map(t=>t[1]),...Object.keys(pages),'tools']){
  assert.match(html,/noindex,nofollow/);assert.match(html,new RegExp('rel="canonical" href="'+site.origin.replaceAll('.','\\.')+(slug?'/'+slug+'/':'/')+'"'));
  const blocks=[...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];assert.equal(blocks.length,1,slug);
  const data=JSON.parse(blocks[0][1]);assert.equal(data['@context'],'https://schema.org');assert(data['@graph'].some(n=>n['@type']==='Organization'));
+ const website=data['@graph'].find(n=>n['@type']==='WebSite');
+ assert.equal(website.name,site.name);assert.deepEqual(website.alternateName,site.alternateNames);
+ assert.equal(data['@graph'].find(n=>n['@type']==='Organization').name,site.operator);
+ assert(html.includes(`property="og:site_name" content="${site.name}"`));assert(!html.includes('%%SITE_NAME%%'));
  assert(!html.includes('aggregateRating'));assert(!html.includes('%%TITLE%%'));
 }
 const directory=await fs.readFile('dist/tools/index.html','utf8');assert.equal((directory.match(/<details>/g)||[]).length,88);
 for(const t of catalog.tools)assert(directory.includes(t.url.replace(site.origin,'')),t.id);
 const robots=await fs.readFile('dist/robots.txt','utf8');assert.match(robots,/Disallow: \/\n/);
-const llms=await fs.readFile('dist/llms.txt','utf8');assert(llms.startsWith('# FolioCove'));assert(llms.includes('/capabilities.json'));
+const llms=await fs.readFile('dist/llms.txt','utf8');assert(llms.startsWith('# '+site.name+'\n'));assert(llms.includes('/capabilities.json'));
 const markdown=await fs.readFile('dist/docs/capabilities.md','utf8');assert(markdown.includes('Physical phone cameras, native downloads and actual Safari remain unverified'));
 console.log('PASS: all 88 registry entries, directory links, capability statuses, structured metadata, canonical URLs, private indexing policy and knowledge files.');
