@@ -125,6 +125,8 @@ import {initResults} from './results.mjs';
     initExtended({configs,categories,select:setupTool,current:()=>current,files:()=>selected,go,status,options,downloadBlob,loadPdfJs,extractPdfText,advancedOptions});
     const linkedTool=new URLSearchParams(location.search).get('tool');
     if(linkedTool&&Object.hasOwn(configs,linkedTool))setupTool(linkedTool);
+    $('workspace').inert=false;$('workspace').setAttribute('aria-busy','false');picker.disabled=false;
+    if(window.isSecureContext)$('boot-state').hidden=true;
     if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
     if(document.modelContext?.registerTool){document.modelContext.registerTool({name:'select_pdf_tool',title:'Select PDF tool',description:'Open one of the available private document tools in the visible workspace.',inputSchema:{type:'object',properties:{tool:{type:'string',enum:Object.keys(configs)}},required:['tool'],additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:false},execute(input){if(!configs[input?.tool])throw new Error('Unknown PDF tool');document.querySelector(`[data-tool="${input.tool}"]`).click();return{selectedTool:input.tool}}}).catch(()=>{})}
 

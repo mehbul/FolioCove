@@ -51,6 +51,7 @@ test('Pages subpath loads tools, navigation, PDF renderer and local worker downl
  const dir=await makeFixtureDir(),a=await createPdf(path.join(dir,'a.pdf'),['FIRST']),b=await createPdf(path.join(dir,'b.pdf'),['SECOND']);
  await page.getByTestId('file-input').setInputFiles([a,b]);expect(await pdfPageCount(await runAndSaveDownload(page,dir,'merged.pdf'))).toBe(2);
  await page.goto('/FolioCove/?tool=lossless');
+ await expect(page.getByTestId('file-input')).toBeEnabled();
  await page.getByTestId('file-input').setInputFiles(a);expect(await pdfPageCount(await runAndSaveDownload(page,dir,'lossless.pdf'))).toBe(1);
  await page.goto('/FolioCove/organize-pdf/');
  await expect(page.locator('#tool-title')).toHaveText('Visual page organizer');

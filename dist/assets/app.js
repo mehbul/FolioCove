@@ -115028,6 +115028,10 @@ var { initExtended } = await import("/assets/extended.js");
 initExtended({ configs: configs2, categories, select: setupTool, current: () => current, files: () => selected, go, status, options, downloadBlob, loadPdfJs, extractPdfText, advancedOptions });
 var linkedTool = new URLSearchParams(location.search).get("tool");
 if (linkedTool && Object.hasOwn(configs2, linkedTool)) setupTool(linkedTool);
+$2("workspace").inert = false;
+$2("workspace").setAttribute("aria-busy", "false");
+picker.disabled = false;
+if (window.isSecureContext) $2("boot-state").hidden = true;
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(() => {
 });
 if (document.modelContext?.registerTool) {

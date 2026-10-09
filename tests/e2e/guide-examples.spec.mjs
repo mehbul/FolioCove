@@ -31,6 +31,7 @@ test('A visitor can reproduce the published merge example and verify all page la
   expect((await fs.stat(path.join(dir,filename))).size).toBe(manifest.files[filename].bytes);
  }
  await page.getByRole('link',{name:'Merge PDFs',exact:true}).click();
+ await expect(page.getByTestId('file-input')).toBeEnabled();
  await page.getByTestId('file-input').setInputFiles([first,second]);
  const output=await runAndSaveDownload(page,dir,'merged.pdf');
  await checkLabels(output,expected);
@@ -46,6 +47,7 @@ test('The extraction guide range produces only the three documented sample pages
  const expected=['FC-EXTRACT-2','FC-EXTRACT-3','FC-EXTRACT-4'];
  await checkLabels(reference,expected);
  await page.getByRole('link',{name:'Extract pages',exact:true}).click();
+ await expect(page.getByTestId('file-input')).toBeEnabled();
  await page.getByTestId('file-input').setInputFiles(input);await page.locator('#pages').fill('2-4');
  const output=await runAndSaveDownload(page,dir,'extracted-pages.pdf');
  await checkLabels(output,expected);

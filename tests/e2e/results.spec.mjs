@@ -9,7 +9,7 @@ const base=process.env.FOLIOCOVE_PAGES_TEST?'/FolioCove':'';
 test('Prepared download shows actual size and can be downloaded again until selection changes',async({page})=>{
  const dir=await makeFixtureDir(),first=await createPdf(path.join(dir,'one.pdf'),['DOWNLOAD-ONE']),second=await createPdf(path.join(dir,'two.pdf'),['DOWNLOAD-TWO']);
  const guards=installPageGuards(page,['DOWNLOAD-ONE','DOWNLOAD-TWO']);
- await page.goto(base+'/merge-pdf/');await page.getByTestId('file-input').setInputFiles([first,second]);
+ await page.goto(base+'/merge-pdf/');await expect(page.getByTestId('file-input')).toBeEnabled();await page.getByTestId('file-input').setInputFiles([first,second]);
  const output=await runAndSaveDownload(page,dir,'merged.pdf');
  const panel=page.getByRole('region',{name:'Prepared download'});
  await expect(panel).toContainText(`merged.pdf · ${readableBytes((await fs.stat(output)).size)}`);
@@ -24,7 +24,7 @@ test('Prepared download shows actual size and can be downloaded again until sele
 
 test('Compression result compares real file sizes without promising a reduction',async({page})=>{
  const dir=await makeFixtureDir(),input=await createPdf(path.join(dir,'small.pdf'),['COMPRESSION-SAMPLE']);
- await page.goto(base+'/?tool=lossless');await page.getByTestId('file-input').setInputFiles(input);
+ await page.goto(base+'/?tool=lossless');await expect(page.getByTestId('file-input')).toBeEnabled();await page.getByTestId('file-input').setInputFiles(input);
  const output=await runAndSaveDownload(page,dir,'lossless.pdf');
  const panel=page.getByRole('region',{name:'Prepared download'}),inputSize=(await fs.stat(input)).size,outputSize=(await fs.stat(output)).size;
  await expect(panel).toContainText(`Original ${readableBytes(inputSize)} → output ${readableBytes(outputSize)}`);

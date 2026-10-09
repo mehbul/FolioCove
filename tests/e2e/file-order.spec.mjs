@@ -14,6 +14,29 @@ import {
 const mergeRoute = `${process.env.FOLIOCOVE_PAGES_TEST ? '/FolioCove' : ''}/merge-pdf/`;
 const markers = ['ORDER-A', 'ORDER-B1', 'ORDER-B2', 'ORDER-C'];
 
+test('slow startup keeps file selection unavailable until all workspace modules are ready', async ({ page }) => {
+  let release, requested;
+  const held = new Promise(resolve => { release = resolve; });
+  const started = new Promise(resolve => { requested = resolve; });
+  await page.route('**/assets/extended.js', async route => { requested(); await held; await route.continue(); });
+  await page.goto(mergeRoute, {waitUntil:'domcontentloaded'});
+  await started;
+  try {
+    await expect(page.getByTestId('file-input')).toBeDisabled();
+    await expect(page.locator('#workspace')).toHaveAttribute('inert', '');
+    await expect(page.locator('#workspace')).toHaveAttribute('aria-busy', 'true');
+    await expect(page.locator('#boot-state')).toBeVisible();
+  } finally { release(); }
+  await expect(page.getByTestId('file-input')).toBeEnabled();
+  await expect(page.locator('#workspace')).toHaveAttribute('aria-busy', 'false');
+  await expect(page.locator('#boot-state')).toBeHidden();
+  const dir=await makeFixtureDir();
+  const first=await createPdf(path.join(dir,'ready-one.pdf'),['ORDER-A']);
+  const second=await createPdf(path.join(dir,'ready-two.pdf'),['ORDER-C']);
+  await page.getByTestId('file-input').setInputFiles([first,second]);
+  expect(pageMarkers(await pdfText(await runAndSaveDownload(page,dir,'merged.pdf')))).toEqual(['ORDER-A','ORDER-C']);
+});
+
 function pageMarkers(text) {
   return text.split('\n').map(page => markers.find(marker => page.includes(marker)));
 }

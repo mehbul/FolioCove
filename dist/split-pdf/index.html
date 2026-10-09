@@ -40,7 +40,7 @@
     <aside class="capability-note" aria-label="Important feature limits"><p>AI summary and translation depend on your browser. Redaction is experimental. Verified sanitization and PDF/A conversion are unavailable. <a href="/limitations/">Read tool limitations</a>.</p></aside>
     <div class="workspace-heading"><div><h2>Choose a tool. Make it yours.</h2><p>Convert, edit, organize and protect PDFs on your device.</p></div><a href="/limitations/">Tool limitations</a></div>
     <p id="boot-state" role="status">Preparing your on-device workspace…</p>
-    <section id="workspace" class="app" aria-label="PDF tool workspace">
+    <section id="workspace" class="app" aria-label="PDF tool workspace" inert aria-busy="true">
       <nav class="sidebar" aria-label="PDF tools"><h2>Browse PDF tools</h2><select class="tool-filter" id="tool-filter" aria-label="Tool category"><option value="all">All categories</option><option value="favorite">★ Favorites</option><option value="organize">Organize</option><option value="convert">Convert</option><option value="edit">Edit & sign</option><option value="secure">Secure</option><option value="scan">Scan & OCR</option><option value="intelligence">Intelligence</option></select><select class="recent-select" id="recent-select" aria-label="Recently used tools"><option value="">Recently used</option></select><input class="tool-search" id="tool-search" type="search" placeholder="Search all 88 tools" aria-label="Search tools">
         <button class="tool active" data-tool="merge"><span>⊕</span> Merge PDFs</button>
         <button class="tool" data-tool="split"><span>✂</span> Extract pages</button>
@@ -119,7 +119,7 @@
       </nav>
       <div class="workspace">
         <div class="title-row"><div><h2 tabindex="-1" id="tool-title" data-testid="tool-title">Merge PDFs</h2><p id="tool-copy">Combine multiple PDFs in the order you add them.</p></div><span class="local-badge">On-device processing</span></div>
-        <label class="drop" id="drop"><input class="file-input" id="picker" data-testid="file-input" type="file" accept="application/pdf" multiple><div><div class="upload-icon"><img src="/assets/icons/choose-files.svg" alt="" width="27" height="27"></div><h3 id="drop-title">Drop PDFs here</h3><p id="drop-copy">or select files from your device</p><span class="choose">Choose files</span></div></label>
+        <label class="drop" id="drop"><input class="file-input" id="picker" data-testid="file-input" type="file" accept="application/pdf" multiple disabled><div><div class="upload-icon"><img src="/assets/icons/choose-files.svg" alt="" width="27" height="27"></div><h3 id="drop-title">Drop PDFs here</h3><p id="drop-copy">or select files from your device</p><span class="choose">Choose files</span></div></label>
         <div class="files" id="files"></div>
         <div class="options" id="options" data-testid="tool-options"></div><div class="visual-panel" id="visual-panel" data-testid="visual-panel"></div>
         <p id="tool-limit" data-testid="tool-limit" class="notice"></p>

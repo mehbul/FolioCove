@@ -98,6 +98,7 @@ Use 8px corners for controls/file rows, 12px for the dashed upload zone, 14px fo
 
 ## Components
 
+- **Startup:** Workspace controls remain inert and the picker disabled while local route/catalog modules initialize. The loading message remains visible until initialization finishes; a missing module leaves the unavailable workspace with a reload explanation rather than accepting files prematurely.
 - **Discovery cards:** 35 linked core and extended tasks; decorative synthetic preview papers, title, short description and Phosphor action marker. Cards navigate to a tool route. Capability badges include English, Experimental and Read only. `/previews/` imagery is synthetic PDF preview material, not customer documents or proof of actual output quality; retain the visible provenance note.
 - **Categories and search:** All tools, Organize, Edit & sign, Scan & OCR and Privacy buttons expose `aria-pressed`. Category selection and case-insensitive title/description substring search intersect. Search also forwards its query to workspace tool search. An empty result message appears when no discovery card matches.
 - **Workspace catalog:** Defaults to all 88 tools, with everyday-tool/category filters and local recent/favorite controls retained. The sidebar prioritizes the expanded conversion, forms, editing and password tools. Active tools use the selected palette and weight 700. Phosphor SVG assets are local; decorative images use empty alt text.

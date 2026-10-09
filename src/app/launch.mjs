@@ -36,7 +36,6 @@ export function initLaunch(api){
  const pageTitle=document.title;
  const $=id=>document.getElementById(id), status=$('status'),go=$('go');
  const read=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
- $('boot-state').hidden=true;
  document.querySelector('.local-badge').textContent='On-device processing';
  document.documentElement.dataset.page=location.pathname==='/'?'home':'tool';
  const previews={

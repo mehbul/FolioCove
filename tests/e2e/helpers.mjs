@@ -358,6 +358,8 @@ export async function openTool(page, route, title) {
   await page.getByTestId('tool-title').evaluate((el, expected) => {
     if (el.textContent !== expected) throw new Error(`Expected ${expected}, got ${el.textContent}`);
   }, title);
+  await page.getByTestId('file-input').waitFor({state:'attached'});
+  await page.waitForFunction(() => !document.querySelector('[data-testid="file-input"]').disabled);
 }
 
 export async function runAndSaveDownload(page, downloadDir, expectedName) {
