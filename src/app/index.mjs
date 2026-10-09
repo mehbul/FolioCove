@@ -123,7 +123,7 @@ import {initResults} from './results.mjs';
     initResults();
     const {initExtended}=await import('/assets/extended.js');
     initExtended({configs,categories,select:setupTool,current:()=>current,files:()=>selected,go,status,options,downloadBlob,loadPdfJs,extractPdfText,advancedOptions});
-    const linkedTool=new URLSearchParams(location.search).get('tool');
+    const linkedTool=new URLSearchParams(location.search).get('tool')||document.documentElement.dataset.toolId;
     if(linkedTool&&Object.hasOwn(configs,linkedTool))setupTool(linkedTool);
     $('workspace').inert=false;$('workspace').setAttribute('aria-busy','false');picker.disabled=false;
     if(window.isSecureContext)$('boot-state').hidden=true;

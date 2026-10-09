@@ -55,7 +55,7 @@ The dev server serves `dist/` at `http://localhost:4173/`. Re-run `npm run build
 npm run build
 ```
 
-The build regenerates `dist/`, including the homepage, the 10 core tool routes, the 5 beta/legal documentation routes, static tool directory and AI-readable knowledge files, local browser dependency bundles, the service worker, manifest, and tester CSV template.
+The build regenerates `dist/`, including the homepage, 15 tool routes (10 Everyday tools plus PDF-to-DOCX, JPG/PNG-to-PDF, PDF-to-JPG, DOCX-to-PDF and lossless compression), the 5 beta/legal documentation routes, static tool directory and AI-readable knowledge files, local browser dependency bundles, the service worker, manifest, and tester CSV template.
 
 ## Testing
 
@@ -120,7 +120,7 @@ This is a public beta with incomplete physical-device validation. The automated 
 
 Start coding-agent work with AGENTS.md. Tool definitions live in src/content/tools.mjs and drive both runtime labels and generated capabilities, so browser behavior and discovery documents share their source. Site identity and current private-beta status live in src/content/site.mjs.
 
-The build writes /tools/ (static readable directory), /capabilities.json, /docs/capabilities.md and /llms.txt. They describe product capabilities only, never selected documents. Core routes have distinct descriptions, canonical URLs and JSON-LD; information pages have WebPage metadata. Extended tools can be opened with /?tool=ID, validated against the registry.
+The build writes /tools/ (static readable directory), /capabilities.json, /docs/capabilities.md and /llms.txt. They describe product capabilities only, never selected documents. All 15 dedicated tool routes have distinct descriptions, canonical URLs and JSON-LD; information pages have WebPage metadata. The shared `toolRoutes` registry drives route generation, capability links, public task guidance and the Pages sitemap. Other tools can be opened with /?tool=ID, validated against the registry; existing query links remain supported.
 
 Run node scripts/test-ai-readiness.mjs after building. The short mobile/Safari-engine pilot remains available through playwright.pilot.config.mjs; physical devices and actual Safari are a separate uncompleted gate.
 

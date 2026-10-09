@@ -2,8 +2,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {build as esbuild} from 'esbuild';
-import {core, pages} from '../src/content/routes.mjs';
-import {baseTools} from '../src/content/tools.mjs';
+import {toolRoutes, pages} from '../src/content/routes.mjs';
+import {toolRegistry} from '../src/content/tools.mjs';
 import {site} from '../src/content/site.mjs';
 import {capabilityData,toolDirectory,pageMetadata,knowledgeMarkdown,escapeHtml} from '../src/content/ai.mjs';
 
@@ -136,20 +136,22 @@ const routeSource = homepageSource
   .replace(/<title>.*?<\/title>/, `<title>%%TITLE%% — ${escapeHtml(site.name)}</title>`)
   .replace('What do you need to do?', '%%TITLE%%');
 
-for (const [id, slug, title] of core) {
-  const description=baseTools[id].copy+' Keep your original and review the tool limitations.';
+const tools = toolRegistry();
+for (const [id, slug, title] of toolRoutes) {
+  const description=tools[id].copy+' Keep your original and review the tool limitations.';
   let html=routeSource.replaceAll('%%TITLE%%',title).replace(/<meta name="description" content="[^"]*">/,`<meta name="description" content="${escapeHtml(description)}">`);
+  html=html.replace('<html ',`<html data-tool-id="${escapeHtml(id)}" `);
   html=html.replace('</head>',pageMetadata(`/${slug}/`,title,description,true)+'</head>');
-  await writeFile(path.join(dist,slug,'index.html'),html);
+  await writeFile(path.join(dist,slug,'index.html'),html.trimEnd()+'\n');
 }
 
 for (const [slug, page] of Object.entries(pages)) {
   await writeFile(path.join(dist, slug, 'index.html'), renderDocPage(slug, page));
 }
 
-console.log(`Generated ${core.length} tool routes and ${Object.keys(pages).length} beta information pages.`);
+console.log(`Generated ${toolRoutes.length} tool routes and ${Object.keys(pages).length} beta information pages.`);
 
-const capabilities=capabilityData(core);
+const capabilities=capabilityData(toolRoutes);
 await writeFile(path.join(dist,'capabilities.json'),JSON.stringify(capabilities,null,2)+'\n');
 await writeFile(path.join(dist,'tools','index.html'),renderDocPage('tools',{title:'Every tool, with its limits',intro:`A complete guide to ${site.name}’s browser PDF tools and supported capabilities.`,body:toolDirectory(capabilities)}));
 await writeFile(path.join(dist,'docs','capabilities.md'),knowledgeMarkdown(capabilities));

@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 import assert from 'node:assert/strict';
-import {core,pages} from '../src/content/routes.mjs';
+import {toolRoutes,pages} from '../src/content/routes.mjs';
 import {toolRegistry} from '../src/content/tools.mjs';
 import {site} from '../src/content/site.mjs';
 const catalog=JSON.parse(await fs.readFile('dist/capabilities.json','utf8'));
@@ -11,7 +11,8 @@ assert.equal(catalog.tools.find(t=>t.id==='sanitize').status,'unavailable');
 assert.equal(catalog.tools.find(t=>t.id==='redact').status,'experimental');
 for(const id of ['translate','aisummary'])assert.equal(catalog.tools.find(t=>t.id===id).status,'browser-dependent');
 assert.equal(catalog.documentUploadEndpoint,null);assert.equal(catalog.supportEmail,null);
-for(const slug of ['',...core.map(t=>t[1]),...Object.keys(pages),'tools']){
+for(const [id,slug] of toolRoutes)assert.equal(catalog.tools.find(t=>t.id===id).url,site.origin+'/'+slug+'/',id);
+for(const slug of ['',...toolRoutes.map(t=>t[1]),...Object.keys(pages),'tools']){
  const html=await fs.readFile(`dist/${slug?slug+'/':''}index.html`,'utf8');
  assert.match(html,/noindex,nofollow/);assert.match(html,new RegExp('rel="canonical" href="'+site.origin.replaceAll('.','\\.')+(slug?'/'+slug+'/':'/')+'"'));
  const blocks=[...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];assert.equal(blocks.length,1,slug);

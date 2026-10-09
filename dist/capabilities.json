@@ -66,14 +66,14 @@
       "id": "images",
       "name": "Images to PDF",
       "description": "Turn JPG and PNG images into one clean PDF.",
-      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=images",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/jpg-to-pdf/",
       "inputMimeTypes": [
         "image/jpeg",
         "image/png"
       ],
       "multipleFiles": true,
       "status": "implemented",
-      "limitations": "Turn JPG and PNG images into one clean PDF.",
+      "limitations": "One PDF page per JPG or PNG, using the image dimensions. Page order follows the selected files; margins and orientation controls are unavailable. Photo PDFs are not automatically searchable.",
       "processing": "on-device"
     },
     {
@@ -679,7 +679,7 @@
       "id": "wordtopdf",
       "name": "Word to PDF",
       "description": "Convert DOCX text into a private browser-generated PDF.",
-      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=wordtopdf",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/word-to-pdf/",
       "inputMimeTypes": [
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
       ],
@@ -1025,13 +1025,13 @@
       "id": "lossless",
       "name": "Lossless PDF compression",
       "description": "Optimize PDF structure without rasterizing text. Size reduction varies.",
-      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=lossless",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/lossless-compress-pdf/",
       "inputMimeTypes": [
         "application/pdf"
       ],
       "multipleFiles": false,
       "status": "implemented",
-      "limitations": "Optimize PDF structure without rasterizing text. Size reduction varies.",
+      "limitations": "Optimizes PDF structure locally without turning pages into images. Size reduction is not guaranteed; keep the original and inspect the result. Modifying PDFs can invalidate digital signatures.",
       "processing": "on-device"
     },
     {
@@ -1051,26 +1051,26 @@
       "id": "jpg",
       "name": "PDF to JPG",
       "description": "Export each page as a JPG in a ZIP file.",
-      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=jpg",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/pdf-to-jpg/",
       "inputMimeTypes": [
         "application/pdf"
       ],
       "multipleFiles": false,
       "status": "implemented",
-      "limitations": "Export each page as a JPG in a ZIP file.",
+      "limitations": "Renders every PDF page into a JPG and downloads them together as a ZIP. This does not extract the original embedded images. Inspect image readability; large pages may exceed rendering limits.",
       "processing": "on-device"
     },
     {
       "id": "docx",
       "name": "PDF to Word (DOCX)",
       "description": "Export selectable text into an editable DOCX. Original layouts and images are not preserved.",
-      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=docx",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/pdf-to-word/",
       "inputMimeTypes": [
         "application/pdf"
       ],
       "multipleFiles": false,
       "status": "implemented",
-      "limitations": "Export selectable text into an editable DOCX. Original layouts and images are not preserved.",
+      "limitations": "Exports selectable PDF text to native DOCX paragraphs. Original layout, tables and images are not preserved; scans need English OCR first.",
       "processing": "on-device"
     },
     {

@@ -5,6 +5,7 @@ import * as pdfLib from 'pdf-lib';
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
 import JSZip from 'jszip';
 import {core,notices,classifyOutcome,safeMetric} from '../dist/launch.mjs';
+import {toolRoutes} from '../src/content/routes.mjs';
 const standardFontDataUrl='node_modules/pdfjs-dist/standard_fonts/';
 const html=fs.readFileSync('dist/index.html','utf8');
 const scriptPath=html.match(/<script type="module" src="([^"]+)"><\/script>/)?.[1];
@@ -12,9 +13,9 @@ assert.equal(scriptPath,'/assets/app.js');
 const script=fs.readFileSync(`dist${scriptPath}`,'utf8');
 new vm.Script(fs.readFileSync('dist/sw.js','utf8'));
 assert.equal(core.length,10);assert.equal(new Set(core.map(x=>x[1])).size,10);
-for(const [,slug] of core){const page=fs.readFileSync(`dist/${slug}/index.html`,'utf8');assert(page.includes('<base href="/">'));assert(page.includes('noindex,nofollow'))}
+for(const [id,slug] of toolRoutes){const page=fs.readFileSync(`dist/${slug}/index.html`,'utf8');assert(page.includes('<base href="/">'));assert(page.includes('noindex,nofollow'));assert(page.includes(`data-tool-id="${id}"`));}
 for(const slug of ['privacy','security','limitations','terms','testing'])assert(fs.existsSync(`dist/${slug}/index.html`));
-for(const route of [...core.map(x=>x[1]),'privacy','security','limitations','terms','testing'])assert(fs.existsSync(`dist/${route}/index.html`),`missing route ${route}`);
+for(const route of [...toolRoutes.map(x=>x[1]),'privacy','security','limitations','terms','testing'])assert(fs.existsSync(`dist/${route}/index.html`),`missing route ${route}`);
 for(const file of ['dist/index.html','dist/assets/app.js','dist/assets/tesseract/worker.min.js','dist/launch.mjs']){
  const text=fs.readFileSync(file,'utf8');
  assert(!/CODEX_PRIMARY_RUNTIME_NODE_MODULES/.test(text),`${file} must not use Codex runtime dependencies`);
@@ -78,5 +79,5 @@ const legacySpreadsheetText=await pdfText(api.outputs[0].bytes);
 assert.match(legacySpreadsheetText,/LegacySheet/);
 assert.match(legacySpreadsheetText,/Legacy,Value/);
 assert.match(legacySpreadsheetText,/Signal,314/);
-console.log(`PASS: syntax, 15 routes, metrics schema, route option initialization, page-range validation, XLSX and legacy XLS spreadsheet-to-PDF regressions; ${runs} generated-bundle app-handler executions across 10 generated PDFs plus malformed input.`);
+console.log(`PASS: syntax, ${toolRoutes.length} tool routes and 5 information pages, metrics schema, route option initialization, page-range validation, XLSX and legacy XLS spreadsheet-to-PDF regressions; ${runs} generated-bundle app-handler executions across 10 generated PDFs plus malformed input.`);
 console.log('NOT TESTED: browser rendering, OCR, camera, compression, redaction accuracy, encrypted inputs, browser network traffic, Safari/mobile, human task completion.');

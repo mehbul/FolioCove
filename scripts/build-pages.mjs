@@ -3,12 +3,15 @@ import './build.mjs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {site} from '../src/content/site.mjs';
-import {core,pages} from '../src/content/routes.mjs';
+import {toolRoutes,pages} from '../src/content/routes.mjs';
 import {buildDiscovery} from '../src/content/discovery.mjs';
 import {buildBlog} from '../src/content/blog.mjs';
 import {buildSupport} from '../src/content/support.mjs';
 const base='/FolioCove';
 const origin='https://mehbul.github.io'+base;
+const routeSlugs=[...toolRoutes.map(([,slug])=>slug),...Object.keys(pages),'tools'];
+const escapedRouteSlugs=routeSlugs.map(slug=>slug.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|');
+const applicationPaths=new RegExp(/(["'`])\/(assets\/|previews\/|launch\.mjs|sw\.js|[^"'`\s<>]*\.css|manifest\.webmanifest|tester-results\.csv|device-pilot\.csv|capabilities\.json|llms\.txt|(?:%%ROUTES%%)\/|\?tool=)/.source.replace('%%ROUTES%%',escapedRouteSlugs),'g');
 async function adapt(directory){
  for(const entry of await fs.readdir(directory,{withFileTypes:true})){
   const file=path.join(directory,entry.name);
@@ -17,7 +20,7 @@ async function adapt(directory){
   let text=await fs.readFile(file,'utf8');
   text=text.replaceAll(site.origin,origin);
   // Only application asset/route literals; relative bundled imports stay unchanged.
-  text=text.replace(/(["'`])\/(assets\/|previews\/|launch\.mjs|sw\.js|[^"'`\s<>]*\.css|manifest\.webmanifest|tester-results\.csv|device-pilot\.csv|capabilities\.json|llms\.txt|(?:merge-pdf|split-pdf|organize-pdf|compress-pdf|scan-pdf|ocr-pdf|edit-pdf|sign-pdf|redact-pdf|privacy-inspector|testing|privacy|security|limitations|terms|tools)\/|\?tool=)/g,`$1${base}/$2`);
+  text=text.replace(applicationPaths,`$1${base}/$2`);
   if(file.endsWith('.html'))text=text.replaceAll('href="/"',`href="${base}/"`).replaceAll('content="noindex,nofollow"','content="index,follow"').replaceAll('<base href="/">',`<base href="${base}/">`).replaceAll(site.name+' — Private PDF tools',site.name+' — Free, open-source PDF tools');
   text=text.replaceAll('not yet publicly indexed','eligible for public search indexing');
   text=text.replace('FolioCove is ready for a controlled private pilot with synthetic or non-sensitive documents. Public launch is pending a working support inbox, finished public notices and a short real-device pilot. Operator name: FolioCove. Country: India. The public support email has not yet been set up.','FolioCove is available as a public beta. Use synthetic or non-sensitive documents and inspect outputs. Report bugs on GitHub without attaching personal documents. Operator: FolioCove, India. A public support email and physical-device pilot are still pending; these beta notices are not finalized public-business policies.');
@@ -41,13 +44,13 @@ const guideUrls=await buildDiscovery();
 const blogUrls=await buildBlog();
 await buildSupport();
 // The support page is public-only; retain the private Sites publication's audience.
-for(const slug of ['',...core.map(x=>x[1]),...Object.keys(pages),'tools','demo',...guideUrls,...blogUrls]){
+for(const slug of ['',...toolRoutes.map(x=>x[1]),...Object.keys(pages),'tools','demo',...guideUrls,...blogUrls]){
  const file=`dist/${slug?slug+'/':''}index.html`;
  const html=await fs.readFile(file,'utf8');
  await fs.writeFile(file,html.replace('</footer>',`<p style="text-align:center;padding:8px"><a href="${base}/support/">Help and feedback</a></p></footer>`));
 }
 await fs.appendFile('dist/llms.txt',`\n## Support\n\n- [Help and feedback](${origin}/support/): Public bug reports, private vulnerability reporting and current support limits.\n`);
-const urls=['',...core.map(x=>x[1]),...Object.keys(pages),'tools','demo','support',...guideUrls,...blogUrls];
+const urls=['',...toolRoutes.map(x=>x[1]),...Object.keys(pages),'tools','demo','support',...guideUrls,...blogUrls];
 await fs.writeFile('dist/sitemap.xml','<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+urls.map(slug=>`<url><loc>${origin}/${slug?slug+'/':''}</loc></url>`).join('\n')+'\n</urlset>\n');
 // robots.txt belongs at the host root; this project copy is informational.
 await fs.writeFile('dist/robots.txt',`User-agent: *\nAllow: /\nSitemap: ${origin}/sitemap.xml\n`);

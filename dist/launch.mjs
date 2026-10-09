@@ -16,6 +16,10 @@ export const notices={
  sanitize:'Verified secure sanitization is currently unavailable. This tool will not create a PDF download.',
  trimheads:'Covers regions with white rectangles; underlying text remains recoverable. This is NOT redaction.',
  wordtopdf:'DOCX text extraction only; layout, images and tables are not preserved.',
+ docx:'Exports selectable PDF text to native DOCX paragraphs. Original layout, tables and images are not preserved; scans need English OCR first.',
+ images:'One PDF page per JPG or PNG, using the image dimensions. Page order follows the selected files; margins and orientation controls are unavailable. Photo PDFs are not automatically searchable.',
+ jpg:'Renders every PDF page into a JPG and downloads them together as a ZIP. This does not extract the original embedded images. Inspect image readability; large pages may exceed rendering limits.',
+ lossless:'Optimizes PDF structure locally without turning pages into images. Size reduction is not guaranteed; keep the original and inspect the result. Modifying PDFs can invalidate digital signatures.',
  pdftoword:'Exports text as HTML in a .doc wrapper, not a native DOCX conversion. Word may show a format warning.',
  pdftoexcel:'Exports text to CSV, not native XLSX or accurate table reconstruction. Spreadsheet-triggering values are prefixed as text.',
  exceltopdf:'Exports spreadsheet cell values as text. Formatting, charts and formula layout are not preserved.',
@@ -84,7 +88,11 @@ export function initLaunch(api){
  // Old per-button option handlers still exist; run after them to label fresh controls.
  document.querySelector('.sidebar').addEventListener('click',()=>queueMicrotask(showLimit));
  const route=core.find(x=>location.pathname.replace(/\/$/,'')==='/'+x[1]);
- if(route)document.querySelector(`[data-tool="${route[0]}"]`).click();else showLimit();
+ const routeTool=document.documentElement.dataset.toolId||route?.[0];
+ const routeButton=routeTool&&document.querySelector(`[data-tool="${routeTool}"]`);
+ // Extended buttons are initialized after this module. The final boot
+ // selection reads data-tool-id once every tool is registered.
+ if(routeButton&&Object.hasOwn(api.configs,routeTool))routeButton.click();else showLimit();
  const block=(e)=>{if(running&&e.target.closest('.sidebar,#options,#files,#drop,.core-tools,#favorite')){e.preventDefault();e.stopImmediatePropagation()}};
  document.addEventListener('click',block,true);document.addEventListener('drop',block,true);
  document.addEventListener('click',e=>{if(e.target!==go||running||go.disabled)return;

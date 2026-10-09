@@ -46,11 +46,11 @@ Selected documents are processed on-device; there is no document-upload endpoint
 ### Images to PDF
 
 - ID: images
-- Open: https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=images
+- Open: https://foliocove-tools.mehbulislam81.chatgpt.site/jpg-to-pdf/
 - Status: implemented
 - Input MIME types: image/jpeg, image/png
 - Purpose: Turn JPG and PNG images into one clean PDF.
-- Boundary: Turn JPG and PNG images into one clean PDF.
+- Boundary: One PDF page per JPG or PNG, using the image dimensions. Page order follows the selected files; margins and orientation controls are unavailable. Photo PDFs are not automatically searchable.
 
 ### Add watermark
 
@@ -469,7 +469,7 @@ Selected documents are processed on-device; there is no document-upload endpoint
 ### Word to PDF
 
 - ID: wordtopdf
-- Open: https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=wordtopdf
+- Open: https://foliocove-tools.mehbulislam81.chatgpt.site/word-to-pdf/
 - Status: implemented
 - Input MIME types: application/vnd.openxmlformats-officedocument.wordprocessingml.document
 - Purpose: Convert DOCX text into a private browser-generated PDF.
@@ -703,11 +703,11 @@ Selected documents are processed on-device; there is no document-upload endpoint
 ### Lossless PDF compression
 
 - ID: lossless
-- Open: https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=lossless
+- Open: https://foliocove-tools.mehbulislam81.chatgpt.site/lossless-compress-pdf/
 - Status: implemented
 - Input MIME types: application/pdf
 - Purpose: Optimize PDF structure without rasterizing text. Size reduction varies.
-- Boundary: Optimize PDF structure without rasterizing text. Size reduction varies.
+- Boundary: Optimizes PDF structure locally without turning pages into images. Size reduction is not guaranteed; keep the original and inspect the result. Modifying PDFs can invalidate digital signatures.
 
 ### Recover damaged PDF
 
@@ -721,20 +721,20 @@ Selected documents are processed on-device; there is no document-upload endpoint
 ### PDF to JPG
 
 - ID: jpg
-- Open: https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=jpg
+- Open: https://foliocove-tools.mehbulislam81.chatgpt.site/pdf-to-jpg/
 - Status: implemented
 - Input MIME types: application/pdf
 - Purpose: Export each page as a JPG in a ZIP file.
-- Boundary: Export each page as a JPG in a ZIP file.
+- Boundary: Renders every PDF page into a JPG and downloads them together as a ZIP. This does not extract the original embedded images. Inspect image readability; large pages may exceed rendering limits.
 
 ### PDF to Word (DOCX)
 
 - ID: docx
-- Open: https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=docx
+- Open: https://foliocove-tools.mehbulislam81.chatgpt.site/pdf-to-word/
 - Status: implemented
 - Input MIME types: application/pdf
 - Purpose: Export selectable text into an editable DOCX. Original layouts and images are not preserved.
-- Boundary: Export selectable text into an editable DOCX. Original layouts and images are not preserved.
+- Boundary: Exports selectable PDF text to native DOCX paragraphs. Original layout, tables and images are not preserved; scans need English OCR first.
 
 ### PDF to Excel (XLSX)
 

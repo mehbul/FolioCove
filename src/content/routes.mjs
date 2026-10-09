@@ -11,6 +11,17 @@ export const core = [
   ['privacycheck', 'privacy-inspector', 'Privacy Inspector']
 ];
 
+// Dedicated workspaces for additional implemented tasks. The Everyday tools
+// list stays separate so expanding public routes does not change its behavior.
+export const additionalToolRoutes = [
+  ['docx', 'pdf-to-word', 'PDF to Word (DOCX)'],
+  ['images', 'jpg-to-pdf', 'JPG and PNG to PDF'],
+  ['jpg', 'pdf-to-jpg', 'PDF to JPG'],
+  ['wordtopdf', 'word-to-pdf', 'Word to PDF'],
+  ['lossless', 'lossless-compress-pdf', 'Lossless PDF compression']
+];
+export const toolRoutes = [...core, ...additionalToolRoutes];
+
 export const pages = {
   privacy: {
     title: 'Your files, your privacy',

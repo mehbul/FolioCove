@@ -6,7 +6,7 @@ FolioCove is a static browser PDF workspace. Read README.md, PRODUCT.md and DESI
 
 - `src/content/tools.mjs`: shared definitions for the 74 base and 14 extended tools. The browser and generated capability catalog consume this registry.
 - `src/app/index.mjs`: base handlers and workspace state. `src/app/extended.mjs`: extended handlers. `src/app/launch.mjs`: discovery, limits and local metrics.
-- `src/content/routes.mjs`: ten core routes and information-page copy. `src/content/ai.mjs`: static directory, capability exports and JSON-LD. `src/content/site.mjs`: site identity and beta status.
+- `src/content/routes.mjs`: ten core and five additional task routes, plus information-page copy. `src/content/ai.mjs`: static directory, capability exports and JSON-LD. `src/content/site.mjs`: site identity and beta status.
 - `scripts/build.mjs`: generates `dist/`. Edit source, then rebuild; do not patch generated output alone.
 - `docs/audits/`: scoped validation evidence, limitations and the physical-device checklist.
 

@@ -1,14 +1,17 @@
 import {test,expect} from '@playwright/test';
 import path from 'node:path';
-import {makeFixtureDir,createPdf,runAndSaveDownload,pdfPageCount,pdfText} from './helpers.mjs';
-import {core} from '../../src/content/routes.mjs';
+import fs from 'node:fs/promises';
+import JSZip from 'jszip';
+import {PDFDocument} from 'pdf-lib';
+import {makeFixtureDir,createPdf,createDocumentPhoto,runAndSaveDownload,pdfPageCount,pdfText} from './helpers.mjs';
+import {toolRoutes,additionalToolRoutes} from '../../src/content/routes.mjs';
 test.skip(!process.env.FOLIOCOVE_PAGES_TEST,'Only run against the Pages subpath server');
 
 test('PDF task links and matching metadata are available without JavaScript',async({browser,baseURL})=>{
  const context=await browser.newContext({baseURL,javaScriptEnabled:false});
  try{
   const page=await context.newPage();await page.goto('/FolioCove/');
-  await expect(page.getByRole('navigation',{name:'PDF task links'}).locator('a')).toHaveCount(core.length);
+  await expect(page.getByRole('navigation',{name:'PDF task links'}).locator('a')).toHaveCount(toolRoutes.length);
   const title=await page.title(),description=await page.locator('meta[name=description]').getAttribute('content');
   await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content',title);
   await expect(page.locator('meta[property="og:description"]')).toHaveAttribute('content',description);
@@ -20,7 +23,7 @@ test('PDF task links and matching metadata are available without JavaScript',asy
   expect(schema['@graph'].find(x=>x['@type']==='Organization').name).toBe('FolioCove');
   await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute('content','FolioCove PDF');
   await expect(page.getByRole('region',{name:'Free PDF tasks'})).toContainText('FolioCovePDF');
-  for(const [,slug] of core){
+  for(const [,slug] of toolRoutes){
    await expect(page.getByRole('navigation',{name:'PDF task links'}).locator(`a[href="/FolioCove/${slug}/"]`)).toHaveCount(1);
   }
   await page.getByRole('navigation',{name:'PDF task links'}).getByRole('link',{name:'Extract pages',exact:true}).click();
@@ -31,6 +34,67 @@ test('PDF task links and matching metadata are available without JavaScript',asy
   await expect(page.locator('article')).toContainText('FolioCove is available as a public beta');
   await expect(page.locator('article')).not.toContainText('Public launch is pending');
  }finally{await context.close();}
+});
+
+test('Additional task pages expose distinct content and catalog links without JavaScript',async({browser,baseURL})=>{
+ const context=await browser.newContext({baseURL,javaScriptEnabled:false,viewport:{width:390,height:844}});
+ try{
+  const page=await context.newPage(),catalog=await(await page.request.get('/FolioCove/capabilities.json')).json();
+  const sitemap=await(await page.request.get('/FolioCove/sitemap.xml')).text(),titles=new Set();
+  for(const [id,slug] of additionalToolRoutes){
+   const url='https://mehbul.github.io/FolioCove/'+slug+'/';
+   expect(catalog.tools.find(t=>t.id===id).url).toBe(url);expect(sitemap).toContain('<loc>'+url+'</loc>');
+   const response=await page.goto('/FolioCove/'+slug+'/');expect(response.status()).toBe(200);
+   await expect(page.locator('html')).toHaveAttribute('data-tool-id',id);
+   await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href',url);
+   await expect(page.locator('meta[name=robots]')).toHaveAttribute('content','index,follow');
+   const title=await page.title();titles.add(title);
+   await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content',title);
+   const app=JSON.parse(await page.locator('script[type="application/ld+json"]').textContent())['@graph'].find(x=>x['@type']==='WebApplication');
+   expect(app.url).toBe(url);expect(app.description).toBe(await page.locator('meta[name=description]').getAttribute('content'));
+   await expect(page.locator('.search-guide').first()).toContainText('Tool boundary');
+   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  }
+  expect(titles.size).toBe(additionalToolRoutes.length);
+  await page.goto('/FolioCove/tools/');
+  for(const [,slug] of additionalToolRoutes)await expect(page.locator(`a[href="/FolioCove/${slug}/"]`)).toHaveCount(1);
+ }finally{await context.close();}
+});
+
+test('Direct conversion routes initialize on reload and produce the documented local outputs',async({page})=>{
+ const failures=[],externalRequests=[];page.on('pageerror',e=>failures.push(e.message));
+ page.on('request',r=>{if(new URL(r.url()).origin!=='http://127.0.0.1:4174')externalRequests.push(r.url())});
+ const dir=await makeFixtureDir(),input=await createPdf(path.join(dir,'source.pdf'),['FC-CONVERT-FIRST','FC-CONVERT-SECOND']);
+ const open=async(slug,title)=>{
+  await page.goto('/FolioCove/'+slug+'/');await expect(page.getByTestId('file-input')).toBeEnabled();
+  await expect(page.getByTestId('tool-title')).toHaveText(title);
+  await page.reload();await expect(page.getByTestId('file-input')).toBeEnabled();
+  await expect(page.getByTestId('tool-title')).toHaveText(title);
+ };
+ await open('pdf-to-word','PDF to Word (DOCX)');
+ await expect(page.locator('#tool-limit')).toContainText('Original layout, tables and images are not preserved');
+ await page.getByTestId('file-input').setInputFiles(input);
+ const docx=await runAndSaveDownload(page,dir,'document.docx'),word=await JSZip.loadAsync(await fs.readFile(docx));
+ const document=await word.file('word/document.xml').async('string');
+ expect(document).toContain('FC-CONVERT-FIRST');expect(document).toContain('FC-CONVERT-SECOND');
+ await open('word-to-pdf','Word to PDF');await page.getByTestId('file-input').setInputFiles(docx);
+ const wordPdf=await runAndSaveDownload(page,dir,'word-to-pdf.pdf');
+ expect(await pdfText(wordPdf)).toContain('FC-CONVERT-FIRST');expect(await pdfText(wordPdf)).toContain('FC-CONVERT-SECOND');
+ await open('pdf-to-jpg','PDF to JPG');await page.getByTestId('file-input').setInputFiles(input);
+ const jpgZip=await JSZip.loadAsync(await fs.readFile(await runAndSaveDownload(page,dir,'pdf-jpg-pages.zip')));
+ expect(Object.keys(jpgZip.files)).toEqual(['page-001.jpg','page-002.jpg']);
+ for(const name of Object.keys(jpgZip.files))expect([...((await jpgZip.file(name).async('uint8array')).slice(0,3))]).toEqual([255,216,255]);
+ const image=path.join(dir,'page-001.jpg');await fs.writeFile(image,await jpgZip.file('page-001.jpg').async('nodebuffer'));
+ const photo=await createDocumentPhoto(path.join(dir,'photo.png'));
+ await open('jpg-to-pdf','Images to PDF');await page.getByTestId('file-input').setInputFiles([image,photo]);
+ await page.getByRole('button',{name:'Move up: photo.png'}).click();
+ const images=await PDFDocument.load(await fs.readFile(await runAndSaveDownload(page,dir,'images.pdf')));
+ expect(images.getPageCount()).toBe(2);expect(images.getPages().map(p=>p.getSize())).toEqual([{width:96,height:72},{width:630,height:810}]);
+ await open('lossless-compress-pdf','Lossless PDF compression');await page.getByTestId('file-input').setInputFiles(input);
+ const compressed=await runAndSaveDownload(page,dir,'lossless.pdf');
+ expect(await pdfPageCount(compressed)).toBe(2);expect(await pdfText(compressed)).toContain('FC-CONVERT-FIRST');
+ expect(await pdfText(compressed)).toContain('FC-CONVERT-SECOND');
+ expect(externalRequests).toEqual([]);expect(failures).toEqual([]);
 });
 
 test('PDF brand stays readable across public pages and tool navigation',async({page})=>{
@@ -123,6 +187,15 @@ test('Comparison blog is discoverable, sourced and usable on mobile',async({page
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  }
  await page.goto('/FolioCove/blog/');await expect(page.locator('h1')).toHaveText('PDF comparisons & privacy');
+ await page.getByRole('link',{name:'A free Smallpdf alternative for PDFs without uploads',exact:true}).first().click();
+ await expect(page.locator('article')).toContainText('not affiliated with Smallpdf');
+ await expect(page.locator('article a[href="https://smallpdf.com/privacy"]')).toHaveCount(1);
+ await expect(page.locator('article')).toContainText('Full offline use is not supported');
+ const smallpdf=await page.locator('script[type="application/ld+json"]').allTextContents();
+ const post=smallpdf.map(x=>JSON.parse(x)).find(x=>x['@type']==='BlogPosting');
+ expect(post.headline).toBe(await page.locator('h1').textContent());expect(post.datePublished).toBe('2026-10-10');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ const sitemap=await(await page.request.get('/FolioCove/sitemap.xml')).text();expect(sitemap).toContain('https://mehbul.github.io/FolioCove/blog/smallpdf-alternative/');
 });
 
 test('Merge and extraction help remains useful without JavaScript',async({browser,baseURL})=>{
