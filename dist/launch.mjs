@@ -51,7 +51,7 @@ export function initLaunch(api){
   privacycheck:['inspect','proposal',null,'Privacy','Take a closer look at hidden data','eye','Read only']
  };
  const icon=name=>{const img=document.createElement('img');img.src='/assets/icons/'+name+'.svg';img.alt='';img.width=20;img.height=20;return img};
- const grid=$('core-tools');for(const [id,slug,title] of core){
+ const grid=$('core-tools');if(document.documentElement.dataset.page==='home')for(const [id,slug,title] of core){
   const [coverName,primary,secondary,group,description,iconName,badge]=previews[id];
   const a=document.createElement('a');a.href='/'+slug+'/';a.dataset.group=group;a.dataset.search=(title+' '+description).toLowerCase();
   const cover=document.createElement('span');cover.className='tool-cover cover-'+coverName;

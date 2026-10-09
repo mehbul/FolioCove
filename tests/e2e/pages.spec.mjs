@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 import path from 'node:path';
-import {makeFixtureDir,createPdf,runAndSaveDownload,pdfPageCount} from './helpers.mjs';
+import {makeFixtureDir,createPdf,runAndSaveDownload,pdfPageCount,pdfText} from './helpers.mjs';
 import {core} from '../../src/content/routes.mjs';
 test.skip(!process.env.FOLIOCOVE_PAGES_TEST,'Only run against the Pages subpath server');
 
@@ -66,7 +66,7 @@ test('Public PDF guides link to functioning workspaces and expose truthful crawl
  await expect(page.locator('meta[name=robots]')).toHaveAttribute('content','index,follow');
  await page.getByRole('link',{name:'Merge PDFs',exact:true}).click();
  await expect(page.getByTestId('tool-title')).toHaveText('Merge PDFs');
- await expect(page.locator('.search-guide')).toContainText('No account is required');
+ await expect(page.getByRole('region',{name:'Merge PDFs guide',exact:true})).toContainText('No account is required');
  const schema=JSON.parse(await page.locator('script[type="application/ld+json"]').textContent());
  expect(schema['@graph'].find(x=>x['@type']==='WebApplication').isAccessibleForFree).toBe(true);
  for(const slug of ['extract-pages-from-pdf','reduce-pdf-size']){
@@ -95,4 +95,44 @@ test('Comparison blog is discoverable, sourced and usable on mobile',async({page
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  }
  await page.goto('/FolioCove/blog/');await expect(page.locator('h1')).toHaveText('PDF comparisons & privacy');
+});
+
+test('Merge and extraction help remains useful without JavaScript',async({browser,baseURL})=>{
+ const context=await browser.newContext({baseURL,javaScriptEnabled:false,viewport:{width:390,height:844}});
+ try{
+  const page=await context.newPage();
+  for(const [slug,region,sample] of [['merge-pdf','Merge PDF questions','merge-first.pdf'],['split-pdf','Extract PDF questions','extract-six-pages.pdf']]){
+   await page.goto('/FolioCove/'+slug+'/');
+   const help=page.getByRole('region',{name:region});await expect(help).toBeVisible();
+   await expect(help.locator(`a[href="/FolioCove/examples/${sample}"]`)).toHaveCount(1);
+   expect((await page.request.get('/FolioCove/examples/'+sample)).status()).toBe(200);
+   const schema=JSON.parse(await page.locator('script[type="application/ld+json"]').textContent());
+   const app=schema['@graph'].find(x=>x['@type']==='WebApplication');
+   expect(app.name).toMatch(/^FolioCove PDF tools — /);
+   expect(app.description).toBe(await page.locator('meta[name=description]').getAttribute('content'));
+   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  }
+  await expect(page.getByRole('table')).toContainText('6,2-4');
+ }finally{await context.close();}
+});
+
+test('Direct task pages avoid hidden previews and honor the published page selections',async({page})=>{
+ const previews=[],failures=[];page.on('request',r=>{if(r.url().includes('/previews/'))previews.push(r.url())});page.on('pageerror',e=>failures.push(e.message));
+ await page.setViewportSize({width:390,height:844});
+ await page.goto('/FolioCove/merge-pdf/');await expect(page.getByTestId('file-input')).toBeEnabled();
+ await expect(page.locator('#core-tools a')).toHaveCount(0);
+ await page.goto('/FolioCove/split-pdf/');await expect(page.getByTestId('file-input')).toBeEnabled();
+ const dir=await makeFixtureDir(),input=await createPdf(path.join(dir,'six-pages.pdf'),[1,2,3,4,5,6].map(n=>'FC-EXTRACT-'+n));
+ await page.getByTestId('file-input').setInputFiles(input);
+ for(const [range,expected] of [['2-4',[2,3,4]],['1,4-6',[1,4,5,6]],['6,2-4',[6,2,3,4]],['2-4,3',[2,3,4]]]){
+  await page.getByLabel('Pages to keep').fill(range);
+  const output=await runAndSaveDownload(page,dir,'extracted-pages.pdf');
+  expect(await pdfPageCount(output)).toBe(expected.length);
+  expect((await pdfText(output)).match(/FC-EXTRACT-\d/g)).toEqual(expected.map(n=>'FC-EXTRACT-'+n));
+ }
+ await page.getByLabel('Pages to keep').fill('4-2');await page.getByTestId('run-tool').click();
+ await expect(page.getByTestId('status')).toContainText('Choose pages between 1 and 6');
+ await page.getByLabel('Pages to keep').fill('1');expect(await pdfPageCount(await runAndSaveDownload(page,dir,'extracted-pages.pdf'))).toBe(1);
+ expect(previews).toEqual([]);expect(failures).toEqual([]);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });

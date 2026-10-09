@@ -55,6 +55,7 @@ await esbuild({
   entryPoints: [path.join(src, 'app', 'index.mjs')],
   outfile: 'dist/assets/app.js',
   bundle: true,
+  minifyWhitespace: true,
   format: 'esm',
   target: ['es2022'],
   platform: 'browser',

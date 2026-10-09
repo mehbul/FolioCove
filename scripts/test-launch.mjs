@@ -33,7 +33,7 @@ const get=id=>{if(!nodes.has(id))nodes.set(id,new Element(id));return nodes.get(
 const buttons=[...html.matchAll(/<button class="tool[^>]*data-tool="([^"]+)"/g)].map(m=>{const el=new Element();el.dataset.tool=m[1];return el});
 const document={getElementById:get,querySelectorAll:()=>buttons,querySelector:s=>buttons.find(x=>s.includes(`"${x.dataset.tool}"`))||new Element(),createElement:()=>new Element(),dispatchEvent:()=>{}};
 const context={document,localStorage:{getItem:()=>null,setItem:()=>{}},CustomEvent:class{},setTimeout,console,Blob,URL,Intl};
-const body=script.split(/(?:const|var)\s+\{\s*initLaunch\s*\}\s*=\s*await\s+import\(["']\/launch\.mjs["']\)/)[0];
+const body=script.split(/(?:const|var)\s*\{\s*initLaunch\s*\}\s*=\s*await\s+import\(["']\/launch\.mjs["']\)/)[0];
 assert.notEqual(body,script,'test harness could not isolate the generated app bundle setup code');
 for(const [key,value] of Object.entries(context))Object.defineProperty(globalThis,key,{value,configurable:true,writable:true});
 const harnessModule=body+`\n const testApi={configs,setupTool,pageIndexes,set:(tool,input)=>{current=tool;selected=input;},getStatus:()=>({kind:status.className,text:status.textContent}),outputs:[],};download=(bytes,name)=>testApi.outputs.push({bytes,name});downloadBlob=(blob,name)=>testApi.outputs.push({blob,name});export {testApi};`;

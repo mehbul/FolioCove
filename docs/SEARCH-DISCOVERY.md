@@ -1,5 +1,17 @@
 # Organic discovery
 
+## Current evidence and next decision
+
+On 9 October 2026, Search Console still reported the homepage indexed. The 28-day Web performance view showed two impressions, zero clicks, and only the homepage in the page table; the chart covered 30 September–6 October and the report was last updated about 16 hours earlier. No query rows were available. Its average position of two comes from that tiny sample and does not establish placement for generic PDF searches.
+
+The same day's manual, non-personalized Google check in India found FolioCove second among regular web results for “foliocove pdf,” below an unrelated Folio PDF app. FolioCove was absent from page one for “pdf,” “free pdf tools” and “merge pdf online.” Bare “foliocove” was corrected to “folio cover.” These are observations from one session, not a universal or stable ranking.
+
+The immediate response strengthens existing merge and extraction pages rather than adding duplicate keyword pages: practical answers, directly downloadable synthetic samples, related workflow links, and tested range examples. All ten tool pages now identify their WebApplication as FolioCove PDF tools plus the task name. GitHub's public repository description uses the same brand and on-device positioning. The awesome-pdf submission remains open with no reviews as of this check; it is not an accepted directory listing.
+
+For the next content decision, use Search Console's Web query and page tables over a consistent period. When non-brand queries appear, choose a relevant existing task page and improve the answer to the actual question. Compare impressions, clicks and landing pages after recrawling; do not interpret two impressions as evidence of broad demand or a ranking gain. No recurring monitor or remote analytics was installed.
+
+Keep new public claims grounded in independently inspectable output examples and clearly visible tool limits. Additional directory submissions should fit their contribution rules and disclose self-submission; avoid repetitive follow-ups, paid ranking links and invented independent endorsements. See [the scoped audit](audits/2026-10-09-task-discovery-loading.md).
+
 ## PDF task discovery
 
 The Pages build now aligns the homepage title, description, Open Graph fields and WebApplication metadata around free PDF tools for merging, splitting and compression. The visible introduction describes those tasks, local processing and account requirements. All ten core routes have task-specific H1 headings and introductions from the shared registry. A visible task navigation section is available in the initial HTML without JavaScript, while the interactive catalog stays intact. Google can also crawl JavaScript-generated links; this change improves initial availability rather than removing a confirmed indexing block.
