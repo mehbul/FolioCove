@@ -1,6 +1,6 @@
 # FolioCove directory submission record
 
-Checked 8 October 2026. Status: **prepared, not submitted**. Directory acceptance, traffic, backlinks and search rankings are not guaranteed. Use the existing public project and accurate task evidence; do not buy reviews, manufacture votes, bulk-post, or use unrelated categories.
+Checked 9 October 2026. Status: **submitted, awaiting maintainer review**. [Pull request #76](https://github.com/karllhughes/awesome-pdf/pull/76) proposes one entry; it is open, not accepted. Directory acceptance, traffic, backlinks and search rankings are not guaranteed. Use the existing public project and accurate task evidence; do not buy reviews, manufacture votes, bulk-post, or use unrelated categories.
 
 ## One appropriate first submission
 
@@ -43,7 +43,7 @@ This is a self-submission on behalf of FolioCove's maintainer. The project is a 
 - Source and MIT license: https://github.com/mehbul/FolioCove
 - Privacy: https://mehbul.github.io/FolioCove/privacy/
 - Limitations: https://mehbul.github.io/FolioCove/limitations/
-- Synthetic merge demo: https://mehbul.github.io/FolioCove/demo/
+- Synthetic examples: https://mehbul.github.io/FolioCove/guides/merge-pdfs-without-uploading/
 
 The proposed line describes the supported core tasks rather than claiming feature parity with another product. Redaction is experimental, browser AI is conditional, and verified sanitization/PDF/A are unavailable. Physical phone camera and native download behavior remain unverified.
 
@@ -54,7 +54,9 @@ Before publishing, the submitting agent must review the current upstream README 
 
 | Destination | Status | Submitted | Submission URL | Result |
 | --- | --- | --- | --- | --- |
-| karllhughes/awesome-pdf | Draft prepared | — | — | Not submitted; maintainer review has not occurred. |
+| karllhughes/awesome-pdf | Submitted | 9 October 2026 | [PR #76](https://github.com/karllhughes/awesome-pdf/pull/76) | Open; inclusion pending maintainer review. |
+
+Immediately before submission, open/closed issue and PR duplicate checks returned no matching FolioCove entries. Reviewed the current upstream contribution instructions and the exact one-line README diff. The app update had completed Pages deployment and live synthetic-merge verification before the contribution was published. Submitted through the owner's existing `mehbul` identity with maintainer association disclosed. No inclusion or endorsement is claimed.
 
 ## Destinations to avoid for now
 
