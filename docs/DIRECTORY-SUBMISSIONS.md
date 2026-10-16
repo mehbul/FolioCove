@@ -1,6 +1,6 @@
 # FolioCove directory submission record
 
-Checked 9 October 2026. Status: **submitted, awaiting maintainer review**. [Pull request #76](https://github.com/karllhughes/awesome-pdf/pull/76) proposes one entry; it is open, not accepted. Directory acceptance, traffic, backlinks and search rankings are not guaranteed. Use the existing public project and accurate task evidence; do not buy reviews, manufacture votes, bulk-post, or use unrelated categories.
+Rechecked 16 October 2026. Status: **accepted and present in the upstream README**. [Pull request #76](https://github.com/karllhughes/awesome-pdf/pull/76) was merged on 9 October 2026 at 20:02:54 UTC. Read-only verification found the FolioCove entry in the current upstream README. This establishes a listing, not traffic or ranking gains. Use accurate task evidence; do not buy reviews, manufacture votes, bulk-post, or use unrelated categories.
 
 ## One appropriate first submission
 
@@ -54,7 +54,7 @@ Before publishing, the submitting agent must review the current upstream README 
 
 | Destination | Status | Submitted | Submission URL | Result |
 | --- | --- | --- | --- | --- |
-| karllhughes/awesome-pdf | Submitted | 9 October 2026 | [PR #76](https://github.com/karllhughes/awesome-pdf/pull/76) | Open; inclusion pending maintainer review. |
+| karllhughes/awesome-pdf | Accepted | 9 October 2026 | [PR #76](https://github.com/karllhughes/awesome-pdf/pull/76) | Merged 9 October at 20:02:54 UTC; entry verified in upstream README on 16 October. |
 
 Immediately before submission, open/closed issue and PR duplicate checks returned no matching FolioCove entries. Reviewed the current upstream contribution instructions and the exact one-line README diff. The app update had completed Pages deployment and live synthetic-merge verification before the contribution was published. Submitted through the owner's existing `mehbul` identity with maintainer association disclosed. No inclusion or endorsement is claimed.
 
