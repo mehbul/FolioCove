@@ -2,6 +2,8 @@
 
 Historical engine/emulation evidence. The public beta is now https://mehbul.github.io/FolioCove/ and requires no app sign-in. Physical-device results below remain pending.
 
+Current repeat: see [the 17 October pilot](2026-10-17-browser-pilot.md), which adds the changed-settings download regression. The original 21-check result below is historical.
+
 ## Verified here
 
 21 checks passed: seven each on Android/Chromium emulation, iPhone/WebKit emulation, and desktop WebKit (26.6). This is Windows-hosted Playwright, not physical Android, iOS or Apple's Safari application.
