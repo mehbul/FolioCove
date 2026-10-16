@@ -11,6 +11,15 @@ export function initResults(){
  const clear=()=>{if(url)URL.revokeObjectURL(url);url=null;panel.hidden=true;panel.replaceChildren();};
  document.addEventListener('privypdf:tool',clear);
  document.addEventListener('privypdf:files',clear);
+ // A prepared file belongs to the settings that produced it.
+ const settingsChanged=()=>{
+  if(panel.hidden)return;
+  clear();
+  if(status.classList.contains('ok')){status.textContent='';status.className='status';}
+ };
+ const options=document.getElementById('options');
+ options.addEventListener('input',settingsChanged);
+ options.addEventListener('change',settingsChanged);
  document.addEventListener('privypdf:download',({detail})=>{
   clear();
   const {blob,name,tool,inputBytes}=detail;

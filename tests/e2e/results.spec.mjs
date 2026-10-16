@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import {createPdf,makeFixtureDir,runAndSaveDownload,pdfPageCount,installPageGuards,expectNoGuardViolations} from './helpers.mjs';
+import {createPdf,makeFixtureDir,runAndSaveDownload,pdfPageCount,pdfText,installPageGuards,expectNoGuardViolations} from './helpers.mjs';
 import {readableBytes} from '../../src/app/results.mjs';
 
 const base=process.env.FOLIOCOVE_PAGES_TEST?'/FolioCove':'';
@@ -41,4 +41,24 @@ test('Public help distinguishes public bug reports from private security disclos
  await expect(page.locator('article')).toContainText('A dedicated general-support email has not yet been set up');
  await page.setViewportSize({width:390,height:844});
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
+
+
+test('Changing extraction settings clears the old download and prepares only the new range',async({page})=>{
+ const dir=await makeFixtureDir(),input=await createPdf(path.join(dir,'ranges.pdf'),['RANGE-ONE','RANGE-TWO','RANGE-THREE']);
+ const guards=installPageGuards(page,['RANGE-ONE','RANGE-TWO','RANGE-THREE']);
+ await page.goto(base+'/split-pdf/');await expect(page.getByTestId('file-input')).toBeEnabled();
+ await page.getByTestId('file-input').setInputFiles(input);
+ const first=await runAndSaveDownload(page,dir,'extracted-pages.pdf');
+ expect(await pdfPageCount(first)).toBe(1);
+ const panel=page.getByRole('region',{name:'Prepared download'});
+ await expect(panel).toBeVisible();
+ await page.getByLabel('Pages to keep').fill('2-3');
+ await expect(panel).toBeHidden();
+ await expect(page.locator('#status')).toBeEmpty();
+ const second=await runAndSaveDownload(page,dir,'extracted-pages.pdf');
+ expect(await pdfPageCount(second)).toBe(2);
+ const text=await pdfText(second);expect(text).toContain('RANGE-TWO');expect(text).toContain('RANGE-THREE');expect(text).not.toContain('RANGE-ONE');
+ await expect(panel).toBeVisible();
+ expectNoGuardViolations(guards);
 });
