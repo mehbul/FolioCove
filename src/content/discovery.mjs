@@ -40,7 +40,7 @@ function searchMetadata(html,title,description,name=title){
  html=html.replace(/<meta property="og:title" content="[^"]*">/,`<meta property="og:title" content="${e(title)}">`).replace(/<meta property="og:description" content="[^"]*">/,`<meta property="og:description" content="${e(description)}">`);
  return html.replace(/<script type="application\/ld\+json">(.*?)<\/script>/g,(_,raw)=>{
   const schema=JSON.parse(raw);
-  for(const item of schema['@graph']||[]){if(item['@type']==='WebApplication'){item.name=name;item.description=description;item.isAccessibleForFree=true;}}
+  for(const item of schema['@graph']||[]){if(item['@type']==='WebApplication'){item.name=name;item.description=description;item.isAccessibleForFree=true;item.offers={'@type':'Offer',price:0,priceCurrency:'USD'};}}
   return `<script type="application/ld+json">${JSON.stringify(schema).replaceAll('<','\\u003c')}</script>`;
  });
 }
@@ -62,6 +62,23 @@ const advice={
  lossless:['Compress PDF without rasterizing text, free','Choose one PDF and run lossless compression. Compare the resulting size, page count and appearance with the original; check selectable text and forms.','A rewritten PDF with structural optimization. Size reduction varies and the output can be larger. Digital signatures may become invalid.']
 };
 
+function taskBreadcrumbs(html,slug,label){
+ const items=[{name:'All PDF tools',item:origin+'/'},{name:label,item:origin+'/'+slug+'/'}];
+ html=html.replace('<main class="shell">',`<main class="shell"><nav class="task-breadcrumbs" aria-label="Breadcrumbs"><ol><li><a href="${base}/">All PDF tools</a></li><li aria-current="page">${e(label)}</li></ol></nav>`);
+ return html.replace(/<script type="application\/ld\+json">(.*?)<\/script>/,(_,raw)=>{
+  const schema=JSON.parse(raw);
+  schema['@graph'].push({'@type':'BreadcrumbList','@id':origin+'/'+slug+'/#breadcrumbs',itemListElement:items.map((item,index)=>({'@type':'ListItem',position:index+1,...item}))});
+  return `<script type="application/ld+json">${JSON.stringify(schema).replaceAll('<','\\u003c')}</script>`;
+ });
+}
+
+function taskInstructions(registry){
+ return `# ${site.name}: task instructions\n\nThese are the same instructions and output expectations shown on the public tool pages, not a separate feature list. Free and open source; no account required. Public beta.\n\nSelected documents are processed on-device. There is no document-upload endpoint. The host receives ordinary asset requests; OCR and browser AI may download models. The limit is 100 MB per file; device memory may impose lower limits. Keep originals and inspect outputs.\n\nRedaction is experimental. Browser AI is conditional. Verified sanitization and PDF/A are unavailable. Physical phone cameras, native downloads and actual Safari remain unverified.\n\nSource code: https://github.com/mehbul/FolioCove\nTool limitations: ${origin}/limitations/\nCapability catalog: ${origin}/capabilities.json\n\n${toolRoutes.map(([id,slug])=>{
+  const [title,steps,result]=advice[id];
+  return `## ${title}\n\n- Tool: ${registry[id].title}\n- Open: ${origin}/${slug}/\n- Purpose: ${registry[id].copy}\n\n### How to use this tool\n\n${steps}\n\n### What to expect\n\n${result}\n\n### Tool boundary\n\n${notices[id]||registry[id].copy}\n`;
+ }).join('\n')}`;
+}
+
 export const guides={
  'merge-pdfs-without-uploading':{title:'How to merge PDFs without uploading your files',intro:'Combine local PDF files, check the order and keep your originals.',body:`<h2>When merging helps</h2><p>Combine several related documents when you want one download: for example, synthetic sample invoices or assignment sections. Merging copies pages into a new document; it does not make scanned text editable or certify that the source files are safe.</p><h2>Merge with FolioCove</h2><ol><li>Open <a href="${base}/merge-pdf/">Merge PDFs</a>.</li><li>Select at least two PDFs from your device in the order you want.</li><li>Use Move up and Move down to arrange your selected files.</li><li>Choose Merge &amp; download.</li><li>Open the result and verify the page count, page order and appearance.</li></ol>${mergeExample()}<h2>What happens to your files?</h2><p>FolioCove processes the selected documents in your browser. The app has no document-upload endpoint. The host still receives ordinary requests for site assets. Keep the originals and do not assume merging preserves digital-signature validity.</p><h2>Need a different page order?</h2><p>Use <a href="${base}/organize-pdf/">Organize pages</a> to inspect page thumbnails and arrange your PDF. To keep only part of a document, use <a href="${base}/split-pdf/">Extract pages</a>.</p>`},
  'extract-pages-from-pdf':{title:'How to extract selected pages from a PDF',intro:'Keep just the pages you need in a new PDF, using a local browser workflow.',body:`<h2>Extracting versus splitting every page</h2><p>FolioCove’s core Extract pages tool makes one PDF containing your selected pages. It does not automatically produce a separate download for each source page.</p><h2>Choose a page range</h2><ol><li>Open <a href="${base}/split-pdf/">Extract pages</a> and select one PDF.</li><li>Use the document’s actual page numbers, rather than printed chapter numbering.</li><li>Enter a supported range such as 1-3 for the first three pages.</li><li>Choose Extract &amp; download.</li><li>Check the resulting page count and content before using it.</li></ol>${extractExample()}<p>If the requested range lies outside the document, correct the range rather than assuming a successful output.</p><h2>Keep the source</h2><p>Extraction produces a new download and does not overwrite your original. Selected documents are processed on-device. Device memory, malformed inputs and password protection can prevent a file from working.</p><h2>Related tools</h2><p><a href="${base}/merge-pdf/">Merge PDFs</a> combines documents; <a href="${base}/organize-pdf/">Organize pages</a> helps with page order.</p>`},
@@ -82,10 +99,12 @@ export async function buildDiscovery(){
   const description=taskDescriptions[id]||`${tool.copy} Free browser tool with on-device processing. ${id==='redact'?'Experimental; independent verification required.':'Keep originals and inspect outputs.'}`;
   const file=`dist/${slug}/index.html`;let html=await fs.readFile(file,'utf8');
   html=searchMetadata(html,title+' — '+site.name,description,site.name+' tools — '+tool.title);
+  html=taskBreadcrumbs(html,slug,tool.title);
+  html=html.replace('</head>',`<link rel="alternate" type="text/markdown" href="${origin}/docs/task-instructions.md" title="Plain-text task instructions"></head>`);
   html=html.replace(/(<section class="intro"><div><h1>).*?(<\/h1><p>).*?(<\/p>)/,(_,start,middle,end)=>start+e(title)+middle+e(tool.copy)+end);
   const content=`<section class="search-guide" aria-label="${e(tool.title)} guide"><h2>${e(title)}</h2><p>${e(tool.copy)}</p><h3>How to use this tool</h3><p>${e(steps)}</p><h3>What to expect</h3><p>${e(result)}</p><p><strong>Tool boundary:</strong> ${e(notices[id]||tool.copy)}</p><h3>Are documents uploaded?</h3><p>Selected documents are processed in your browser. FolioCove has no document-upload endpoint. The host serves app assets; OCR and browser AI may download models. Local processing does not mean zero network traffic.</p><h3>Is it free?</h3><p>FolioCove is free and open source. No account is required. Device memory and browser support can limit processing; keep your originals and review downloads.</p><p><a href="${base}/guides/">Read the practical PDF guides</a> · <a href="${base}/limitations/">See all limitations</a></p></section>`;
   const details=taskDetails(id);
-  html=html.replace('</main>',content+(details?`<div class="search-guide">${details}</div>`:'')+'</main>');await fs.writeFile(file,html);
+  html=html.replace('</main>',content+(details?`<div class="search-guide">${details}</div>`:'')+`<p class="search-guide"><a href="${base}/docs/task-instructions.md">Plain-text task instructions</a> · <a href="https://github.com/mehbul/FolioCove">Inspect the source code</a></p></main>`);await fs.writeFile(file,html);
  }
  for(const [slug,g] of Object.entries(guides)){await fs.mkdir(`dist/guides/${slug}`,{recursive:true});await fs.writeFile(`dist/guides/${slug}/index.html`,guidePage(slug,g.title,g.intro,g.body));}
  await fs.mkdir('dist/guides',{recursive:true});await fs.writeFile('dist/guides/index.html',guidePage('','Practical PDF guides','Choose a local PDF workflow and understand its output before you start.',`<p>These guides explain real FolioCove workflows with their tradeoffs. Start with a task below, then open the matching tool.</p><ul>${guideLinks()}</ul>`));
@@ -95,5 +114,8 @@ export async function buildDiscovery(){
  await fs.appendFile('dist/launch.css','\n.search-guide{max-width:850px;margin:48px auto;padding:28px 0;border-top:1px solid #e7e7e7;color:#222}.search-guide:empty{display:none}.search-guide h2{font-size:26px;line-height:1.25}.search-guide h3{font-size:18px;margin-top:24px}.search-guide p,.search-guide li{font-size:15px;line-height:1.65}.search-guide a{color:#a9223e;text-decoration:underline;text-underline-offset:3px}.search-guide ul{padding-left:22px}.search-guide table{width:100%;border-collapse:collapse;font-size:15px;font-variant-numeric:tabular-nums}.search-guide caption{text-align:left;margin:20px 0 8px}.search-guide th,.search-guide td{text-align:left;padding:12px 8px;border-bottom:1px solid #e7e7e7}.search-guide code{overflow-wrap:anywhere}\n');
  await fs.appendFile('dist/llms.txt',`\n## Practical PDF guides\n\n${Object.entries(guides).map(([slug,g])=>`- [${g.title}](${origin}/guides/${slug}/): ${g.intro}`).join('\n')}\n`);
  await fs.appendFile('dist/llms.txt',`\n## Dedicated PDF task workspaces\n\n${toolRoutes.map(([id,slug])=>`- [${registry[id].title}](${origin}/${slug}/): ${registry[id].copy} Boundary: ${notices[id]||advice[id][2]}`).join('\n')}\n`);
+ await fs.writeFile('dist/docs/task-instructions.md',taskInstructions(registry));
+ await fs.appendFile('dist/llms.txt',`\n- [Task instructions and expected outputs](${origin}/docs/task-instructions.md): Plain-text copy of the visible instructions, output expectations and limits for every dedicated task workspace.\n`);
+ await fs.appendFile('dist/launch.css','\n.task-breadcrumbs{margin:0 0 16px;font-size:13px;color:#686868}.task-breadcrumbs ol{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:0}.task-breadcrumbs li+li:before{content:"/";margin-right:8px;color:#686868}.task-breadcrumbs a{color:#a9223e;text-underline-offset:3px}.task-breadcrumbs [aria-current]{overflow-wrap:anywhere}\n');
  return ['guides',...Object.keys(guides).map(slug=>'guides/'+slug)];
 }

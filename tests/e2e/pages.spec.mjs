@@ -7,6 +7,34 @@ import {makeFixtureDir,createPdf,createDocumentPhoto,runAndSaveDownload,pdfPageC
 import {toolRoutes,additionalToolRoutes} from '../../src/content/routes.mjs';
 test.skip(!process.env.FOLIOCOVE_PAGES_TEST,'Only run against the Pages subpath server');
 
+test('Task answers and breadcrumbs stay readable without JavaScript',async({browser,baseURL})=>{
+ const context=await browser.newContext({baseURL,javaScriptEnabled:false,viewport:{width:390,height:844}});
+ try{
+  const page=await context.newPage();
+  for(const [,slug] of toolRoutes){
+   await page.goto('/FolioCove/'+slug+'/');
+   const nav=page.getByRole('navigation',{name:'Breadcrumbs'});
+   await expect(nav.getByRole('link',{name:'All PDF tools',exact:true})).toHaveAttribute('href','/FolioCove/');
+   const current=nav.locator('[aria-current="page"]');
+   const schema=JSON.parse(await page.locator('script[type="application/ld+json"]').textContent());
+   const crumbs=schema['@graph'].find(x=>x['@type']==='BreadcrumbList').itemListElement;
+   expect(crumbs.map(x=>x.position)).toEqual([1,2]);
+   expect(crumbs[1].name).toBe(await current.textContent());
+   expect(crumbs[1].item).toBe('https://mehbul.github.io/FolioCove/'+slug+'/');
+   const app=schema['@graph'].find(x=>x['@type']==='WebApplication');
+   expect(app.isAccessibleForFree).toBe(true);expect(app.offers.price).toBe(0);
+   const answer=page.getByRole('link',{name:'Plain-text task instructions',exact:true});
+   const response=await page.request.get(await answer.getAttribute('href'));
+   expect(response.status()).toBe(200);const text=await response.text();
+   expect(text).toContain('https://mehbul.github.io/FolioCove/'+slug+'/');
+   expect(text).toContain(await page.locator('.search-guide').first().locator('p').nth(2).textContent());
+   expect(text).toContain('100 MB per file');expect(text).toContain('Redaction is experimental');
+   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  }
+  const index=await(await page.request.get('/FolioCove/llms.txt')).text();expect(index).toContain('/docs/task-instructions.md');
+ }finally{await context.close();}
+});
+
 test('PDF task links and matching metadata are available without JavaScript',async({browser,baseURL})=>{
  const context=await browser.newContext({baseURL,javaScriptEnabled:false});
  try{
