@@ -130,7 +130,7 @@ test.describe('core workflow downloads', () => {
 
     await openTool(page, '/edit-pdf/', 'Edit PDF');
     await page.getByTestId('file-input').setInputFiles(source);
-    await page.getByLabel('Text').fill('ADDED-E2E-TEXT');
+    await page.getByLabel('Text', { exact: true }).fill('ADDED-E2E-TEXT');
     await page.getByLabel('Page').fill('2');
     const edited = await runAndSaveDownload(page, dir, 'edited.pdf');
     expect(await pdfText(edited)).toContain('ADDED-E2E-TEXT');

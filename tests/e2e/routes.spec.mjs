@@ -8,7 +8,7 @@ const routes = [
   { route: '/compress-pdf/', title: 'Compress to target size', action: 'Compress to target', accept: 'application/pdf', label: 'Maximum size' },
   { route: '/scan-pdf/', title: 'Camera document scanner', action: 'Create scanned PDF', accept: 'image/jpeg,image/png,image/webp', label: 'Enhancement' },
   { route: '/ocr-pdf/', title: 'Searchable OCR PDF', action: 'Create searchable PDF', accept: 'application/pdf' },
-  { route: '/edit-pdf/', title: 'Edit PDF', action: 'Apply edit', accept: 'application/pdf', label: 'Text' },
+  { route: '/edit-pdf/', title: 'Edit PDF', action: 'Apply edit', accept: 'application/pdf', label: 'Text', exactLabel: true },
   { route: '/sign-pdf/', title: 'Sign PDF', action: 'Sign & download', accept: 'application/pdf', label: 'Signer name' },
   { route: '/redact-pdf/', title: 'Redact region', action: 'Redact & download', accept: 'application/pdf', label: 'Left %' },
   { route: '/privacy-inspector/', title: 'Privacy Inspector', action: 'Inspect only', accept: 'application/pdf', labelText: 'Sanitized sharing downloads are paused pending verification', disabledLabel: true }
@@ -28,7 +28,7 @@ test.describe('direct core routes', () => {
         await expect(page.getByTestId('tool-limit')).toContainText('Experimental');
         await expect(page.getByTestId('run-tool')).toBeDisabled();
       }
-      if (spec.label) await expect(page.getByLabel(spec.label)).toBeVisible();
+      if (spec.label) await expect(page.getByLabel(spec.label, { exact: spec.exactLabel })).toBeVisible();
       if (spec.labelText) await expect(page.getByLabel(spec.labelText)).toBeVisible();
       if (spec.disabledLabel) await expect(page.getByLabel(spec.labelText)).toBeDisabled();
       await expectNoGuardViolations(guards);
