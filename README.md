@@ -2,7 +2,7 @@
 
 **Merge, split, compress and convert PDFs in your browser. Your documents are processed on your device, with no account or document uploads.**
 
-[Open FolioCove PDF](https://mehbul.github.io/FolioCove/) · [Watch the merge demo](https://mehbul.github.io/FolioCove/demo/) · [Browse tools and limits](https://mehbul.github.io/FolioCove/tools/) · [Get help](https://mehbul.github.io/FolioCove/support/)
+[Open FolioCove PDF](https://mehbul.github.io/FolioCove/) · [Watch the merge demo](https://mehbul.github.io/FolioCove/demo/) · [Watch page extraction](https://mehbul.github.io/FolioCove/demo/extract-pdf/) · [Browse tools and limits](https://mehbul.github.io/FolioCove/tools/) · [Get help](https://mehbul.github.io/FolioCove/support/)
 
 [![FolioCove PDF merge workspace with local file selection and visible feature limits](docs/images/foliocove-merge-workspace.png)](https://mehbul.github.io/FolioCove/merge-pdf/)
 

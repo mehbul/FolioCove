@@ -7,6 +7,7 @@ import {toolRoutes,pages} from '../src/content/routes.mjs';
 import {buildDiscovery} from '../src/content/discovery.mjs';
 import {buildBlog} from '../src/content/blog.mjs';
 import {buildSupport} from '../src/content/support.mjs';
+import {buildTaskDemo} from '../src/content/demos.mjs';
 const base='/FolioCove';
 const origin='https://mehbul.github.io'+base;
 const routeSlugs=[...toolRoutes.map(([,slug])=>slug),...Object.keys(pages),'tools'];
@@ -43,14 +44,16 @@ await fs.writeFile('dist/demo/captions.vtt','WEBVTT\n\n00:00.000 --> 00:06.000\n
 const guideUrls=await buildDiscovery();
 const blogUrls=await buildBlog();
 await buildSupport();
+await buildTaskDemo();
 // The support page is public-only; retain the private Sites publication's audience.
-for(const slug of ['',...toolRoutes.map(x=>x[1]),...Object.keys(pages),'tools','demo',...guideUrls,...blogUrls]){
+for(const slug of ['',...toolRoutes.map(x=>x[1]),...Object.keys(pages),'tools','demo','demo/extract-pdf',...guideUrls,...blogUrls]){
  const file=`dist/${slug?slug+'/':''}index.html`;
  const html=await fs.readFile(file,'utf8');
  await fs.writeFile(file,html.replace('</footer>',`<p style="text-align:center;padding:8px"><a href="${base}/support/">Help and feedback</a></p></footer>`));
 }
 await fs.appendFile('dist/llms.txt',`\n## Support\n\n- [Help and feedback](${origin}/support/): Public bug reports, private vulnerability reporting and current support limits.\n`);
-const urls=['',...toolRoutes.map(x=>x[1]),...Object.keys(pages),'tools','demo','support',...guideUrls,...blogUrls];
+await fs.appendFile('dist/llms.txt',`\n- [Extract PDF pages demonstration](${origin}/demo/extract-pdf/): Real synthetic six-page input, pages 2–4 selection and a verified three-page download.\n`);
+const urls=['',...toolRoutes.map(x=>x[1]),...Object.keys(pages),'tools','demo','demo/extract-pdf','support',...guideUrls,...blogUrls];
 await fs.writeFile('dist/sitemap.xml','<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+urls.map(slug=>`<url><loc>${origin}/${slug?slug+'/':''}</loc></url>`).join('\n')+'\n</urlset>\n');
 // robots.txt belongs at the host root; this project copy is informational.
 await fs.writeFile('dist/robots.txt',`User-agent: *\nAllow: /\nSitemap: ${origin}/sitemap.xml\n`);

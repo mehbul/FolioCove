@@ -5,6 +5,29 @@ import {makeFixtureDir,pdfPageCount,pdfText,runAndSaveDownload} from './helpers.
 
 test.skip(!process.env.FOLIOCOVE_PAGES_TEST,'Public examples are published only by the Pages build');
 
+test('Extraction demonstration connects the video, sample output and workspace',async({page})=>{
+ await page.goto('/FolioCove/demo/extract-pdf/');
+ await expect(page.locator('h1')).toHaveText('Extract pages 2–4 from a PDF without uploading');
+ await expect(page.getByRole('link',{name:'Extract pages now',exact:true})).toHaveAttribute('href','/FolioCove/split-pdf/');
+ await expect(page.locator('video source')).toHaveAttribute('src','extract.webm');
+ const video=page.locator('video');
+ await expect.poll(()=>video.evaluate(el=>el.readyState)).toBeGreaterThan(0);
+ expect(await video.evaluate(el=>el.duration)).toBeGreaterThan(10);
+ await video.evaluate(el=>el.play());
+ await expect.poll(()=>video.evaluate(el=>el.currentTime)).toBeGreaterThan(0);
+ for(const file of ['extract.webm','captions.vtt'])expect((await page.request.get('/FolioCove/demo/extract-pdf/'+file)).status()).toBe(200);
+ await expect(page.locator('article')).toContainText('FC-EXTRACT-2');
+ await expect(page.locator('article')).toContainText('FC-EXTRACT-4');
+ await page.goto('/FolioCove/split-pdf/');
+ await expect(page.getByRole('link',{name:'Watch the page extraction demo',exact:true})).toHaveAttribute('href','/FolioCove/demo/extract-pdf/');
+ await expect(page.getByRole('link',{name:'Share task feedback',exact:true})).toHaveAttribute('href','/FolioCove/support/#task-feedback');
+ await page.goto('/FolioCove/support/#task-feedback');
+ await expect(page.locator('#task-feedback')).toHaveText('Tell us how your task went');
+ await expect(page.getByRole('link',{name:'Share a workflow report',exact:true})).toHaveAttribute('href','https://github.com/mehbul/FolioCove/issues/new?template=feature.yml');
+ await expect(page.locator('article')).toContainText('Nothing is sent automatically');
+ await page.setViewportSize({width:390,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
+
 async function sampleDownload(page,dir,filename){
  const waiting=page.waitForEvent('download');
  await page.locator(`a[href="/FolioCove/examples/${filename}"]`).click();

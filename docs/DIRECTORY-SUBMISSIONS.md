@@ -55,10 +55,15 @@ Before publishing, the submitting agent must review the current upstream README 
 | Destination | Status | Submitted | Submission URL | Result |
 | --- | --- | --- | --- | --- |
 | karllhughes/awesome-pdf | Accepted | 9 October 2026 | [PR #76](https://github.com/karllhughes/awesome-pdf/pull/76) | Merged 9 October at 20:02:54 UTC; entry verified in upstream README on 16 October. |
+| oswaldcby-afk/awesome-no-upload-browser-tools | Submitted | 16 October 2026 | [PR #13](https://github.com/oswaldcby-afk/awesome-no-upload-browser-tools/pull/13) | Awaiting maintainer review; not an accepted listing. |
 
 Immediately before submission, open/closed issue and PR duplicate checks returned no matching FolioCove entries. Reviewed the current upstream contribution instructions and the exact one-line README diff. The app update had completed Pages deployment and live synthetic-merge verification before the contribution was published. Submitted through the owner's existing `mehbul` identity with maintainer association disclosed. No inclusion or endorsement is claimed.
 
 ## Destinations to avoid for now
+
+The second submission was checked against the destination's actual CONTRIBUTING.md: core processing on-device, no account for core tasks, accessible app, inspectable architecture, alphabetical placement and disclosed self-submission. Existing README and all open/closed FolioCove issues/PRs had no duplicate when checked. The one-line entry highlights reproducible synthetic examples rather than implying universal offline operation or verified security. Its pull request links privacy documentation, source, worked examples and limits. Do not resubmit or treat an open pull request as inclusion.
+
+Additional triage on 16 October: `jsvvsolsllc/awesome-browser-tools` was not selected because its list is dominated by one provider and links a missing CONTRIBUTING.md; no audience or independent curation benefit was established. `pluja/awesome-privacy` has no specific PDF-tools category in the inspected list, so no marginal-fit submission was made. This is a scoped fit assessment, not a claim about either maintainer's intent or the safety of listed tools.
 
 - **AlternativeTo:** its [current approval rules](https://alternativeto.net/faq/#why-wasn-t-my-software-app-approved) specifically decline simple PDF tools and collections of such tools. Older advice to submit there does not establish eligibility. Do not pay for priority review or submit through profile/list spam to bypass that rule.
 - **Awesome-selfhosted:** [current contribution instructions](https://github.com/awesome-selfhosted/awesome-selfhosted-data/blob/master/CONTRIBUTING.md) require the first release to be more than four months old. FolioCove's [first beta release](https://github.com/mehbul/FolioCove/releases/tag/v0.1.0-beta) was published 3 October 2026, so it does not meet that age requirement. Recheck after 3 February 2027; do not treat the date as automatic acceptance.
