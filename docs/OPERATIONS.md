@@ -1,16 +1,16 @@
 # FolioCove operating plan
 
-Updated 9 October 2026. Public beta: https://mehbul.github.io/FolioCove/. Source and bug reports: https://github.com/mehbul/FolioCove. The public source and history were authorized by the owner. The separate Sites host remains private. The owner authorized search indexing for the public Pages beta on 3 October 2026.
+Updated after the conversion and trust-label releases. Public beta: https://mehbul.github.io/FolioCove/. Source and bug reports: https://github.com/mehbul/FolioCove. The public source and history were authorized by the owner. The separate Sites host remains private. The owner authorized search indexing for the public Pages beta on 3 October 2026.
 
 ## Responsibilities and boundaries
 
-Codex handles requested engineering, focused verification, deployment, documentation and read-only issue/deployment review through this workspace. Routine reversible fixes are authorized. This is not unattended monitoring: no recurring automation is configured. Do not claim ongoing supervision, guaranteed uptime, legal approval or actual phone validation.
+Codex handles requested engineering, focused verification, deployment, documentation and read-only issue/deployment review through this workspace. Routine reversible fixes are authorized. The FolioCove Google discovery heartbeat is configured and active on a six-hour schedule. It checks bounded public search/indexing evidence and stays quiet on unchanged results; it is not uptime monitoring or continuous security supervision. Do not claim ongoing supervision, guaranteed uptime, legal approval or actual phone validation.
 
 The owner retains account ownership and billing. Spending, contracts, account verification, legal commitments, external outreach and changes to document-processing privacy need specific authority and available access. Never request passwords in chat or invent operator details.
 
 ## Current evidence
 
-The latest Pages and general CI runs both succeeded. GitHub Pages loads without sign-in and exposes 88 workspace tools. The Pages smoke check verifies catalog/navigation, canonical paths, merge downloads, local qpdf worker downloads and PDF renderer thumbnails at the project subpath. The regular handler suite exercises 77 cases. Physical phone cameras, native downloads and Safari-app behavior are unverified.
+Use completed commit-specific Pages and general CI results as release evidence; a previous successful run does not verify a new commit. GitHub Pages loads without sign-in and exposes 88 workspace tools. The Pages checks cover all 19 dedicated task routes, catalog/navigation, canonical paths, synthetic conversion and merge downloads, local qpdf workers, PDF renderer thumbnails, published demos and feedback links at the project subpath. The regular handler suite exercises 77 cases. Physical phone cameras, native downloads and Safari-app behavior are unverified.
 
 ## Priority queue
 
@@ -28,7 +28,7 @@ If a release breaks a supported workflow, revert the responsible commit through 
 
 ## Success measures
 
-Use reproducible issue outcomes, parseable downloads and scoped browser evidence. Remote analytics are not configured; traffic, customer counts, conversion rates and user satisfaction are unknown. Do not invent business metrics. Local optional metrics stay on the user's device.
+Use reproducible issue outcomes, parseable downloads and scoped browser evidence. Remote application analytics are not configured. Search Console provides aggregate Google impressions and clicks, not unique users, completed PDF tasks or customer counts. Conversion rates and user satisfaction remain unknown. Do not invent business metrics. Local optional metrics stay on the user's device.
 
 ## Growth priorities
 

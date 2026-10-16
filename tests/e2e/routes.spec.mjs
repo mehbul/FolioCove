@@ -10,7 +10,7 @@ const routes = [
   { route: '/ocr-pdf/', title: 'Searchable OCR PDF', action: 'Create searchable PDF', accept: 'application/pdf' },
   { route: '/edit-pdf/', title: 'Edit PDF', action: 'Apply edit', accept: 'application/pdf', label: 'Text' },
   { route: '/sign-pdf/', title: 'Sign PDF', action: 'Sign & download', accept: 'application/pdf', label: 'Signer name' },
-  { route: '/redact-pdf/', title: 'Secure redact', action: 'Redact & download', accept: 'application/pdf', label: 'Left %' },
+  { route: '/redact-pdf/', title: 'Redact region', action: 'Redact & download', accept: 'application/pdf', label: 'Left %' },
   { route: '/privacy-inspector/', title: 'Privacy Inspector', action: 'Inspect only', accept: 'application/pdf', labelText: 'Sanitized sharing downloads are paused pending verification', disabledLabel: true }
 ];
 
@@ -23,6 +23,11 @@ test.describe('direct core routes', () => {
       await expect(page.getByTestId('file-input')).toHaveAttribute('accept', spec.accept);
       await expect(page.getByTestId('run-tool')).toHaveText(spec.action);
       await expect(page.getByTestId('tool-limit')).not.toBeEmpty();
+      if(spec.route==='/redact-pdf/'){
+        await expect(page.locator('#tool-copy')).toContainText('Experimental');
+        await expect(page.getByTestId('tool-limit')).toContainText('Experimental');
+        await expect(page.getByTestId('run-tool')).toBeDisabled();
+      }
       if (spec.label) await expect(page.getByLabel(spec.label)).toBeVisible();
       if (spec.labelText) await expect(page.getByLabel(spec.labelText)).toBeVisible();
       if (spec.disabledLabel) await expect(page.getByLabel(spec.labelText)).toBeDisabled();

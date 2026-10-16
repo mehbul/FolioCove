@@ -403,13 +403,13 @@ Selected documents are processed on-device; there is no document-upload endpoint
 - Purpose: Add a typed signature and date to any page.
 - Boundary: Adds a typed visual mark only. No cryptographic signature, identity verification, signature requests or audit trail.
 
-### Secure redact
+### Redact region
 
 - ID: redact
 - Open: https://foliocove-tools.mehbulislam81.chatgpt.site/redact-pdf/
 - Status: experimental
 - Input MIME types: application/pdf
-- Purpose: Permanently rasterize and black out a selected page region.
+- Purpose: Experimental raster redaction for a selected page region. Keep the original and verify the output independently.
 - Boundary: Experimental raster redaction. The requested page and region are validated before output; verify the downloaded result independently before sharing sensitive material.
 
 ### Fill PDF forms

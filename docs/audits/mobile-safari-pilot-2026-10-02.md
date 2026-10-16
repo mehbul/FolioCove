@@ -1,5 +1,7 @@
 # Short mobile and Safari-engine pilot — 2 October 2026
 
+Historical engine/emulation evidence. The public beta is now https://mehbul.github.io/FolioCove/ and requires no app sign-in. Physical-device results below remain pending.
+
 ## Verified here
 
 21 checks passed: seven each on Android/Chromium emulation, iPhone/WebKit emulation, and desktop WebKit (26.6). This is Windows-hosted Playwright, not physical Android, iOS or Apple's Safari application.
@@ -21,7 +23,7 @@ No physical phone or macOS Safari is connected to this session. No actual camera
 
 Use a synthetic page reading FOLIOCOVE PHONE TEST; avoid personal documents. On each available phone:
 
-1. Open the private FolioCove site in Android Chrome or iPhone Safari and sign in using your existing owner access.
+1. Open https://mehbul.github.io/FolioCove/ in Android Chrome or iPhone Safari. The public beta requires no app sign-in.
 2. Open Scan photos. Choose files and take a rear-camera photo if the native picker offers it. Confirm the selected photo appears. If capture is not offered, record that fact and try importing a JPG/PNG instead. HEIC/HEIF is not a supported import format.
 3. Choose Create scanned PDF. Save the result using the browser's download/share flow. Open it in the native Files/Downloads viewer and confirm the photographed page is visible and correctly oriented.
 4. Return to Scan photos and dismiss the native picker. Confirm it does not start a job or create a download. Check whether returning from the camera leaves the page responsive.
@@ -37,4 +39,4 @@ Use playwright.pilot.config.mjs. Install Playwright WebKit in a local cache and 
 
 ## Verdict
 
-Automated pilot passed. Physical phone and native Safari pilot remains pending. Support inbox and final public notices also remain pending; public access has not been enabled.
+Automated pilot passed. Physical phone and native Safari pilot remains pending. Support inbox and finalized public-business notices remain pending. Public beta access is enabled; it does not establish physical-device validation.

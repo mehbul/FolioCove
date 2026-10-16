@@ -148,7 +148,7 @@ test.describe('core workflow downloads', () => {
     const source = await createPdf(path.join(dir, fixtureFilename), ['REDACTION-BASE'], { redactionTarget: 'SECRET-REDACT-74291' });
     const guards = installPageGuards(page, [fixtureFilename, uniqueMarker, 'SECRET-REDACT-74291']);
 
-    await openTool(page, '/redact-pdf/', 'Secure redact');
+    await openTool(page, '/redact-pdf/', 'Redact region');
     await page.getByTestId('file-input').setInputFiles(source);
     await page.getByLabel('Left %').fill('8');
     await page.getByLabel('Top %').fill('40');
@@ -179,7 +179,7 @@ test.describe('core workflow downloads', () => {
     const source = await createPdf(path.join(dir, fixtureFilename), ['REDACTION-INVALID']);
     const guards = installPageGuards(page);
 
-    await openTool(page, '/redact-pdf/', 'Secure redact');
+    await openTool(page, '/redact-pdf/', 'Redact region');
     await page.getByTestId('file-input').setInputFiles(source);
     await page.getByLabel('Page').fill('99');
     await expectNoDownloadFromRun(page);

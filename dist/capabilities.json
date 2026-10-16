@@ -585,8 +585,8 @@
     },
     {
       "id": "redact",
-      "name": "Secure redact",
-      "description": "Permanently rasterize and black out a selected page region.",
+      "name": "Redact region",
+      "description": "Experimental raster redaction for a selected page region. Keep the original and verify the output independently.",
       "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/redact-pdf/",
       "inputMimeTypes": [
         "application/pdf"
