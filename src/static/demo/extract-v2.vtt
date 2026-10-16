@@ -1,0 +1,16 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:03.082
+1. Choose a PDF from your device. This example uses six synthetic pages.
+
+00:00:03.082 --> 00:00:05.593
+2. The six-page sample is selected. Enter the pages you want to keep.
+
+00:00:05.593 --> 00:00:09.537
+3. Enter 2-4 to keep pages two, three and four.
+
+00:00:09.537 --> 00:00:13.754
+4. Download the extracted PDF. Keep the original and inspect the result.
+
+00:00:13.754 --> 00:00:20.269
+5. Inspect the actual downloaded PDF: only source pages 2, 3 and 4 remain.

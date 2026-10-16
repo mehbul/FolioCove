@@ -478,7 +478,7 @@ Selected documents are processed on-device; there is no document-upload endpoint
 ### Excel to PDF
 
 - ID: exceltopdf
-- Open: https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=exceltopdf
+- Open: https://foliocove-tools.mehbulislam81.chatgpt.site/excel-to-pdf/
 - Status: implemented
 - Input MIME types: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel
 - Purpose: Render spreadsheet cell values into paginated PDF tables.
@@ -487,7 +487,7 @@ Selected documents are processed on-device; there is no document-upload endpoint
 ### PowerPoint to PDF
 
 - ID: ppttopdf
-- Open: https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=ppttopdf
+- Open: https://foliocove-tools.mehbulislam81.chatgpt.site/powerpoint-to-pdf/
 - Status: implemented
 - Input MIME types: application/vnd.openxmlformats-officedocument.presentationml.presentation
 - Purpose: Extract slide text and create one clean PDF page per slide.
@@ -739,7 +739,7 @@ Selected documents are processed on-device; there is no document-upload endpoint
 ### PDF to Excel (XLSX)
 
 - ID: xlsx
-- Open: https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=xlsx
+- Open: https://foliocove-tools.mehbulislam81.chatgpt.site/pdf-to-excel/
 - Status: implemented
 - Input MIME types: application/pdf
 - Purpose: Export extracted text rows into a real workbook, one sheet per page. Table reconstruction is approximate.
@@ -748,7 +748,7 @@ Selected documents are processed on-device; there is no document-upload endpoint
 ### PDF to PowerPoint
 
 - ID: pptx
-- Open: https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=pptx
+- Open: https://foliocove-tools.mehbulislam81.chatgpt.site/pdf-to-powerpoint/
 - Status: implemented
 - Input MIME types: application/pdf
 - Purpose: Preserve each page visually as a slide image. Slide content is not editable.

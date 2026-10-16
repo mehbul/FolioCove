@@ -2,7 +2,7 @@
 
 **Merge, split, compress and convert PDFs in your browser. Your documents are processed on your device, with no account or document uploads.**
 
-[Open FolioCove PDF](https://mehbul.github.io/FolioCove/) · [Watch the merge demo](https://mehbul.github.io/FolioCove/demo/) · [Watch page extraction](https://mehbul.github.io/FolioCove/demo/extract-pdf/) · [Browse tools and limits](https://mehbul.github.io/FolioCove/tools/) · [Get help](https://mehbul.github.io/FolioCove/support/)
+[Open FolioCove PDF](https://mehbul.github.io/FolioCove/) · [Watch the merge demo](https://mehbul.github.io/FolioCove/demo/) · [Watch page extraction](https://mehbul.github.io/FolioCove/demo/extract-pdf/) · [Choose a PDF converter](https://mehbul.github.io/FolioCove/pdf-converter/) · [Browse tools and limits](https://mehbul.github.io/FolioCove/tools/) · [Get help](https://mehbul.github.io/FolioCove/support/)
 
 [![FolioCove PDF merge workspace with local file selection and visible feature limits](docs/images/foliocove-merge-workspace.png)](https://mehbul.github.io/FolioCove/merge-pdf/)
 
@@ -23,6 +23,10 @@ FolioCove PDF is a free, MIT-licensed browser PDF workspace for everyday documen
 | Convert PDF to JPG | [PDF to JPG](https://mehbul.github.io/FolioCove/pdf-to-jpg/) | A ZIP containing one rendered JPG per page, not original embedded-image extraction. |
 | Convert PDF to Word | [PDF to DOCX](https://mehbul.github.io/FolioCove/pdf-to-word/) | Editable selectable text; original layouts, images and tables are not preserved. |
 | Convert Word to PDF | [DOCX text to PDF](https://mehbul.github.io/FolioCove/word-to-pdf/) | Text-oriented conversion; legacy DOC, original formatting, images and tables are unsupported. |
+| Convert PDF to Excel | [PDF to XLSX](https://mehbul.github.io/FolioCove/pdf-to-excel/) | One sheet per PDF page with approximate text rows; original tables and formulas are not recovered. |
+| Convert Excel to PDF | [XLSX/XLS values to PDF](https://mehbul.github.io/FolioCove/excel-to-pdf/) | Text-oriented spreadsheet export; charts, styling and formula layout are not preserved. |
+| Convert PDF to PowerPoint | [PDF to PPTX](https://mehbul.github.io/FolioCove/pdf-to-powerpoint/) | One PDF page as an image per slide; original text and graphics are not editable slide objects. |
+| Convert PowerPoint to PDF | [PPTX slide text to PDF](https://mehbul.github.io/FolioCove/powerpoint-to-pdf/) | One text-oriented PDF page per slide; original graphics, design and legacy PPT are unsupported. |
 | Add text to a PDF | [Edit PDF](https://mehbul.github.io/FolioCove/edit-pdf/) | Add a text overlay; does not rewrite existing paragraphs. |
 | Add a signature to a PDF | [Sign PDF](https://mehbul.github.io/FolioCove/sign-pdf/) | A visible typed signature mark, not certificate signing or identity verification. |
 | Make scanned text searchable | [English OCR](https://mehbul.github.io/FolioCove/ocr-pdf/) | Local recognition with an English model download; review words and numbers for errors. |
@@ -126,7 +130,7 @@ The dev server serves `dist/` at `http://localhost:4173/`. Re-run `npm run build
 npm run build
 ```
 
-The build regenerates `dist/`, including the homepage, 15 tool routes (10 Everyday tools plus PDF-to-DOCX, JPG/PNG-to-PDF, PDF-to-JPG, DOCX-to-PDF and lossless compression), the 5 beta/legal documentation routes, static tool directory and AI-readable knowledge files, local browser dependency bundles, the service worker, manifest, and tester CSV template.
+The build regenerates `dist/`, including the homepage, 19 tool routes (10 Everyday tools plus Office/image conversions and lossless compression), the 5 beta/legal documentation routes, static tool directory and AI-readable knowledge files, local browser dependency bundles, the service worker, manifest, and tester CSV template.
 
 ## Testing
 
@@ -167,7 +171,7 @@ Playwright traces and screenshots are retained only on failure under ignored `te
 - `src/pages/home.html` is the editable homepage shell.
 - `src/app/index.mjs` contains the browser tool handlers.
 - `src/app/launch.mjs` contains core route metadata, notices, and launch-time instrumentation.
-- `src/content/routes.mjs` contains the 15 task routes and 5 documentation pages used by the build.
+- `src/content/routes.mjs` contains the 19 task routes and 5 documentation pages used by the build.
 - `src/styles/launch.css` contains shared launch and policy-page styles.
 - `src/static/` contains static generated-site assets.
 - `scripts/build.mjs` regenerates `dist/`.
@@ -191,7 +195,7 @@ This is a public beta with incomplete physical-device validation. The automated 
 
 Start coding-agent work with AGENTS.md. Tool definitions live in src/content/tools.mjs and drive both runtime labels and generated capabilities, so browser behavior and discovery documents share their source. Site identity and current private-beta status live in src/content/site.mjs.
 
-The build writes /tools/ (static readable directory), /capabilities.json, /docs/capabilities.md and /llms.txt. They describe product capabilities only, never selected documents. All 15 dedicated tool routes have distinct descriptions, canonical URLs and JSON-LD; information pages have WebPage metadata. The shared `toolRoutes` registry drives route generation, capability links, public task guidance and the Pages sitemap. Other tools can be opened with /?tool=ID, validated against the registry; existing query links remain supported.
+The build writes /tools/ (static readable directory), /capabilities.json, /docs/capabilities.md and /llms.txt. They describe product capabilities only, never selected documents. All 19 dedicated tool routes have distinct descriptions, canonical URLs and JSON-LD; information pages have WebPage metadata. The shared `toolRoutes` registry drives route generation, capability links, public task guidance and the Pages sitemap. Other tools can be opened with /?tool=ID, validated against the registry; existing query links remain supported.
 
 Run node scripts/test-ai-readiness.mjs after building. The short mobile/Safari-engine pilot remains available through playwright.pilot.config.mjs; physical devices and actual Safari are a separate uncompleted gate.
 

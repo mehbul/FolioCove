@@ -18,7 +18,11 @@ export const additionalToolRoutes = [
   ['images', 'jpg-to-pdf', 'JPG and PNG to PDF'],
   ['jpg', 'pdf-to-jpg', 'PDF to JPG'],
   ['wordtopdf', 'word-to-pdf', 'Word to PDF'],
-  ['lossless', 'lossless-compress-pdf', 'Lossless PDF compression']
+  ['lossless', 'lossless-compress-pdf', 'Lossless PDF compression'],
+  ['xlsx', 'pdf-to-excel', 'PDF to Excel (XLSX)'],
+  ['exceltopdf', 'excel-to-pdf', 'Excel to PDF'],
+  ['pptx', 'pdf-to-powerpoint', 'PDF to PowerPoint'],
+  ['ppttopdf', 'powerpoint-to-pdf', 'PowerPoint to PDF']
 ];
 export const toolRoutes = [...core, ...additionalToolRoutes];
 

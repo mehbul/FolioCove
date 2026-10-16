@@ -692,7 +692,7 @@
       "id": "exceltopdf",
       "name": "Excel to PDF",
       "description": "Render spreadsheet cell values into paginated PDF tables.",
-      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=exceltopdf",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/excel-to-pdf/",
       "inputMimeTypes": [
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         "application/vnd.ms-excel"
@@ -706,7 +706,7 @@
       "id": "ppttopdf",
       "name": "PowerPoint to PDF",
       "description": "Extract slide text and create one clean PDF page per slide.",
-      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=ppttopdf",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/powerpoint-to-pdf/",
       "inputMimeTypes": [
         "application/vnd.openxmlformats-officedocument.presentationml.presentation"
       ],
@@ -1077,7 +1077,7 @@
       "id": "xlsx",
       "name": "PDF to Excel (XLSX)",
       "description": "Export extracted text rows into a real workbook, one sheet per page. Table reconstruction is approximate.",
-      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=xlsx",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/pdf-to-excel/",
       "inputMimeTypes": [
         "application/pdf"
       ],
@@ -1090,7 +1090,7 @@
       "id": "pptx",
       "name": "PDF to PowerPoint",
       "description": "Preserve each page visually as a slide image. Slide content is not editable.",
-      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=pptx",
+      "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/pdf-to-powerpoint/",
       "inputMimeTypes": [
         "application/pdf"
       ],
