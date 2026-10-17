@@ -35,6 +35,9 @@
     "npm": ">=10"
   },
   "overrides": {
-    "image-size": "2.0.3"
+    "image-size": "2.0.3",
+    "mammoth": {
+      "argparse": "2.0.1"
+    }
   }
 }
