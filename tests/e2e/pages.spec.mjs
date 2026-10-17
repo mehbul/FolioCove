@@ -166,7 +166,7 @@ test('PDF brand stays readable across public pages and tool navigation',async({p
  await expect(page).toHaveTitle('Lossless PDF compression — FolioCove PDF');
  const catalog=await (await page.request.get('/FolioCove/capabilities.json')).json();
  expect(catalog.name).toBe('FolioCove PDF');expect(catalog.alternateNames).toContain('FolioCovePDF');
- expect(catalog.documentUploadEndpoint).toBe(null);expect(catalog.supportEmail).toBe(null);
+ expect(catalog.documentUploadEndpoint).toBe(null);expect(catalog.supportEmail).toBe('mehbulislam81@gmail.com');
  const manifest=await (await page.request.get('/FolioCove/manifest.webmanifest')).json();
  expect(manifest.name).toBe('FolioCove PDF');
  expect(failures).toEqual([]);

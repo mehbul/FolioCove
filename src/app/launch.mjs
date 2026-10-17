@@ -36,9 +36,50 @@ export const notices={
 };
 export function classifyOutcome(className){return className.includes('error')?'failure':className.includes('ok')?'completed':null}
 export function safeMetric(tool,outcome,elapsed){return {tool,outcome,durationMs:Math.max(0,Math.round(elapsed))}}
+function initSampleTrial(api){
+ const samples={merge:['merge-first.pdf','merge-second.pdf'],split:['extract-six-pages.pdf']};
+ const area=document.createElement('div');area.id='sample-trial';
+ const button=document.createElement('button');button.type='button';button.className='favorite';
+ const note=document.createElement('p');note.id='sample-trial-note';note.className='hint';
+ button.setAttribute('aria-describedby',note.id);area.append(button,note);document.getElementById('drop').after(area);
+ let loading=false;
+ const sync=()=>{
+  const tool=api.current();area.hidden=!samples[tool]||api.files().length>0;
+  button.disabled=loading;button.textContent=loading?'Loading sample PDFs…':tool==='split'?'Try sample PDF':'Try sample PDFs';
+  note.textContent=tool==='split'?'Synthetic samples, no personal data. Try keeping pages 2–4 from a six-page PDF.':'Synthetic samples, no personal data. Combine two PDFs into three pages.';
+ };
+ document.addEventListener('privypdf:tool',sync);document.addEventListener('privypdf:files',sync);
+ button.addEventListener('click',async()=>{
+  const tool=api.current(),selection=api.files();
+  if(loading||selection.length||!samples[tool])return;
+  loading=true;sync();
+  const status=document.getElementById('status');status.className='status';status.textContent='Loading synthetic sample PDFs…';
+  try{
+   const files=await Promise.all(samples[tool].map(async name=>{
+    const url=new URL('examples/'+name,import.meta.url);
+    const response=await fetch(url,{mode:'same-origin',credentials:'same-origin',redirect:'error'});
+    if(!response.ok)throw new Error('Sample unavailable');
+    const bytes=await response.arrayBuffer();
+    if(new TextDecoder().decode(bytes.slice(0,5))!=='%PDF-')throw new Error('Sample unavailable');
+    return new File([bytes],name,{type:'application/pdf'});
+   }));
+   // A new local selection or tool change takes precedence over a pending sample request.
+   if(api.current()!==tool||api.files()!==selection||document.getElementById('files').inert)return;
+   api.addFiles(files);
+   if(tool==='split'){
+    const pages=document.getElementById('pages');pages.value='2-4';pages.dispatchEvent(new Event('input',{bubbles:true}));
+   }
+   status.className='status';status.textContent=tool==='split'?'Synthetic sample ready. Extract pages 2–4, then check the three output pages.':'Synthetic samples ready. Merge the files, then check the three output pages.';
+  }catch{
+   if(api.current()===tool&&api.files()===selection){status.className='status error';status.textContent='Sample PDFs could not be loaded. Try again or choose files from your device.';}
+  }finally{loading=false;sync();}
+ });
+ sync();
+}
 export function initLaunch(api){
  const pageTitle=document.title;
  const $=id=>document.getElementById(id), status=$('status'),go=$('go');
+ initSampleTrial(api);
  const read=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
  document.querySelector('.local-badge').textContent='On-device processing';
  document.documentElement.dataset.page=location.pathname==='/'?'home':'tool';

@@ -1,5 +1,19 @@
 # FolioCove directory submission record
 
+## Current distribution record — 17 October 2026
+
+| Destination | Verified state | Evidence |
+| --- | --- | --- |
+| awesome-pdf | Accepted; entry present when rechecked 16 October. | [PR #76](https://github.com/karllhughes/awesome-pdf/pull/76), merged 9 October. |
+| awesome-no-upload-browser-tools | Existing submission open; no duplicate created. | [PR #13](https://github.com/oswaldcby-afk/awesome-no-upload-browser-tools/pull/13), submitted 16 October. |
+| awesome-no-login-web-apps | Submitted 17 October; open and awaiting editorial review. | [PR #787](https://github.com/aviaryan/awesome-no-login-web-apps/pull/787). One README line under Document Editors / Others, with beta limitations and maintainer affiliation disclosed. |
+
+For the new submission, the current contribution rules explicitly allow closely related PDF suites, require account-free core workflows and request an entry at the bottom of the category. The README and all-issue/PR searches were checked for duplicates immediately before submission. These actions establish distribution requests, not acquired users, completed tasks, traffic gains or endorsement.
+
+Reddit community posting remains pending usable account access and human verification. Check the actual community's current rules and history before posting. Hacker News currently prohibits generated text and automated posting; the owner must personally write and submit any Show HN announcement. Do not reuse generated launch copy there.
+
+## Historical preparation for the accepted awesome-pdf entry
+
 Rechecked 16 October 2026. Status: **accepted and present in the upstream README**. [Pull request #76](https://github.com/karllhughes/awesome-pdf/pull/76) was merged on 9 October 2026 at 20:02:54 UTC. Read-only verification found the FolioCove entry in the current upstream README. This establishes a listing, not traffic or ranking gains. Use accurate task evidence; do not buy reviews, manufacture votes, bulk-post, or use unrelated categories.
 
 ## One appropriate first submission

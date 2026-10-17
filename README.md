@@ -10,6 +10,8 @@ FolioCove PDF is a free, MIT-licensed browser PDF workspace for everyday documen
 
 **Public beta:** keep originals and inspect outputs. Redaction is experimental, AI depends on browser support, and verified sanitization and PDF/A conversion are unavailable. Physical phone cameras, native downloads and actual Safari remain unverified. The 88-entry catalog includes experimental, conditional and unavailable tools; it is not a count of equally validated features.
 
+[Try one five-minute task with synthetic samples](https://mehbul.github.io/FolioCove/try/) and share optional feedback by email. Merge and extraction workspaces can load their sample PDFs directly; no app account or personal document is needed.
+
 ## Try a PDF task now
 
 | Task | Open the tool | What to expect |
@@ -87,7 +89,7 @@ Engine and emulation checks cover a limited scope. Physical camera capture, nati
 
 ### How do I report a problem or contribute?
 
-Use [GitHub Issues](https://github.com/mehbul/FolioCove/issues) for public bug reports with synthetic examples. Do not attach private documents. Follow [SECURITY.md](SECURITY.md) for private vulnerability reports and [CONTRIBUTING.md](CONTRIBUTING.md) for development contributions. A general-support email is still pending.
+Use [GitHub Issues](https://github.com/mehbul/FolioCove/issues) for public bug reports with synthetic examples. Do not attach private documents. Follow [SECURITY.md](SECURITY.md) for private vulnerability reports and [CONTRIBUTING.md](CONTRIBUTING.md) for development contributions. Email [mehbulislam81@gmail.com](mailto:mehbulislam81@gmail.com) for general support. Send a description with an invented example, never private documents or passwords. No response-time guarantee is offered.
 
 ## For developers
 

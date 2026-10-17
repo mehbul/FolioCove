@@ -38,7 +38,8 @@ test('Public help distinguishes public bug reports from private security disclos
  await page.goto('/FolioCove/support/');
  await expect(page.getByRole('link',{name:'GitHub’s private vulnerability reporting form'})).toHaveAttribute('href','https://github.com/mehbul/FolioCove/security/advisories/new');
  await expect(page.locator('article')).toContainText('GitHub reports are public');
- await expect(page.locator('article')).toContainText('A dedicated general-support email has not yet been set up');
+ await expect(page.getByRole('link',{name:'mehbulislam81@gmail.com',exact:true})).toHaveAttribute('href','mailto:mehbulislam81@gmail.com?subject=FolioCove%20support');
+ await expect(page.locator('article')).toContainText('No GitHub account is needed');
  await page.setViewportSize({width:390,height:844});
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });

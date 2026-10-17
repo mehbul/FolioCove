@@ -10,7 +10,7 @@
   "processing": "on-device",
   "documentUploadEndpoint": null,
   "maxFileBytes": 104857600,
-  "supportEmail": null,
+  "supportEmail": "mehbulislam81@gmail.com",
   "unavailable": [
     "Verified secure sanitization",
     "Validated PDF/A conversion",

@@ -1,6 +1,6 @@
 # FolioCove PDF capabilities
 
-FolioCove PDF (also written FolioCovePDF; previously named FolioCove) is a browser PDF workspace. Release status: private-beta. Operator name supplied: FolioCove, India. A public support email has not yet been set up.
+FolioCove PDF (also written FolioCovePDF; previously named FolioCove) is a browser PDF workspace. Release status: private-beta. Operator name supplied: FolioCove, India. Support: mehbulislam81@gmail.com. Do not send documents or private information.
 
 ## Processing and privacy
 

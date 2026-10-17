@@ -1,0 +1,56 @@
+{
+  "description": "Synthetic guide fixtures and reference outputs. Byte counts describe these downloads, not every browser-generated output.",
+  "generator": "scripts/generate-guide-examples.mjs",
+  "files": {
+    "merge-first.pdf": {
+      "pages": 1,
+      "bytes": 1383,
+      "pageLabels": [
+        "FC-MERGE-A-1"
+      ],
+      "sha256": "58046614ccd80afb9e4865800d7e835c8e20017e75cc1dd54fdba82b1fbfd14c"
+    },
+    "merge-second.pdf": {
+      "pages": 2,
+      "bytes": 1996,
+      "pageLabels": [
+        "FC-MERGE-B-1",
+        "FC-MERGE-B-2"
+      ],
+      "sha256": "88b4ae0880797b0dc8bbc9156372a3e9f0a376c4a28975fa713939718c96c74e"
+    },
+    "merge-reference.pdf": {
+      "pages": 3,
+      "bytes": 2593,
+      "pageLabels": [
+        "FC-MERGE-A-1",
+        "FC-MERGE-B-1",
+        "FC-MERGE-B-2"
+      ],
+      "sha256": "fe4f834ce3c92ac6b8ea4096352e8138aeceb2e0a8fa8907ef97446f53cb0ad7"
+    },
+    "extract-six-pages.pdf": {
+      "pages": 6,
+      "bytes": 4456,
+      "pageLabels": [
+        "FC-EXTRACT-1",
+        "FC-EXTRACT-2",
+        "FC-EXTRACT-3",
+        "FC-EXTRACT-4",
+        "FC-EXTRACT-5",
+        "FC-EXTRACT-6"
+      ],
+      "sha256": "9b652913f56363c63dedceb6c02df8144ffc08a63fa4e6cfc0c477c82d7d5551"
+    },
+    "extract-reference-2-4.pdf": {
+      "pages": 3,
+      "bytes": 2626,
+      "pageLabels": [
+        "FC-EXTRACT-2",
+        "FC-EXTRACT-3",
+        "FC-EXTRACT-4"
+      ],
+      "sha256": "bba8632d1af60cca57a0d4102fb198e1e7e9ed5b3e2234732eedbe9bde47fcbf"
+    }
+  }
+}

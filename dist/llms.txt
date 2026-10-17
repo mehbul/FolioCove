@@ -13,4 +13,4 @@
 
 ## Important boundaries
 
-AI summary and translation are browser-dependent. Redaction is experimental. Verified sanitization and PDF/A conversion are unavailable. There is no document-upload endpoint or remote processing API. Support email and physical-device validation remain pending.
+AI summary and translation are browser-dependent. Redaction is experimental. Verified sanitization and PDF/A conversion are unavailable. There is no document-upload endpoint or remote processing API. Support: mehbulislam81@gmail.com. Do not send documents or private information. Physical-device validation remains pending.

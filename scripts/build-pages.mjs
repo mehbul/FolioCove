@@ -8,6 +8,7 @@ import {buildDiscovery} from '../src/content/discovery.mjs';
 import {buildBlog} from '../src/content/blog.mjs';
 import {buildSupport} from '../src/content/support.mjs';
 import {buildTaskDemo} from '../src/content/demos.mjs';
+import {buildPilot} from '../src/content/pilot.mjs';
 const base='/FolioCove';
 const origin='https://mehbul.github.io'+base;
 const routeSlugs=[...toolRoutes.map(([,slug])=>slug),...Object.keys(pages),'tools'];
@@ -25,6 +26,7 @@ async function adapt(directory){
   if(file.endsWith('.html'))text=text.replaceAll('href="/"',`href="${base}/"`).replaceAll('content="noindex,nofollow"','content="index,follow"').replaceAll('<base href="/">',`<base href="${base}/">`).replaceAll(site.name+' — Private PDF tools',site.name+' — Free, open-source PDF tools');
   text=text.replaceAll('not yet publicly indexed','eligible for public search indexing');
   text=text.replace('FolioCove is ready for a controlled private pilot with synthetic or non-sensitive documents. Public launch is pending a working support inbox, finished public notices and a short real-device pilot. Operator name: FolioCove. Country: India. The public support email has not yet been set up.','FolioCove is available as a public beta. Use synthetic or non-sensitive documents and inspect outputs. Report bugs on GitHub without attaching personal documents. Operator: FolioCove, India. A public support email and physical-device pilot are still pending; these beta notices are not finalized public-business policies.');
+  text=text.replace('FolioCove is ready for a controlled private pilot with synthetic or non-sensitive documents. Finished public notices and a short real-device pilot remain pending.', 'FolioCove is available as a public beta. Use synthetic or non-sensitive documents and inspect outputs. Finished public-business notices and a physical-device pilot remain pending.');
   if(file===path.join('dist','index.html'))text=text.replace('What do you need to do?',site.name+' tools').replace('A simpler way to work with PDFs. Choose a tool, make it yours.','Merge, split, compress and edit PDFs for free. Documents stay on your device. No account required.').replace('</head>','<meta name="google-site-verification" content="DvS9BP2Rzh2vGhwIWFxLYanLAzH4cOliBGzBFmZpxzY"></head>');
   if(file.endsWith('launch.mjs'))text=text.replaceAll("location.pathname==='/'",`location.pathname==='${base}/'`).replaceAll("a.href='/'+slug",`a.href='${base}/'+slug`).replaceAll("==='/'+x[1]",`==='${base}/'+x[1]`);
   text=text.replaceAll('private-beta','public-beta').replaceAll('PRIVATE BETA','PUBLIC BETA').replaceAll('Private beta','Public beta').replaceAll('private beta','public beta').replaceAll('Owner-private beta','Public beta').replaceAll('owner-private beta','public beta');
@@ -44,16 +46,18 @@ await fs.writeFile('dist/demo/captions.vtt','WEBVTT\n\n00:00.000 --> 00:06.000\n
 const guideUrls=await buildDiscovery();
 const blogUrls=await buildBlog();
 await buildSupport();
+await buildPilot();
 await buildTaskDemo();
 // The support page is public-only; retain the private Sites publication's audience.
-for(const slug of ['',...toolRoutes.map(x=>x[1]),...Object.keys(pages),'tools','demo','demo/extract-pdf',...guideUrls,...blogUrls]){
+for(const slug of ['',...toolRoutes.map(x=>x[1]),...Object.keys(pages),'tools','demo','demo/extract-pdf','try',...guideUrls,...blogUrls]){
  const file=`dist/${slug?slug+'/':''}index.html`;
  const html=await fs.readFile(file,'utf8');
- await fs.writeFile(file,html.replace('</footer>',`<p style="text-align:center;padding:8px"><a href="${base}/support/">Help and feedback</a></p></footer>`));
+ await fs.writeFile(file,html.replace('</footer>',`<p style="text-align:center;padding:8px"><a href="${base}/support/">Help and feedback</a> · <a href="${base}/try/">Try a five-minute sample task</a></p></footer>`));
 }
 await fs.appendFile('dist/llms.txt',`\n## Support\n\n- [Help and feedback](${origin}/support/): Public bug reports, private vulnerability reporting and current support limits.\n`);
 await fs.appendFile('dist/llms.txt',`\n- [Extract PDF pages demonstration](${origin}/demo/extract-pdf/): Real synthetic six-page input, pages 2–4 selection and a verified three-page download.\n`);
-const urls=['',...toolRoutes.map(x=>x[1]),...Object.keys(pages),'tools','demo','demo/extract-pdf','support',...guideUrls,...blogUrls];
+await fs.appendFile('dist/llms.txt',`\n- [Try one five-minute PDF task](${origin}/try/): Synthetic merge, page-extraction and image-to-PDF tasks with optional email feedback. No account or document uploads.\n`);
+const urls=['',...toolRoutes.map(x=>x[1]),...Object.keys(pages),'tools','demo','demo/extract-pdf','support','try',...guideUrls,...blogUrls];
 await fs.writeFile('dist/sitemap.xml','<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+urls.map(slug=>`<url><loc>${origin}/${slug?slug+'/':''}</loc></url>`).join('\n')+'\n</urlset>\n');
 // robots.txt belongs at the host root; this project copy is informational.
 await fs.writeFile('dist/robots.txt',`User-agent: *\nAllow: /\nSitemap: ${origin}/sitemap.xml\n`);
