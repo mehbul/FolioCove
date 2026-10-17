@@ -3,8 +3,8 @@ import base from './playwright.config.mjs';
 const webkitLaunch=process.env.FOLIOCOVE_WEBKIT_EXECUTABLE?{executablePath:process.env.FOLIOCOVE_WEBKIT_EXECUTABLE}:{};
 export default defineConfig({
  ...base,outputDir:'test-results/pilot',workers:2,
- testMatch:['**/pilot.spec.mjs','**/core-workflows.spec.mjs','**/extended.spec.mjs','**/results.spec.mjs'],
- grep:/camera scanner converts|merge and split produce|edit and typed sign add|unavailable local AI|Changing extraction settings|pilot:/,
+ testMatch:['**/pilot.spec.mjs','**/core-workflows.spec.mjs','**/extended.spec.mjs','**/results.spec.mjs','**/result-handoff.spec.mjs'],
+ grep:/camera scanner converts|merge and split produce|edit and typed sign add|unavailable local AI|Changing extraction settings|A merged PDF passes|Keyboard handoff|pilot:/,
  projects:[
   {name:'android-emulation',use:{...devices['Pixel 7'],browserName:'chromium'}},
   {name:'iphone-webkit-emulation',use:{...devices['iPhone 13'],browserName:'webkit',launchOptions:webkitLaunch}},

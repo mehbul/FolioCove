@@ -24,5 +24,7 @@ Existing functional code, ten tool routes, generated PDF checks and browser work
 
 Selected-file ordering, actual download sizes and repeat-download recovery support the immediate tool workflow. Public guides include downloadable synthetic merge/extraction examples with reference page labels. Public help routes general feedback to GitHub Issues and security vulnerabilities to GitHub's enabled private reporting channel. General support is available by email at mehbulislam81@gmail.com, without a response-time guarantee. Email correspondence is separate from document processing; users should not send documents or private information.
 
+Prepared unlocked PDF results within the file limit can be reused in page organization, page extraction or lossless compression without selecting a file again. This handoff uses the generated PDF in memory, resets destination settings and does not process automatically. Non-PDF and protected outputs retain download recovery without these handoff choices.
+
 Local expansion: AES-256 protection/unlocking, lossless qpdf compression and recovery, JPG ZIP, native text DOCX/XLSX, image-slide PPTX, form authoring, drawn ink, image watermarking, shapes, side-by-side comparison, and browser-dependent AI summaries. No validated PDF/A or remote signature workflow. Office layout fidelity, auto form detection, URL fetching and layout-preserving translation remain unavailable.
 

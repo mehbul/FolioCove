@@ -5,3 +5,12 @@
 .download-again{display:inline-flex;align-items:center;min-height:44px;margin-top:8px;padding:8px 14px;border:1px solid #ddd;border-radius:8px;color:#222;background:#fff;font-size:14px;text-underline-offset:3px}
 .download-again:hover{background:#f7f7f7}
 .download-again:focus-visible{outline:3px solid var(--mint);outline-offset:4px}
+.result-next{min-width:0;margin:20px 0 0;padding:0;border:0;font-size:14px}
+.result-next legend{padding:0;font-size:15px;font-weight:600}
+.result-next label{display:block;margin:10px 0 6px}
+.result-next-controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.result-next select{flex:1 1 220px;min-width:0;max-width:100%;min-height:44px;padding:10px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#222;font-family:inherit;font-size:14px}
+.result-next .download-again{margin:0;font-family:inherit;cursor:pointer}
+.result-next select:focus-visible{outline:3px solid var(--mint);outline-offset:4px}
+.result-next:disabled{opacity:.6}
+@media(max-width:760px){.result-next select{font-size:16px}}

@@ -43,6 +43,8 @@ Want to try it before choosing your own files? The [worked merge example](https:
 
 Prepared downloads show their actual size and a Download again link. The browser does not overwrite your original files. Large, malformed or password-protected inputs can fail; the beta limit is 100 MB per file and practical device limits may be lower.
 
+For an unlocked PDF result within the beta file limit, choose **Next PDF tool** and **Use this PDF** to continue into page organization, page extraction or lossless compression without selecting the downloaded file again. The prepared PDF stays in memory on your device; the next tool opens with fresh settings and waits for you to review its limits and run it. ZIP, Office-document and password-protected results keep their ordinary download controls.
+
 ## Why use a browser PDF tool with on-device processing?
 
 - **No document-upload endpoint:** selected files are processed on your device rather than sent to a FolioCove processing server.
