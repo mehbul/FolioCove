@@ -30,3 +30,5 @@ Local expansion: AES-256 protection/unlocking, lossless qpdf compression and rec
 
 
 Word conversion defaults to appearance as page images. PDF-to-DOCX keeps page dimensions and visible graphics without editable text; DOCX-to-PDF uses local browser rendering, with possible font and pagination differences and non-selectable output. Text-only conversion remains an explicit option.
+
+Other appearance flows: PDF-to-XLSX can embed worksheet page images or extract approximate text rows. XLSX-to-PDF supports basic cell formatting and embedded images, with no calculation engine; charts and conditional formatting are unsupported. PPTX-to-PDF renders supported backgrounds, positioned rich text, simple shapes and images; groups, tables, charts and SmartArt are unsupported. Local HTML can render supported CSS and embedded raster data images, with scripts and remote resources blocked. These outputs are page images, not editable/selectable text. Fonts and complex layout may differ. Raster compression, workflows, OCR and redaction preserve physical page size independently of render resolution.

@@ -463,8 +463,8 @@ Selected documents are processed on-device; there is no document-upload endpoint
 - Open: https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=htmltopdf
 - Status: implemented
 - Input MIME types: text/html, text/plain
-- Purpose: Convert an HTML or text document into a clean, printable PDF.
-- Boundary: Extracts local HTML text only; no webpage URL fetching, CSS layout or embedded images.
+- Purpose: Render supported local HTML/CSS privately, or export text only.
+- Boundary: Appearance mode renders supported local HTML/CSS and embedded raster data images into PDF page images. Scripts and external resources are blocked. Browser layout and pagination may differ; text is not selectable. Text mode removes styling. No webpage URL fetching.
 
 ### Word to PDF
 
@@ -481,8 +481,8 @@ Selected documents are processed on-device; there is no document-upload endpoint
 - Open: https://foliocove-tools.mehbulislam81.chatgpt.site/excel-to-pdf/
 - Status: implemented
 - Input MIME types: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel
-- Purpose: Render spreadsheet cell values into paginated PDF tables.
-- Boundary: Exports spreadsheet cell values as text. Formatting, charts and formula layout are not preserved.
+- Purpose: Render supported XLSX formatting as PDF page images, or export cell values.
+- Boundary: Appearance mode renders basic XLSX cell formatting, widths, merged cells and embedded images into PDF page images. Fonts and pagination may differ; text is not selectable. Charts, conditional formatting and legacy XLS appearance are unsupported. Text/data mode exports values; formulas are not calculated.
 
 ### PowerPoint to PDF
 
@@ -490,8 +490,8 @@ Selected documents are processed on-device; there is no document-upload endpoint
 - Open: https://foliocove-tools.mehbulislam81.chatgpt.site/powerpoint-to-pdf/
 - Status: implemented
 - Input MIME types: application/vnd.openxmlformats-officedocument.presentationml.presentation
-- Purpose: Extract slide text and create one clean PDF page per slide.
-- Boundary: Exports slide text only; visual slide layout and graphics are not preserved.
+- Purpose: Render supported PPTX slide appearance locally, or export slide text.
+- Boundary: Appearance mode renders supported PPTX backgrounds, positioned text, simple shapes and embedded images into PDF page images. Fonts and complex layout may differ. Groups, charts, tables, SmartArt and custom geometry are unsupported. Text mode removes visual layout. Legacy PPT is unsupported.
 
 ### PDF to Word
 
@@ -742,8 +742,8 @@ Selected documents are processed on-device; there is no document-upload endpoint
 - Open: https://foliocove-tools.mehbulislam81.chatgpt.site/pdf-to-excel/
 - Status: implemented
 - Input MIME types: application/pdf
-- Purpose: Export extracted text rows into a real workbook, one sheet per page. Table reconstruction is approximate.
-- Boundary: Export extracted text rows into a real workbook, one sheet per page. Table reconstruction is approximate.
+- Purpose: Keep PDF pages as worksheet images, or export approximate editable text rows.
+- Boundary: Appearance mode places each PDF page in a worksheet as an image: cells are not editable data and formulas are not recovered. Text/data mode exports approximate selectable-text rows; scans need OCR for that mode.
 
 ### PDF to PowerPoint
 
@@ -751,8 +751,8 @@ Selected documents are processed on-device; there is no document-upload endpoint
 - Open: https://foliocove-tools.mehbulislam81.chatgpt.site/pdf-to-powerpoint/
 - Status: implemented
 - Input MIME types: application/pdf
-- Purpose: Preserve each page visually as a slide image. Slide content is not editable.
-- Boundary: Preserve each page visually as a slide image. Slide content is not editable.
+- Purpose: Preserve pages as slide images using the first page size. Slide content is not editable.
+- Boundary: Each PDF page becomes an image slide. Slide size follows the first PDF page; differing page sizes fit inside it. Text and graphics are not editable slide objects.
 
 ### Create PDF forms
 

@@ -61,6 +61,7 @@ for(const [index,bytes] of fixtures.entries()){
  }
 }
 for(const tool of ['merge','split','edit','sign','rotate','numbers','reverse']){const state=await execute(tool,new TextEncoder().encode('not a PDF'));assert.equal(state.kind,'status error');assert.equal(api.outputs.length,0);runs++}
+get('conversion-mode').value='text';
 const spreadsheetBytes=await xlsxFixture();
 const spreadsheetState=await executeWithFiles('exceltopdf',[asNamedFile(spreadsheetBytes,'synthetic.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')]);
 assert.equal(spreadsheetState.kind,'status ok',`exceltopdf: ${spreadsheetState.text}`);

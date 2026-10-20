@@ -1,3 +1,4 @@
+import {visualOptions,pdfToSpreadsheet} from './visual-conversion.mjs';
 import {wordOptions,pdfToWord} from './office-conversion.mjs';
 import {extendedTools} from '../content/tools.mjs';
 import {localModelStep} from './local-ai.mjs';
@@ -19,6 +20,7 @@ export function initExtended(api) {
   const group=['createform','drawsign','imagewatermark','shapes'].includes(id)?'Edit & sign':categories.secure.includes(id)?'Privacy':categories.edit.includes(id)?'Edit & sign':categories.organize.includes(id)?'Organize':categories.convert.includes(id)?'Convert':'Intelligence';
   grid.append(createCatalogCard(id,configs[id],select,group));
  }
+ advancedOptions.xlsx=visualOptions;
  advancedOptions.docx=wordOptions;
  advancedOptions.protect='<label for="local-password">New password</label><input id="local-password" type="password" autocomplete="new-password"><label for="confirm-password">Confirm password</label><input id="confirm-password" type="password" autocomplete="new-password"><span class="hint">Keep this password safe. FolioCove cannot recover it.</span>';
  advancedOptions.unlock='<label for="local-password">Document password</label><input id="local-password" type="password" autocomplete="off">';
@@ -57,13 +59,15 @@ export function initExtended(api) {
     downloadBlob(new Blob([result],{type:'application/pdf'}),`${id}.pdf`);
    }else if(id==='docx'){
     downloadBlob(await pdfToWord(file,loadPdfJs,extractPdfText,document.getElementById('word-output-mode')?.value),'document.docx');
+   }else if(id==='xlsx'&&document.getElementById('conversion-mode')?.value!=='text'){
+    downloadBlob(await pdfToSpreadsheet(file,loadPdfJs),'document.xlsx');
    }else if(id==='xlsx'){
     const XLSX=await import('@e965/xlsx');const pages=await extractPdfText(file);if(!pages.some(p=>p.trim()))throw Error('No selectable text found. Run OCR first.');const book=XLSX.utils.book_new();pages.forEach((text,i)=>XLSX.utils.book_append_sheet(book,XLSX.utils.aoa_to_sheet(text.split('\n').map(line=>line.split(/\s{2,}|\t/))),`Page ${i+1}`));downloadBlob(new Blob([XLSX.write(book,{type:'array',bookType:'xlsx'})],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),'document.xlsx');
    }else{
     const pdfjs=await loadPdfJs(),task=pdfjs.getDocument({data:new Uint8Array(await file.arrayBuffer())}),pdf=await task.promise;
-    try {const {default:JSZip}=await import('jszip');const zip=new JSZip();let ppt;if(id==='pptx'){const {default:PptxGenJS}=await import('pptxgenjs');ppt=new PptxGenJS();ppt.layout='LAYOUT_WIDE';}
+    try {const {default:JSZip}=await import('jszip');const zip=new JSZip();let ppt;if(id==='pptx'){const {default:PptxGenJS}=await import('pptxgenjs');ppt=new PptxGenJS();const first=await pdf.getPage(1),v=first.getViewport({scale:1});ppt.defineLayout({name:'PDF_PAGE',width:v.width/72,height:v.height/72});ppt.layout='PDF_PAGE';ppt._folioSize=[v.width/72,v.height/72];}
      for(let n=1;n<=pdf.numPages;n++){status.textContent=`Rendering page ${n} of ${pdf.numPages} locally…`;const page=await pdf.getPage(n),viewport=page.getViewport({scale:1.5});if(viewport.width*viewport.height>24000000)throw Error('A page is too large to render safely.');const canvas=document.createElement('canvas');canvas.width=viewport.width;canvas.height=viewport.height;await page.render({canvasContext:canvas.getContext('2d'),viewport,background:'white'}).promise;
-      if(ppt){const scale=Math.min(13.333/viewport.width,7.5/viewport.height),w=viewport.width*scale,h=viewport.height*scale;const slide=ppt.addSlide();slide.addImage({data:canvas.toDataURL('image/jpeg',.92),x:(13.333-w)/2,y:(7.5-h)/2,w,h});}else{const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.92));if(!blob)throw Error('JPG export failed.');zip.file(`page-${String(n).padStart(3,'0')}.jpg`,blob);}canvas.width=canvas.height=0;
+      if(ppt){const scale=Math.min(ppt._folioSize[0]/viewport.width,ppt._folioSize[1]/viewport.height),w=viewport.width*scale,h=viewport.height*scale;const slide=ppt.addSlide();slide.addImage({data:canvas.toDataURL('image/jpeg',.92),x:(ppt._folioSize[0]-w)/2,y:(ppt._folioSize[1]-h)/2,w,h});}else{const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.92));if(!blob)throw Error('JPG export failed.');zip.file(`page-${String(n).padStart(3,'0')}.jpg`,blob);}canvas.width=canvas.height=0;
      }
      downloadBlob(ppt?new Blob([await ppt.write({outputType:'arraybuffer'})],{type:'application/vnd.openxmlformats-officedocument.presentationml.presentation'}):await zip.generateAsync({type:'blob'}),ppt?'document.pptx':'pdf-jpg-pages.zip');
     }finally{await task.destroy();}

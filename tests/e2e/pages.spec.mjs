@@ -39,10 +39,10 @@ test('Office conversion routes create real workbooks, image slides and text PDFs
  const dir=await makeFixtureDir(),pdf=await createPdf(path.join(dir,'office.pdf'),['FC-OFFICE-FIRST','FC-OFFICE-SECOND']);
  const errors=[],external=[];page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(new URL(r.url()).origin!=='http://127.0.0.1:4174')external.push(r.url())});
  const open=async slug=>{await page.goto('/FolioCove/'+slug+'/');await expect(page.getByTestId('file-input')).toBeEnabled()};
- await open('pdf-to-excel');await page.getByTestId('file-input').setInputFiles(pdf);
+ await open('pdf-to-excel');await page.locator('#conversion-mode').selectOption('text');await page.getByTestId('file-input').setInputFiles(pdf);
  const workbook=await runAndSaveDownload(page,dir,'document.xlsx'),xlsx=await JSZip.loadAsync(await fs.readFile(workbook));
  expect(Object.keys(xlsx.files).filter(x=>/^xl\/worksheets\/sheet\d+\.xml$/.test(x))).toHaveLength(2);
- await open('excel-to-pdf');await page.getByTestId('file-input').setInputFiles(workbook);
+ await open('excel-to-pdf');await page.locator('#conversion-mode').selectOption('text');await page.getByTestId('file-input').setInputFiles(workbook);
  expect(await pdfText(await runAndSaveDownload(page,dir,'excel-to-pdf.pdf'))).toContain('FC-OFFICE-FIRST');
  await open('pdf-to-powerpoint');await page.getByTestId('file-input').setInputFiles(pdf);
  const slides=await JSZip.loadAsync(await fs.readFile(await runAndSaveDownload(page,dir,'document.pptx')));
@@ -50,7 +50,7 @@ test('Office conversion routes create real workbooks, image slides and text PDFs
  expect(await slides.file('ppt/slides/slide1.xml').async('string')).toContain('<p:pic>');
  const {default:PptxGenJS}=await import('pptxgenjs');const deck=new PptxGenJS();deck.addSlide().addText('FC-SLIDE-TEXT',{x:1,y:1,w:7,h:1});
  const source=path.join(dir,'text-slide.pptx');await fs.writeFile(source,await deck.write({outputType:'nodebuffer'}));
- await open('powerpoint-to-pdf');await page.getByTestId('file-input').setInputFiles(source);
+ await open('powerpoint-to-pdf');await page.locator('#conversion-mode').selectOption('text');await page.getByTestId('file-input').setInputFiles(source);
  expect(await pdfText(await runAndSaveDownload(page,dir,'ppt-to-pdf.pdf'))).toContain('FC-SLIDE-TEXT');
  await page.goto('/FolioCove/pdf-converter/');
  await expect(page.locator('h1')).toHaveText('Free PDF converter — choose the output you need');

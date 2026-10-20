@@ -25,10 +25,10 @@ FolioCove PDF is a free, MIT-licensed browser PDF workspace for everyday documen
 | Convert PDF to JPG | [PDF to JPG](https://mehbul.github.io/FolioCove/pdf-to-jpg/) | A ZIP containing one rendered JPG per page, not original embedded-image extraction. |
 | Convert PDF to Word | [PDF to DOCX](https://mehbul.github.io/FolioCove/pdf-to-word/) | Page images preserve appearance by default; content is not editable. Optional editable text removes layout. |
 | Convert Word to PDF | [DOCX to PDF](https://mehbul.github.io/FolioCove/word-to-pdf/) | Browser-rendered page images by default; text is not selectable. Complex layouts/fonts may differ. Optional text-only export. Legacy DOC unsupported. |
-| Convert PDF to Excel | [PDF to XLSX](https://mehbul.github.io/FolioCove/pdf-to-excel/) | One sheet per PDF page with approximate text rows; original tables and formulas are not recovered. |
-| Convert Excel to PDF | [XLSX/XLS values to PDF](https://mehbul.github.io/FolioCove/excel-to-pdf/) | Text-oriented spreadsheet export; charts, styling and formula layout are not preserved. |
-| Convert PDF to PowerPoint | [PDF to PPTX](https://mehbul.github.io/FolioCove/pdf-to-powerpoint/) | One PDF page as an image per slide; original text and graphics are not editable slide objects. |
-| Convert PowerPoint to PDF | [PPTX slide text to PDF](https://mehbul.github.io/FolioCove/powerpoint-to-pdf/) | One text-oriented PDF page per slide; original graphics, design and legacy PPT are unsupported. |
+| Convert PDF to Excel | [PDF to XLSX](https://mehbul.github.io/FolioCove/pdf-to-excel/) | One page image per worksheet by default; content is not editable data. Optional approximate text rows; formulas are not recovered. |
+| Convert Excel to PDF | [XLSX/XLS values to PDF](https://mehbul.github.io/FolioCove/excel-to-pdf/) | Basic XLSX formatting and images as PDF page images, or XLSX/XLS values as text. Complex printing, charts and conditional formatting unsupported. |
+| Convert PDF to PowerPoint | [PDF to PPTX](https://mehbul.github.io/FolioCove/pdf-to-powerpoint/) | Page images with slide dimensions matching the first PDF page; content is not editable. |
+| Convert PowerPoint to PDF | [PPTX to PDF](https://mehbul.github.io/FolioCove/powerpoint-to-pdf/) | Supported slide backgrounds, text, shapes and images rendered locally. Complex graphics and legacy PPT unsupported; text-only mode available. |
 | Add text to a PDF | [Edit PDF](https://mehbul.github.io/FolioCove/edit-pdf/) | Add a text overlay; does not rewrite existing paragraphs. |
 | Add a signature to a PDF | [Sign PDF](https://mehbul.github.io/FolioCove/sign-pdf/) | A visible typed signature mark, not certificate signing or identity verification. |
 | Make scanned text searchable | [English OCR](https://mehbul.github.io/FolioCove/ocr-pdf/) | Local recognition with an English model download; review words and numbers for errors. |

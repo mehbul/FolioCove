@@ -2,6 +2,8 @@ export const core = [
  ['merge','merge-pdf','Merge PDFs'],['split','split-pdf','Extract pages'],['visualorganize','organize-pdf','Organize pages'],['targetcompress','compress-pdf','Compress to size'],['camerascanner','scan-pdf','Scan photos'],['searchableocr','ocr-pdf','Searchable OCR'],['edit','edit-pdf','Add text'],['sign','sign-pdf','Typed signature'],['redact','redact-pdf','Redact region'],['privacycheck','privacy-inspector','Privacy Inspector']
 ];
 export const notices={
+ pptx:'Each PDF page becomes an image slide. Slide size follows the first PDF page; differing page sizes fit inside it. Text and graphics are not editable slide objects.',
+ xlsx:'Appearance mode places each PDF page in a worksheet as an image: cells are not editable data and formulas are not recovered. Text/data mode exports approximate selectable-text rows; scans need OCR for that mode.',
  targetcompress:'Lossy conversion: pages become images, selectable text and forms are lost, and the target size is not guaranteed. Check readability before uploading.',
  compress:'Pages become images. Text selection, forms and accessibility information are lost.',
  visualorganize:'Use thumbnail buttons to move, rotate or remove pages. Keep at least one page.',
@@ -22,9 +24,9 @@ export const notices={
  lossless:'Optimizes PDF structure locally without turning pages into images. Size reduction is not guaranteed; keep the original and inspect the result. Modifying PDFs can invalidate digital signatures.',
  pdftoword:'Keep appearance exports page images: text is not editable or selectable. Editable text mode removes layout, tables and images.',
  pdftoexcel:'Exports text to CSV, not native XLSX or accurate table reconstruction. Spreadsheet-triggering values are prefixed as text.',
- exceltopdf:'Exports spreadsheet cell values as text. Formatting, charts and formula layout are not preserved.',
- ppttopdf:'Exports slide text only; visual slide layout and graphics are not preserved.',
- htmltopdf:'Extracts local HTML text only; no webpage URL fetching, CSS layout or embedded images.',
+ exceltopdf:'Appearance mode renders basic XLSX cell formatting, widths, merged cells and embedded images into PDF page images. Fonts and pagination may differ; text is not selectable. Charts, conditional formatting and legacy XLS appearance are unsupported. Text/data mode exports values; formulas are not calculated.',
+ ppttopdf:'Appearance mode renders supported PPTX backgrounds, positioned text, simple shapes and embedded images into PDF page images. Fonts and complex layout may differ. Groups, charts, tables, SmartArt and custom geometry are unsupported. Text mode removes visual layout. Legacy PPT is unsupported.',
+ htmltopdf:'Appearance mode renders supported local HTML/CSS and embedded raster data images into PDF page images. Scripts and external resources are blocked. Browser layout and pagination may differ; text is not selectable. Text mode removes styling. No webpage URL fetching.',
  opendoc:'Text-only experimental conversion. Layout and ebook reading order may not be preserved.',
  translate:'Requires the browser Translator API and supported language models; not available in every browser. English source text only; TXT output.',
  aisummary:'Browser-dependent on-device AI. Requires a supported browser and available English model; a model download may be needed. If unavailable, use Smart summary instead.',

@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
 import path from 'node:path';
+import fs from 'node:fs/promises';
+import {PDFDocument} from 'pdf-lib';
 import {
   createImageOnlyTextPdf,
   expectNoGuardViolations,
@@ -33,6 +35,8 @@ test.describe('network-dependent OCR validation', () => {
     const output = await runAndSaveDownload(page, dir, 'searchable-ocr.pdf');
 
     expect(await pdfPageCount(output)).toBe(1);
+    const before=await PDFDocument.load(await fs.readFile(source)),after=await PDFDocument.load(await fs.readFile(output));
+    expect(after.getPages()[0].getSize()).toEqual(before.getPages()[0].getSize());
     const searchableText = normalizeOcrText(await pdfText(output));
     for (const word of expectedWords) expect(searchableText).toContain(word);
     expect(searchableText).toContain('CLEAR');
