@@ -193,6 +193,7 @@ test('Pages subpath loads tools, navigation, PDF renderer and local worker downl
  await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href','https://mehbul.github.io/FolioCove/');
  await page.goto('/FolioCove/tools/');await expect(page.locator('.directory-list details')).toHaveCount(88);
  await page.goto('/FolioCove/merge-pdf/');await expect(page.locator('#tool-title')).toHaveText('Merge PDFs');
+ await expect(page.getByTestId('file-input')).toBeEnabled();
  const dir=await makeFixtureDir(),a=await createPdf(path.join(dir,'a.pdf'),['FIRST']),b=await createPdf(path.join(dir,'b.pdf'),['SECOND']);
  await page.getByTestId('file-input').setInputFiles([a,b]);expect(await pdfPageCount(await runAndSaveDownload(page,dir,'merged.pdf'))).toBe(2);
  await page.goto('/FolioCove/?tool=lossless');
