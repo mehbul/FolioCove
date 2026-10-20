@@ -1,3 +1,4 @@
+import {wordOptions,pdfToWord} from './office-conversion.mjs';
 import {extendedTools} from '../content/tools.mjs';
 import {localModelStep} from './local-ai.mjs';
 import {createCatalogCard,catalogIcon} from './catalog-design.mjs';
@@ -18,6 +19,7 @@ export function initExtended(api) {
   const group=['createform','drawsign','imagewatermark','shapes'].includes(id)?'Edit & sign':categories.secure.includes(id)?'Privacy':categories.edit.includes(id)?'Edit & sign':categories.organize.includes(id)?'Organize':categories.convert.includes(id)?'Convert':'Intelligence';
   grid.append(createCatalogCard(id,configs[id],select,group));
  }
+ advancedOptions.docx=wordOptions;
  advancedOptions.protect='<label for="local-password">New password</label><input id="local-password" type="password" autocomplete="new-password"><label for="confirm-password">Confirm password</label><input id="confirm-password" type="password" autocomplete="new-password"><span class="hint">Keep this password safe. FolioCove cannot recover it.</span>';
  advancedOptions.unlock='<label for="local-password">Document password</label><input id="local-password" type="password" autocomplete="off">';
  advancedOptions.edit+='<label for="edit-font">Font</label><select id="edit-font"><option value="Helvetica">Helvetica</option><option value="TimesRoman">Times Roman</option><option value="Courier">Courier</option></select><label for="edit-size">Font size</label><input id="edit-size" type="number" min="6" max="120" value="12"><label for="edit-color">Text color</label><input id="edit-color" type="color" value="#0d141f">';
@@ -54,8 +56,7 @@ export function initExtended(api) {
     const data=await file.arrayBuffer();const result=await new Promise((resolve,reject)=>{const worker=new Worker('/assets/qpdf-worker.js',{type:'module'});const timer=setTimeout(()=>{worker.terminate();reject(Error('Processing timed out. Try a smaller document.'));},120000);const finish=()=>{clearTimeout(timer);worker.terminate();};worker.onmessage=({data})=>{finish();data.error?reject(Error(data.error)):resolve(data.bytes);};worker.onerror=()=>{finish();reject(Error('The local PDF engine could not start in this browser.'));};worker.postMessage({id,data,password},[data]);});
     downloadBlob(new Blob([result],{type:'application/pdf'}),`${id}.pdf`);
    }else if(id==='docx'){
-    const {Document,Paragraph,Packer}=await import('docx');const pages=await extractPdfText(file);if(!pages.some(p=>p.trim()))throw Error('No selectable text found. Run OCR first.');
-    const doc=new Document({sections:pages.map(text=>({children:text.split('\n').map(line=>new Paragraph(line))}))});downloadBlob(await Packer.toBlob(doc),'document.docx');
+    downloadBlob(await pdfToWord(file,loadPdfJs,extractPdfText,document.getElementById('word-output-mode')?.value),'document.docx');
    }else if(id==='xlsx'){
     const XLSX=await import('@e965/xlsx');const pages=await extractPdfText(file);if(!pages.some(p=>p.trim()))throw Error('No selectable text found. Run OCR first.');const book=XLSX.utils.book_new();pages.forEach((text,i)=>XLSX.utils.book_append_sheet(book,XLSX.utils.aoa_to_sheet(text.split('\n').map(line=>line.split(/\s{2,}|\t/))),`Page ${i+1}`));downloadBlob(new Blob([XLSX.write(book,{type:'array',bookType:'xlsx'})],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),'document.xlsx');
    }else{

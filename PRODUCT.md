@@ -26,5 +26,7 @@ Selected-file ordering, actual download sizes and repeat-download recovery suppo
 
 Prepared unlocked PDF results within the file limit can be reused in page organization, page extraction or lossless compression without selecting a file again. This handoff uses the generated PDF in memory, resets destination settings and does not process automatically. Non-PDF and protected outputs retain download recovery without these handoff choices.
 
-Local expansion: AES-256 protection/unlocking, lossless qpdf compression and recovery, JPG ZIP, native text DOCX/XLSX, image-slide PPTX, form authoring, drawn ink, image watermarking, shapes, side-by-side comparison, and browser-dependent AI summaries. No validated PDF/A or remote signature workflow. Office layout fidelity, auto form detection, URL fetching and layout-preserving translation remain unavailable.
+Local expansion: AES-256 protection/unlocking, lossless qpdf compression and recovery, JPG ZIP, native DOCX with page-image or editable-text modes, text XLSX, image-slide PPTX, form authoring, drawn ink, image watermarking, shapes, side-by-side comparison, and browser-dependent AI summaries. No validated PDF/A or remote signature workflow. Exact editable Office layout reconstruction, auto form detection, URL fetching and layout-preserving translation remain unavailable.
 
+
+Word conversion defaults to appearance as page images. PDF-to-DOCX keeps page dimensions and visible graphics without editable text; DOCX-to-PDF uses local browser rendering, with possible font and pagination differences and non-selectable output. Text-only conversion remains an explicit option.

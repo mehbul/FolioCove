@@ -1,0 +1,30 @@
+import {PDFDocument} from 'pdf-lib';
+export const wordOptions='<label for="word-output-mode">Conversion mode</label><select id="word-output-mode"><option value="appearance">Keep appearance (page images)</option><option value="text">Editable text (layout removed)</option></select><span class="hint">Keep appearance preserves the visible page as an image. Text cannot be edited or selected. Word layouts and fonts may differ in your browser; inspect the result.</span>';
+export async function pdfToWord(file,loadPdfJs,extractPdfText,mode){
+ const {Document,Paragraph,Packer,ImageRun}=await import('docx');
+ if(mode==='text'){const pages=await extractPdfText(file);if(!pages.some(p=>p.trim()))throw Error('No selectable text found. Run OCR first.');return Packer.toBlob(new Document({sections:pages.map(text=>({children:text.split('\n').map(line=>new Paragraph(line))}))}));}
+ const pdfjs=await loadPdfJs(),task=pdfjs.getDocument({data:new Uint8Array(await file.arrayBuffer())});
+ try{const pdf=await task.promise,sections=[];for(let n=1;n<=pdf.numPages;n++){
+  const page=await pdf.getPage(n),size=page.getViewport({scale:1}),viewport=page.getViewport({scale:2});if(viewport.width*viewport.height>24000000)throw Error('A page is too large to render safely.');
+  const canvas=document.createElement('canvas');canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);await page.render({canvasContext:canvas.getContext('2d'),viewport,background:'white'}).promise;
+  const bytes=Uint8Array.from(atob(canvas.toDataURL('image/png').split(',')[1]),c=>c.charCodeAt(0));
+  sections.push({properties:{page:{size:{width:Math.round(size.width*20),height:Math.round(size.height*20)},margin:{top:0,right:0,bottom:0,left:0,header:0,footer:0}}},children:[new Paragraph({spacing:{before:0,after:0,line:1},children:[new ImageRun({type:'png',data:bytes,transformation:{width:size.width*96/72,height:size.height*96/72},floating:{horizontalPosition:{relative:'page',offset:0},verticalPosition:{relative:'page',offset:0},behindDocument:true}})]})]});canvas.width=canvas.height=0;
+ }return await Packer.toBlob(new Document({sections}));}finally{await task.destroy();}
+}
+export async function wordToPdf(file){
+ const [{renderAsync},{default:html2canvas},{default:JSZip}]=await Promise.all([import('docx-preview'),import('html2canvas'),import('jszip')]);
+ const zip=await JSZip.loadAsync(await file.arrayBuffer());if(!zip.file('word/document.xml'))throw Error('Choose a valid DOCX document.');
+ // External relationships are never followed, even when a document references remote images.
+ for(const name of Object.keys(zip.files).filter(n=>n.endsWith('.rels'))){const xml=new DOMParser().parseFromString(await zip.file(name).async('string'),'application/xml');for(const rel of [...xml.getElementsByTagName('Relationship')])if(rel.getAttribute('TargetMode')==='External')rel.remove();zip.file(name,new XMLSerializer().serializeToString(xml));}
+ const documentXml=new DOMParser().parseFromString(await zip.file('word/document.xml').async('string'),'application/xml');for(const mark of [...documentXml.getElementsByTagNameNS('*','lastRenderedPageBreak')]){const br=documentXml.createElementNS(mark.namespaceURI,'w:br');br.setAttributeNS(mark.namespaceURI,'w:type','page');mark.replaceWith(br);}zip.file('word/document.xml',new XMLSerializer().serializeToString(documentXml));
+ // WebKit needs script-capable frames for html2canvas callbacks; the document CSP still forbids all scripts.
+ const frame=document.createElement('iframe');frame.setAttribute('sandbox','allow-same-origin allow-scripts');frame.setAttribute('aria-hidden','true');frame.style.cssText='position:fixed;left:-20000px;top:0;width:1400px;height:1200px;border:0;pointer-events:none';
+ const loaded=new Promise(resolve=>frame.onload=resolve);frame.srcdoc='<meta http-equiv="Content-Security-Policy" content="default-src &apos;none&apos;; script-src &apos;none&apos;; base-uri &apos;none&apos;; form-action &apos;none&apos;; img-src data: blob:; font-src data: blob:; style-src &apos;unsafe-inline&apos;; frame-src &apos;self&apos; about: blob:;"><body></body>';document.body.append(frame);
+ try{await loaded;const doc=frame.contentDocument,body=doc.body;await renderAsync(await zip.generateAsync({type:'arraybuffer'}),body,body,{inWrapper:true,ignoreLastRenderedPageBreak:true,useBase64URL:true,renderAltChunks:false,renderComments:false,renderFonts:true});await doc.fonts.ready;await Promise.all([...doc.images].map(img=>img.decode().catch(()=>{throw Error('A Word image could not be rendered. External, damaged or unsupported images cannot be included. No PDF was created.');})));
+ const pages=[...body.querySelectorAll('section.docx')];if(!pages.length)throw Error('No renderable pages found in this DOCX.');const out=await PDFDocument.create();
+ for(const section of pages){const style=frame.contentWindow.getComputedStyle(section),width=parseFloat(style.width),height=parseFloat(style.minHeight)||section.getBoundingClientRect().height;if(!width||!height||width*section.scrollHeight*4>32000000)throw Error('A Word page is too large to render safely.');
+ for(const img of section.querySelectorAll('img')){const anchor=img.parentElement;if(anchor?.style.width==='0px'&&anchor?.style.height==='0px')img.style.position='absolute';}
+ const canvas=await html2canvas(section,{scale:2,backgroundColor:'#ffffff',logging:false,allowTaint:false,useCORS:false,windowWidth:1400,scrollX:0,scrollY:0});const pageHeight=Math.ceil(height*2);
+ for(let y=0;y<canvas.height;y+=pageHeight){const slice=doc.createElement('canvas');slice.width=canvas.width;slice.height=pageHeight;const ctx=slice.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,slice.width,slice.height);ctx.drawImage(canvas,0,y,canvas.width,Math.min(pageHeight,canvas.height-y),0,0,canvas.width,Math.min(pageHeight,canvas.height-y));const image=await out.embedPng(slice.toDataURL('image/png'));out.addPage([width*.75,height*.75]).drawImage(image,{x:0,y:0,width:width*.75,height:height*.75});slice.width=slice.height=0;}canvas.width=canvas.height=0;
+ }return out.save();}finally{frame.remove();}
+}

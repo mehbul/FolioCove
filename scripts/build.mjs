@@ -94,6 +94,7 @@ const brandIcon = await fs.readFile(path.join(dist, 'assets', 'icons', 'files.sv
 await writeFile(path.join(dist, 'assets', 'icons', 'files-coral.svg'), brandIcon.replaceAll('currentColor', '#c52949'));
 await copyFile(path.join(root, 'node_modules', '@fontsource', 'dm-sans', 'LICENSE'), path.join(dist, 'assets', 'licenses', 'dm-sans.txt'));
 await copyFile(path.join(root, 'node_modules', '@phosphor-icons', 'core', 'LICENSE'), path.join(dist, 'assets', 'licenses', 'phosphor.txt'));
+for(const library of ['docx-preview','html2canvas'])await copyFile(path.join(root,'node_modules',library,'LICENSE'),path.join(dist,'assets','licenses',library+'.txt'));
 await copyFile(path.join(src, 'static', 'manifest.webmanifest'), path.join(dist, 'manifest.webmanifest'));
 await copyFile(path.join(src, 'static', 'sw.js'), path.join(dist, 'sw.js'));
 await copyFile(path.join(src, 'static', 'tester-results.csv'), path.join(dist, 'tester-results.csv'));

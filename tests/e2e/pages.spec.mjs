@@ -124,12 +124,13 @@ test('Direct conversion routes initialize on reload and produce the documented l
   await expect(page.getByTestId('tool-title')).toHaveText(title);
  };
  await open('pdf-to-word','PDF to Word (DOCX)');
- await expect(page.locator('#tool-limit')).toContainText('Original layout, tables and images are not preserved');
+ await expect(page.locator('#tool-limit')).toContainText('Keep appearance exports page images');
+ await page.locator('#word-output-mode').selectOption('text');
  await page.getByTestId('file-input').setInputFiles(input);
  const docx=await runAndSaveDownload(page,dir,'document.docx'),word=await JSZip.loadAsync(await fs.readFile(docx));
  const document=await word.file('word/document.xml').async('string');
  expect(document).toContain('FC-CONVERT-FIRST');expect(document).toContain('FC-CONVERT-SECOND');
- await open('word-to-pdf','Word to PDF');await page.getByTestId('file-input').setInputFiles(docx);
+ await open('word-to-pdf','Word to PDF');await page.locator('#word-output-mode').selectOption('text');await page.getByTestId('file-input').setInputFiles(docx);
  const wordPdf=await runAndSaveDownload(page,dir,'word-to-pdf.pdf');
  expect(await pdfText(wordPdf)).toContain('FC-CONVERT-FIRST');expect(await pdfText(wordPdf)).toContain('FC-CONVERT-SECOND');
  await open('pdf-to-jpg','PDF to JPG');await page.getByTestId('file-input').setInputFiles(input);
@@ -199,6 +200,7 @@ test('Pages subpath loads tools, navigation, PDF renderer and local worker downl
  await page.getByTestId('file-input').setInputFiles(a);expect(await pdfPageCount(await runAndSaveDownload(page,dir,'lossless.pdf'))).toBe(1);
  await page.goto('/FolioCove/organize-pdf/');
  await expect(page.locator('#tool-title')).toHaveText('Visual page organizer');
+  await expect(page.getByTestId('file-input')).toBeEnabled();
  await page.getByTestId('file-input').setInputFiles(a);
  await expect(page.getByTestId('page-thumb').locator('canvas').first()).toBeVisible();
  expect(failures).toEqual([]);

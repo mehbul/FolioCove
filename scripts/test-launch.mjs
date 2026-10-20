@@ -23,7 +23,7 @@ for(const file of ['dist/index.html','dist/assets/app.js','dist/assets/tesseract
  assert(!/cdn\.jsdelivr\.net|cdn\.sheetjs\.com|unpkg\.com/.test(text),`${file} must not reference third-party JavaScript CDNs`);
 }
 assert.equal(classifyOutcome('status error'),'failure');assert.equal(classifyOutcome('status ok'),'completed');assert.equal(classifyOutcome('status'),null);
-assert.deepEqual(Object.keys(safeMetric('merge','completed',123)),['tool','outcome','durationMs']);assert(notices.trimheads.includes('NOT redaction'));assert(notices.pdftoword.includes('not a native DOCX'));
+assert.deepEqual(Object.keys(safeMetric('merge','completed',123)),['tool','outcome','durationMs']);assert(notices.trimheads.includes('NOT redaction'));assert(notices.pdftoword.includes('page images'));
 const nodes=new Map();
 class Element{
  constructor(id=''){this.id=id;this.value='';this.textContent='';this.className='';this.dataset={};this.style={};this.listeners=[];this.children=[];this.classList={add:()=>{},remove:()=>{},toggle:()=>{},contains:()=>false}}

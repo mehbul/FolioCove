@@ -678,14 +678,14 @@
     {
       "id": "wordtopdf",
       "name": "Word to PDF",
-      "description": "Convert DOCX text into a private browser-generated PDF.",
+      "description": "Keep DOCX appearance as PDF page images, or choose text-only output.",
       "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/word-to-pdf/",
       "inputMimeTypes": [
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
       ],
       "multipleFiles": false,
       "status": "implemented",
-      "limitations": "DOCX text extraction only; layout, images and tables are not preserved.",
+      "limitations": "Keep appearance exports page images: text is not editable or selectable. Editable text mode removes layout, tables and images. Complex Word pagination and unavailable fonts may differ; inspect the output.",
       "processing": "on-device"
     },
     {
@@ -718,14 +718,14 @@
     {
       "id": "pdftoword",
       "name": "PDF to Word",
-      "description": "Export selectable PDF text as an editable Word-compatible document.",
+      "description": "Keep page appearance in a native DOCX, or export editable text without layout.",
       "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=pdftoword",
       "inputMimeTypes": [
         "application/pdf"
       ],
       "multipleFiles": false,
       "status": "implemented",
-      "limitations": "Exports text as HTML in a .doc wrapper, not a native DOCX conversion. Word may show a format warning.",
+      "limitations": "Keep appearance exports page images: text is not editable or selectable. Editable text mode removes layout, tables and images.",
       "processing": "on-device"
     },
     {
@@ -1063,14 +1063,14 @@
     {
       "id": "docx",
       "name": "PDF to Word (DOCX)",
-      "description": "Export selectable text into an editable DOCX. Original layouts and images are not preserved.",
+      "description": "Keep page appearance as images in DOCX, or choose editable text without layout.",
       "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/pdf-to-word/",
       "inputMimeTypes": [
         "application/pdf"
       ],
       "multipleFiles": false,
       "status": "implemented",
-      "limitations": "Exports selectable PDF text to native DOCX paragraphs. Original layout, tables and images are not preserved; scans need English OCR first.",
+      "limitations": "Keep appearance exports page images: text is not editable or selectable. Editable text mode removes layout, tables and images.",
       "processing": "on-device"
     },
     {

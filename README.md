@@ -23,8 +23,8 @@ FolioCove PDF is a free, MIT-licensed browser PDF workspace for everyday documen
 | Compress PDF to a target size | [Target-size compression](https://mehbul.github.io/FolioCove/compress-pdf/) | Best-effort raster compression; loses selectable text, forms and accessibility information. |
 | Convert JPG or PNG to PDF | [Images to PDF](https://mehbul.github.io/FolioCove/jpg-to-pdf/) | One image per page, ordered by you; no automatic A4 margins or OCR. |
 | Convert PDF to JPG | [PDF to JPG](https://mehbul.github.io/FolioCove/pdf-to-jpg/) | A ZIP containing one rendered JPG per page, not original embedded-image extraction. |
-| Convert PDF to Word | [PDF to DOCX](https://mehbul.github.io/FolioCove/pdf-to-word/) | Editable selectable text; original layouts, images and tables are not preserved. |
-| Convert Word to PDF | [DOCX text to PDF](https://mehbul.github.io/FolioCove/word-to-pdf/) | Text-oriented conversion; legacy DOC, original formatting, images and tables are unsupported. |
+| Convert PDF to Word | [PDF to DOCX](https://mehbul.github.io/FolioCove/pdf-to-word/) | Page images preserve appearance by default; content is not editable. Optional editable text removes layout. |
+| Convert Word to PDF | [DOCX to PDF](https://mehbul.github.io/FolioCove/word-to-pdf/) | Browser-rendered page images by default; text is not selectable. Complex layouts/fonts may differ. Optional text-only export. Legacy DOC unsupported. |
 | Convert PDF to Excel | [PDF to XLSX](https://mehbul.github.io/FolioCove/pdf-to-excel/) | One sheet per PDF page with approximate text rows; original tables and formulas are not recovered. |
 | Convert Excel to PDF | [XLSX/XLS values to PDF](https://mehbul.github.io/FolioCove/excel-to-pdf/) | Text-oriented spreadsheet export; charts, styling and formula layout are not preserved. |
 | Convert PDF to PowerPoint | [PDF to PPTX](https://mehbul.github.io/FolioCove/pdf-to-powerpoint/) | One PDF page as an image per slide; original text and graphics are not editable slide objects. |
@@ -79,7 +79,7 @@ Do not rely on full offline operation. Site assets must be available and some to
 
 ### Can I convert a PDF to an editable Word document?
 
-The [PDF to DOCX tool](https://mehbul.github.io/FolioCove/pdf-to-word/) exports selectable text into a genuine Word document. It does not reconstruct original layouts, images or tables. Scanned documents need OCR first.
+The [PDF to DOCX tool](https://mehbul.github.io/FolioCove/pdf-to-word/) offers two modes. Keep appearance preserves pages as images in a genuine Word document; page content is not editable. Editable text exports selectable words into paragraphs and removes layout, images and tables. Scans need OCR for editable-text mode.
 
 ### Which PDF compression should I use?
 

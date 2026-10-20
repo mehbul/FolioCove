@@ -472,8 +472,8 @@ Selected documents are processed on-device; there is no document-upload endpoint
 - Open: https://foliocove-tools.mehbulislam81.chatgpt.site/word-to-pdf/
 - Status: implemented
 - Input MIME types: application/vnd.openxmlformats-officedocument.wordprocessingml.document
-- Purpose: Convert DOCX text into a private browser-generated PDF.
-- Boundary: DOCX text extraction only; layout, images and tables are not preserved.
+- Purpose: Keep DOCX appearance as PDF page images, or choose text-only output.
+- Boundary: Keep appearance exports page images: text is not editable or selectable. Editable text mode removes layout, tables and images. Complex Word pagination and unavailable fonts may differ; inspect the output.
 
 ### Excel to PDF
 
@@ -499,8 +499,8 @@ Selected documents are processed on-device; there is no document-upload endpoint
 - Open: https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=pdftoword
 - Status: implemented
 - Input MIME types: application/pdf
-- Purpose: Export selectable PDF text as an editable Word-compatible document.
-- Boundary: Exports text as HTML in a .doc wrapper, not a native DOCX conversion. Word may show a format warning.
+- Purpose: Keep page appearance in a native DOCX, or export editable text without layout.
+- Boundary: Keep appearance exports page images: text is not editable or selectable. Editable text mode removes layout, tables and images.
 
 ### PDF to Excel
 
@@ -733,8 +733,8 @@ Selected documents are processed on-device; there is no document-upload endpoint
 - Open: https://foliocove-tools.mehbulislam81.chatgpt.site/pdf-to-word/
 - Status: implemented
 - Input MIME types: application/pdf
-- Purpose: Export selectable text into an editable DOCX. Original layouts and images are not preserved.
-- Boundary: Exports selectable PDF text to native DOCX paragraphs. Original layout, tables and images are not preserved; scans need English OCR first.
+- Purpose: Keep page appearance as images in DOCX, or choose editable text without layout.
+- Boundary: Keep appearance exports page images: text is not editable or selectable. Editable text mode removes layout, tables and images.
 
 ### PDF to Excel (XLSX)
 
