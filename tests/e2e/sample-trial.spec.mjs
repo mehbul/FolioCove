@@ -46,6 +46,7 @@ test('Sample trial is hidden when a visitor selects their own PDF or another too
  const dir=await makeFixtureDir(),input=await createPdf(path.join(dir,'my-local.pdf'),['LOCAL-TRIAL-PRESERVED']);
  await page.goto(base+'/merge-pdf/');
  await expect(page.getByRole('button',{name:'Try sample PDFs',exact:true})).toBeVisible();
+ await expect(page.getByTestId('file-input')).toBeEnabled();
  await page.getByTestId('file-input').setInputFiles(input);
  await expect(page.locator('#sample-trial')).toBeHidden();
  await expect(page.locator('#files .file-name')).toHaveText(['my-local.pdf']);
