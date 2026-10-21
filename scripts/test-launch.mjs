@@ -4,6 +4,8 @@ import assert from 'node:assert/strict';
 import * as pdfLib from 'pdf-lib';
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
 import JSZip from 'jszip';
+import {pathToFileURL} from 'node:url';
+import path from 'node:path';
 import {core,notices,classifyOutcome,safeMetric} from '../dist/launch.mjs';
 import {toolRoutes} from '../src/content/routes.mjs';
 const standardFontDataUrl='node_modules/pdfjs-dist/standard_fonts/';
@@ -37,7 +39,10 @@ const context={document,localStorage:{getItem:()=>null,setItem:()=>{}},CustomEve
 const body=script.split(/(?:const|var)\s*\{\s*initLaunch\s*\}\s*=\s*await\s+import\(["']\/launch\.mjs["']\)/)[0];
 assert.notEqual(body,script,'test harness could not isolate the generated app bundle setup code');
 for(const [key,value] of Object.entries(context))Object.defineProperty(globalThis,key,{value,configurable:true,writable:true});
-const harnessModule=body+`\n const testApi={configs,setupTool,pageIndexes,set:(tool,input)=>{current=tool;selected=input;},getStatus:()=>({kind:status.className,text:status.textContent}),outputs:[],};download=(bytes,name)=>testApi.outputs.push({bytes,name});downloadBlob=(blob,name)=>testApi.outputs.push({blob,name});export {testApi};`;
+// The generated app uses local split chunks. Resolve their imports for this
+// data-URL harness, while exercising the same generated handlers and libraries.
+const resolvedBody=body.replace(/(from\s*|import\s*(?:\(\s*)?)(["'])(\.\/[^"']+)\2/g,(_,prefix,quote,file)=>prefix+quote+pathToFileURL(path.resolve('dist/assets',file)).href+quote);
+const harnessModule=resolvedBody+`\n const testApi={configs,setupTool,pageIndexes,set:(tool,input)=>{current=tool;selected=input;},getStatus:()=>({kind:status.className,text:status.textContent}),outputs:[],};download=(bytes,name)=>testApi.outputs.push({bytes,name});downloadBlob=(blob,name)=>testApi.outputs.push({blob,name});export {testApi};`;
 const {testApi:api}=await import(`data:text/javascript;base64,${Buffer.from(harnessModule).toString('base64')}`);
 assert.equal(Object.keys(api.configs).length,74);
 api.setupTool('targetcompress');assert(get('options').innerHTML.includes('target-kb'));api.setupTool('sign');assert(get('options').innerHTML.includes('sign-name'));

@@ -52,27 +52,32 @@ await fs.mkdir(dist, {recursive: true});
 
 await esbuild({
   absWorkingDir: root,
-  entryPoints: [path.join(src, 'app', 'index.mjs')],
-  outfile: 'dist/assets/app.js',
+  entryPoints: {app:path.join(src,'app','index.mjs'),extended:path.join(src,'app','extended.mjs'),'qpdf-worker':path.join(src,'app','qpdf-worker.mjs')},
+  outdir: 'dist/assets',
+  splitting: true,
   bundle: true,
   minifyWhitespace: true,
   format: 'esm',
   target: ['es2022'],
   platform: 'browser',
-  external: ['/launch.mjs', '/assets/extended.js'],
+  external: ['/launch.mjs', '/assets/extended.js','node:*'],
   logLevel: 'silent'
 });
 
-await esbuild({absWorkingDir:root,entryPoints:['extended','qpdf-worker'].map(name=>path.join(src,'app',`${name}.mjs`)),outdir:'dist/assets',splitting:true,bundle:true,format:'esm',target:['es2022'],platform:'browser',external:['node:*'],logLevel:'silent'});
 await copyFile(path.join(root,'node_modules','pdfstudio','dist','wasm','qpdf.wasm'),path.join(dist,'assets','qpdf.wasm'));
 
-const appBundlePath = path.join(dist, 'assets', 'app.js');
-let appBundle = await fs.readFile(appBundlePath, 'utf8');
-appBundle = appBundle.replace(
+// Dynamic libraries now live in separate chunks; keep the OCR worker fallback
+// local in every emitted bundle, rather than only patching the app entry.
+for(const entry of await fs.readdir(path.join(dist,'assets'))){
+ if(!entry.endsWith('.js'))continue;
+ const bundlePath=path.join(dist,'assets',entry);
+ let appBundle=await fs.readFile(bundlePath,'utf8');
+ appBundle = appBundle.replace(
   /`https:\/\/cdn\.jsdelivr\.net\/npm\/tesseract\.js@v\$\{[^}]+\}\/dist\/worker\.min\.js`/g,
   '`/assets/tesseract/worker.min.js`'
 );
-await fs.writeFile(appBundlePath, cleanGeneratedText(appBundle));
+ await fs.writeFile(bundlePath, cleanGeneratedText(appBundle));
+}
 
 await copyFile(path.join(src, 'app', 'launch.mjs'), path.join(dist, 'launch.mjs'));
 await copyFile(path.join(src, 'styles', 'launch.css'), path.join(dist, 'launch.css'));

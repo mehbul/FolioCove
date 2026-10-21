@@ -7,6 +7,14 @@ import {makeFixtureDir,createPdf,createDocumentPhoto,runAndSaveDownload,pdfPageC
 import {toolRoutes,additionalToolRoutes} from '../../src/content/routes.mjs';
 test.skip(!process.env.FOLIOCOVE_PAGES_TEST,'Only run against the Pages subpath server');
 
+test('Startup keeps specialist libraries deferred and the application entry small',async({page})=>{
+ const requests=[];page.on('request',r=>requests.push(r.url()));
+ await page.goto('/FolioCove/');await expect(page.getByTestId('file-input')).toBeEnabled();
+ const response=await page.request.get('/FolioCove/assets/app.js');
+ expect((await response.body()).byteLength).toBeLessThan(150000);
+ expect(requests.filter(url=>/\/assets\/(?:docx-preview-|html2canvas-|pptxgen\.|xlsx-|pdf-|src-)/.test(url))).toEqual([]);
+});
+
 test('Task answers and breadcrumbs stay readable without JavaScript',async({browser,baseURL})=>{
  const context=await browser.newContext({baseURL,javaScriptEnabled:false,viewport:{width:390,height:844}});
  try{
