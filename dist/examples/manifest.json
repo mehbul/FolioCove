@@ -8,30 +8,30 @@
       "pageLabels": [
         "FC-MERGE-A-1"
       ],
-      "sha256": "58046614ccd80afb9e4865800d7e835c8e20017e75cc1dd54fdba82b1fbfd14c"
+      "sha256": "7b3e6a9a92f3eca0d14874ff7aab5742e392247b9e7e897209f5809cca4fe1a9"
     },
     "merge-second.pdf": {
       "pages": 2,
-      "bytes": 1996,
+      "bytes": 1992,
       "pageLabels": [
         "FC-MERGE-B-1",
         "FC-MERGE-B-2"
       ],
-      "sha256": "88b4ae0880797b0dc8bbc9156372a3e9f0a376c4a28975fa713939718c96c74e"
+      "sha256": "3abc263190a63ece32b9d182747ac3a07014d4a9b7a7ce08db7c8e01dd1d21d3"
     },
     "merge-reference.pdf": {
       "pages": 3,
-      "bytes": 2593,
+      "bytes": 2584,
       "pageLabels": [
         "FC-MERGE-A-1",
         "FC-MERGE-B-1",
         "FC-MERGE-B-2"
       ],
-      "sha256": "fe4f834ce3c92ac6b8ea4096352e8138aeceb2e0a8fa8907ef97446f53cb0ad7"
+      "sha256": "8ead5bb8584200403bb019742dd8cbf10fb7083495c26fd073327a239536b6de"
     },
     "extract-six-pages.pdf": {
       "pages": 6,
-      "bytes": 4456,
+      "bytes": 4452,
       "pageLabels": [
         "FC-EXTRACT-1",
         "FC-EXTRACT-2",
@@ -40,17 +40,17 @@
         "FC-EXTRACT-5",
         "FC-EXTRACT-6"
       ],
-      "sha256": "9b652913f56363c63dedceb6c02df8144ffc08a63fa4e6cfc0c477c82d7d5551"
+      "sha256": "bde4ba64137fe217e4e73959e36742a8b9d08ac82c6759b1044def14d05f4e9b"
     },
     "extract-reference-2-4.pdf": {
       "pages": 3,
-      "bytes": 2626,
+      "bytes": 2622,
       "pageLabels": [
         "FC-EXTRACT-2",
         "FC-EXTRACT-3",
         "FC-EXTRACT-4"
       ],
-      "sha256": "bba8632d1af60cca57a0d4102fb198e1e7e9ed5b3e2234732eedbe9bde47fcbf"
+      "sha256": "357e341f883f54bf5e1ac306e894e26c79f0687b99160a17d012f78e935c15ca"
     }
   }
 }

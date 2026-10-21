@@ -1,6 +1,6 @@
-# FolioCove PDF capabilities
+# iHatePDF capabilities
 
-FolioCove PDF (also written FolioCovePDF; previously named FolioCove) is a browser PDF workspace. Release status: private-beta. Operator name supplied: FolioCove, India. Support: mehbulislam81@gmail.com. Do not send documents or private information.
+iHatePDF (also written iHatePDF; previously named iHatePDF) is a browser PDF workspace. Release status: private-beta. Operator name supplied: iHatePDF, India. Support: mehbulislam81@gmail.com. Do not send documents or private information.
 
 ## Processing and privacy
 
@@ -94,8 +94,8 @@ Selected documents are processed on-device; there is no document-upload endpoint
 - Open: https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=quick
 - Status: implemented
 - Input MIME types: application/pdf
-- Purpose: Describe several changes once. FolioCove runs them locally in one pass.
-- Boundary: Describe several changes once. FolioCove runs them locally in one pass.
+- Purpose: Describe several changes once. iHatePDF runs them locally in one pass.
+- Boundary: Describe several changes once. iHatePDF runs them locally in one pass.
 
 ### Organize pages
 

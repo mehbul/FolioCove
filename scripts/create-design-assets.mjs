@@ -20,7 +20,7 @@ for (const [name, label, title, meta, rows] of examples) {
   const bold = await doc.embedFont(StandardFonts.HelveticaBold);
   const page = doc.addPage([360, 470]);
   const ink = rgb(.14, .14, .14), muted = rgb(.43, .43, .43), coral = rgb(.78, .19, .26);
-  page.drawText('FolioCove', { x: 30, y: 425, size: 11, font: bold, color: coral });
+  page.drawText('iHatePDF', { x: 30, y: 425, size: 11, font: bold, color: coral });
   page.drawText(label, { x: 30, y: 389, size: 7, font: bold, color: muted });
   page.drawText(title, { x: 30, y: 356, size: 24, font: bold, color: ink });
   page.drawText(meta, { x: 30, y: 334, size: 8, font: regular, color: muted });

@@ -13,7 +13,7 @@ test('Pilot and email support are readable without JavaScript or a GitHub accoun
   await expect(page.getByRole('link',{name:'Open Merge PDFs',exact:true})).toHaveAttribute('href','/FolioCove/merge-pdf/');
   const href=await page.getByRole('link',{name:'Email your pilot feedback',exact:true}).getAttribute('href');
   const draft=new URL(href);expect(draft.protocol).toBe('mailto:');expect(draft.pathname).toBe(site.supportEmail);
-  expect(draft.searchParams.get('subject')).toBe('FolioCove pilot feedback');
+  expect(draft.searchParams.get('subject')).toBe('iHatePDF pilot feedback');
   expect(draft.searchParams.get('body')).toContain('Did you finish without help?');
   expect(draft.searchParams.get('body')).toContain('Please remove documents');
   await expect(page.locator('article')).toContainText('nothing is sent automatically');

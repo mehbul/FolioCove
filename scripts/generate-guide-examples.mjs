@@ -12,8 +12,8 @@ const records={};
 await fs.mkdir(folder,{recursive:true});
 
 function setMetadata(doc,title){
- doc.setTitle(title);doc.setAuthor('FolioCove');doc.setSubject('Synthetic PDF guide example; no customer data');
- doc.setCreator('FolioCove guide example generator');doc.setProducer('pdf-lib 1.17.1');
+ doc.setTitle(title);doc.setAuthor('iHatePDF');doc.setSubject('Synthetic PDF guide example; no customer data');
+ doc.setCreator('iHatePDF guide example generator');doc.setProducer('pdf-lib 1.17.1');
  doc.setCreationDate(fixedDate);doc.setModificationDate(fixedDate);
 }
 
@@ -40,7 +40,7 @@ async function source(name,title,labels){
  for(let i=0;i<labels.length;i++){
   const page=doc.addPage([420,540]);
   page.drawRectangle({x:0,y:452,width:420,height:88,color:rgb(.96,.91,.9)});
-  page.drawText('FolioCove worked example',{x:30,y:495,size:19,font:bold,color:rgb(.2,.12,.15)});
+  page.drawText('iHatePDF worked example',{x:30,y:495,size:19,font:bold,color:rgb(.2,.12,.15)});
   page.drawText(title,{x:30,y:467,size:12,font,color:rgb(.2,.12,.15)});
   page.drawText(labels[i],{x:30,y:391,size:24,font:bold,color:rgb(.15,.15,.15)});
   page.drawText(`Source page ${i+1} of ${labels.length}`,{x:30,y:357,size:13,font});

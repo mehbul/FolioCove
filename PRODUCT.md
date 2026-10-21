@@ -1,4 +1,4 @@
-# FolioCove PDF
+# iHatePDF
 
 <!-- impeccable:product-schema 1 -->
 
@@ -12,11 +12,11 @@ Browser PDF utilities. The owner confirmed that visitors should choose a tool an
 
 ## Capabilities and Constraints
 
-Ten core routes and a wider catalog of 88 tools. Documents are processed on the device. There are no document-upload endpoints or remote analytics. English OCR may download a language model. Keep existing tool behavior, IDs, downloads, error states, accessibility and local preferences. Full sanitization is disabled and redaction is experimental. GitHub Pages is a public beta; the separate Sites host remains owner-private. The owner authorized public search indexing on 3 October 2026. The owner supplied the operator name FolioCove and country India; the public support email is mehbulislam81@gmail.com, authorized by the owner on 17 October 2026. GitHub Issues accepts non-sensitive bug reports.
+Ten core routes and a wider catalog of 88 tools. Documents are processed on the device. There are no document-upload endpoints or remote analytics. English OCR may download a language model. Keep existing tool behavior, IDs, downloads, error states, accessibility and local preferences. Full sanitization is disabled and redaction is experimental. GitHub Pages is a public beta; the separate Sites host remains owner-private. The owner authorized public search indexing on 3 October 2026. The owner supplied the operator name iHatePDF and country India; the public support email is mehbulislam81@gmail.com, authorized by the owner on 17 October 2026. GitHub Issues accepts non-sensitive bug reports.
 
 ## Brand Commitments
 
-FolioCove PDF, also written FolioCovePDF; the established FolioCove name remains an alias and the supplied operator identity. The existing repository and public URL stay stable. The owner requested a premium website inspired by real design such as Airbnb, using design-taste-frontend, impeccable and emil-design-eng. This is inspiration, not an Airbnb affiliation or use of its proprietary assets.
+The public brand is iHatePDF, renamed from FolioCove PDF on 21 October 2026. Previous names remain discovery aliases. The existing repository and public URL stay stable. The owner requested a premium website inspired by real design such as Airbnb, using design-taste-frontend, impeccable and emil-design-eng. This is inspiration, not an Airbnb affiliation or use of its proprietary assets.
 
 ## Evidence on Hand
 

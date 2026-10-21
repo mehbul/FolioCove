@@ -1,12 +1,12 @@
-# FolioCove PDF — Free, open-source PDF tools
+# iHatePDF — Free, open-source PDF tools
 
 **Merge, split, compress and convert PDFs in your browser. Your documents are processed on your device, with no account or document uploads.**
 
-[Open FolioCove PDF](https://mehbul.github.io/FolioCove/) · [Watch the merge demo](https://mehbul.github.io/FolioCove/demo/) · [Watch page extraction](https://mehbul.github.io/FolioCove/demo/extract-pdf/) · [Choose a PDF converter](https://mehbul.github.io/FolioCove/pdf-converter/) · [Browse tools and limits](https://mehbul.github.io/FolioCove/tools/) · [Get help](https://mehbul.github.io/FolioCove/support/)
+[Open iHatePDF](https://mehbul.github.io/FolioCove/) · [Watch the merge demo](https://mehbul.github.io/FolioCove/demo/) · [Watch page extraction](https://mehbul.github.io/FolioCove/demo/extract-pdf/) · [Choose a PDF converter](https://mehbul.github.io/FolioCove/pdf-converter/) · [Browse tools and limits](https://mehbul.github.io/FolioCove/tools/) · [Get help](https://mehbul.github.io/FolioCove/support/)
 
-[![FolioCove PDF merge workspace with local file selection and visible feature limits](docs/images/foliocove-merge-workspace.png)](https://mehbul.github.io/FolioCove/merge-pdf/)
+[![iHatePDF everyday PDF tools with on-device processing](docs/images/ihatepdf-everyday-tools.png)](https://mehbul.github.io/FolioCove/merge-pdf/)
 
-FolioCove PDF is a free, MIT-licensed browser PDF workspace for everyday document tasks. Use it to combine PDFs, extract selected pages, rearrange pages, convert images to PDF or add text and visual signatures. No installation is needed to use the hosted app. Developers can build and host the static app themselves.
+iHatePDF is a free, MIT-licensed browser PDF workspace for everyday document tasks. Use it to combine PDFs, extract selected pages, rearrange pages, convert images to PDF or add text and visual signatures. No installation is needed to use the hosted app. Developers can build and host the static app themselves.
 
 **Public beta:** keep originals and inspect outputs. Redaction is experimental, AI depends on browser support, and verified sanitization and PDF/A conversion are unavailable. Physical phone cameras, native downloads and actual Safari remain unverified. The 88-entry catalog includes experimental, conditional and unavailable tools; it is not a count of equally validated features.
 
@@ -47,7 +47,7 @@ For an unlocked PDF result within the beta file limit, choose **Next PDF tool** 
 
 ## Why use a browser PDF tool with on-device processing?
 
-- **No document-upload endpoint:** selected files are processed on your device rather than sent to a FolioCove processing server.
+- **No document-upload endpoint:** selected files are processed on your device rather than sent to a iHatePDF processing server.
 - **No account required:** open a task, select files and download the result.
 - **Inspectable source:** the [MIT license](LICENSE), [processing model](https://mehbul.github.io/FolioCove/security/) and [capability catalog](https://mehbul.github.io/FolioCove/capabilities.json) are public.
 - **Examples you can reproduce:** check synthetic page labels and reference outputs yourself.
@@ -57,23 +57,23 @@ On-device processing does not mean zero network traffic or guaranteed security. 
 
 ## Looking for an iLovePDF or Smallpdf alternative?
 
-FolioCove is an option for everyday browser PDF tasks when you want on-device document processing and open-source code. It does not replace every workflow offered by iLovePDF, Smallpdf, Adobe Acrobat or PDF24.
+iHatePDF is an option for everyday browser PDF tasks when you want on-device document processing and open-source code. It does not replace every workflow offered by iLovePDF, Smallpdf, Adobe Acrobat or PDF24.
 
-Read the publisher-disclosed [iLovePDF alternative comparison](https://mehbul.github.io/FolioCove/blog/ilovepdf-alternative/) and [Smallpdf alternative comparison](https://mehbul.github.io/FolioCove/blog/smallpdf-alternative/). Each article identifies its source-check date, links official provider information and explains FolioCove's limitations. Pricing, features and processing methods vary by product and can change. These are independent brands; no affiliation or endorsement is implied.
+Read the publisher-disclosed [iLovePDF alternative comparison](https://mehbul.github.io/FolioCove/blog/ilovepdf-alternative/) and [Smallpdf alternative comparison](https://mehbul.github.io/FolioCove/blog/smallpdf-alternative/). Each article identifies its source-check date, links official provider information and explains iHatePDF's limitations. Pricing, features and processing methods vary by product and can change. These are independent brands; no affiliation or endorsement is implied.
 
 Choose a different, suitably validated workflow if you need high-fidelity Office reconstruction, verified sanitization, validated PDF/A, certificate-based signatures or remote signature requests.
 
 ## Frequently asked questions
 
-### Is FolioCove PDF free and open source?
+### Is iHatePDF free and open source?
 
-Yes. The public beta is free to use without an app account. The source is MIT licensed; dependencies retain their own licenses. FolioCove PDF is also written FolioCovePDF; the established repository name and URL remain FolioCove.
+Yes. The public beta is free to use without an app account. The source is MIT licensed; dependencies retain their own licenses. iHatePDF is also written iHatePDF; the established repository name and URL remain iHatePDF.
 
 ### Can I merge PDFs online without uploading them?
 
-Yes. FolioCove's website loads in your browser, but the merge operation processes selected files on your device. Try the [merge workspace](https://mehbul.github.io/FolioCove/merge-pdf/) with synthetic samples first. Ordinary site requests still reach the host.
+Yes. iHatePDF's website loads in your browser, but the merge operation processes selected files on your device. Try the [merge workspace](https://mehbul.github.io/FolioCove/merge-pdf/) with synthetic samples first. Ordinary site requests still reach the host.
 
-### Can I use FolioCove offline?
+### Can I use iHatePDF offline?
 
 Do not rely on full offline operation. Site assets must be available and some tools need model downloads or supported browser APIs. On-device processing and offline availability are different requirements.
 
@@ -85,7 +85,7 @@ The [PDF to DOCX tool](https://mehbul.github.io/FolioCove/pdf-to-word/) offers t
 
 Try [lossless compression](https://mehbul.github.io/FolioCove/lossless-compress-pdf/) when selectable text and page content matter. Target-size compression rasterizes pages and can lose text selection, forms and accessibility information. Neither method guarantees a particular size. See the [compression guide](https://mehbul.github.io/FolioCove/guides/reduce-pdf-size/).
 
-### Does FolioCove work on phones and Safari?
+### Does iHatePDF work on phones and Safari?
 
 Engine and emulation checks cover a limited scope. Physical camera capture, native phone downloads and Apple's Safari app have not completed real-device validation. Test your actual device before relying on a workflow.
 
@@ -105,7 +105,7 @@ Run node scripts/build-pages.mjs followed by npx playwright test --config=playwr
 
 Previously named PrivyPDF. Existing browser preferences and optional local metrics retain their original storage keys so an update does not erase them.
 
-FolioCove is a public beta PDF utility that runs document processing in the browser. The separate Sites host remains owner-private. Editable source lives in `src/` and is built reproducibly with npm.
+iHatePDF is a public beta PDF utility that runs document processing in the browser. The separate Sites host remains owner-private. Editable source lives in `src/` and is built reproducibly with npm.
 
 ## Windows Setup
 

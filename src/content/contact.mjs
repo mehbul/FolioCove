@@ -1,7 +1,7 @@
 import {site} from './site.mjs';
 
 // Opens the visitor's email app; this is not a feedback collection endpoint.
-export function supportMailto(subject='FolioCove support',body=''){
+export function supportMailto(subject='iHatePDF support',body=''){
  return `mailto:${site.supportEmail}?subject=${encodeURIComponent(subject)}${body?'&body='+encodeURIComponent(body):''}`;
 }
 

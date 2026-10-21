@@ -7,7 +7,7 @@ const runtime='.sites-runtime/demo';
 await fs.mkdir(runtime,{recursive:true});
 await fs.mkdir('src/static/demo',{recursive:true});
 for(const name of ['sample-one','sample-two']){
- const pdf=await PDFDocument.create();pdf.addPage().drawText('Synthetic FolioCove demo: '+name);
+ const pdf=await PDFDocument.create();pdf.addPage().drawText('Synthetic iHatePDF demo: '+name);
  await fs.writeFile(`${runtime}/${name}.pdf`,await pdf.save());
 }
 const server=spawn(process.execPath,['scripts/dev-server.mjs'],{env:{...process.env,PORT:'4175',FOLIOCOVE_BASE_PATH:'/FolioCove'},stdio:'ignore',windowsHide:true});

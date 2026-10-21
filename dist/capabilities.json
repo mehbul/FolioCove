@@ -1,7 +1,8 @@
 {
   "schemaVersion": 1,
-  "name": "FolioCove PDF",
+  "name": "iHatePDF",
   "alternateNames": [
+    "FolioCove PDF",
     "FolioCove",
     "FolioCovePDF"
   ],
@@ -131,14 +132,14 @@
     {
       "id": "quick",
       "name": "Quick Action",
-      "description": "Describe several changes once. FolioCove runs them locally in one pass.",
+      "description": "Describe several changes once. iHatePDF runs them locally in one pass.",
       "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/?tool=quick",
       "inputMimeTypes": [
         "application/pdf"
       ],
       "multipleFiles": false,
       "status": "implemented",
-      "limitations": "Describe several changes once. FolioCove runs them locally in one pass.",
+      "limitations": "Describe several changes once. iHatePDF runs them locally in one pass.",
       "processing": "on-device"
     },
     {

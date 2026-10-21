@@ -1,6 +1,6 @@
 {
-  "name": "FolioCove PDF",
-  "short_name": "FolioCove",
+  "name": "iHatePDF",
+  "short_name": "iHatePDF",
   "description": "Free PDF tools with on-device document processing.",
   "start_url": "./",
   "display": "standalone",

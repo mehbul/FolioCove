@@ -9,7 +9,7 @@ for(const name of ['letter','sheet','slides','form','brief','markdown']){
  const doc=await PDFDocument.create(),font=await doc.embedFont(StandardFonts.Helvetica),bold=await doc.embedFont(StandardFonts.HelveticaBold),mono=await doc.embedFont(StandardFonts.Courier);
  const p=doc.addPage(name==='slides'?[600,380]:[360,470]),ink=rgb(.14,.14,.14),muted=rgb(.43,.43,.43),coral=rgb(.77,.16,.28),line=rgb(.85,.85,.85);
  const text=(s,x,y,size=10,f=font,color=ink)=>p.drawText(s,{x,y,size,font:f,color});
- text('FolioCove',30,p.getHeight()-40,11,bold,coral);
+ text('iHatePDF',30,p.getHeight()-40,11,bold,coral);
  if(name==='slides'){
   text('Project overview',36,255,32,bold);text('A plan for the next chapter.',36,218,15,font,muted);
   p.drawRectangle({x:36,y:62,width:235,height:104,color:rgb(.97,.91,.93)});text('A clear direction',53,135,15,bold);text('One idea. A useful next step.',53,104,11);
