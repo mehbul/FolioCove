@@ -16,7 +16,7 @@ export function initExtended(api) {
  }
  categories.secure.push('protect','unlock');categories.convert.push('jpg','docx','xlsx','pptx');categories.intelligence.push('lossless','recover');
  const grid=document.getElementById('core-tools');
- if(document.documentElement.dataset.page==='home')for(const id of [...Object.keys(tools),'wordtopdf','exceltopdf','ppttopdf','htmltopdf','watermark','numbers','rotate','crop','markdown','translate','fillform']){
+ if(document.documentElement.dataset.page==='home')for(const id of [...Object.keys(tools),'wordtopdf','exceltopdf','ppttopdf','htmltopdf','watermark','numbers','rotate','crop','markdown','translate','fillform','images']){
   const group=['createform','drawsign','imagewatermark','shapes'].includes(id)?'Edit & sign':categories.secure.includes(id)?'Privacy':categories.edit.includes(id)?'Edit & sign':categories.organize.includes(id)?'Organize':categories.convert.includes(id)?'Convert':'Intelligence';
   grid.append(createCatalogCard(id,configs[id],select,group));
  }

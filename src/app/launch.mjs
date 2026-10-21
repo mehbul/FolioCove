@@ -100,7 +100,7 @@ export function initLaunch(api){
  const icon=name=>{const img=document.createElement('img');img.src='/assets/icons/'+name+'.svg';img.alt='';img.width=20;img.height=20;return img};
  const grid=$('core-tools');if(document.documentElement.dataset.page==='home')for(const [id,slug,title] of core){
   const [coverName,primary,secondary,group,description,iconName,badge]=previews[id];
-  const a=document.createElement('a');a.href='/'+slug+'/';a.dataset.group=group;a.dataset.search=(title+' '+description).toLowerCase();
+  const a=document.createElement('a');a.href='/'+slug+'/';a.dataset.toolCard=id;a.dataset.group=group;a.dataset.search=(title+' '+description).toLowerCase();
   const cover=document.createElement('span');cover.className='tool-cover cover-'+coverName;
   for(const [name,cls] of [[secondary,'secondary-page'],[primary,'document-page']]){if(!name)continue;const img=document.createElement('img');img.src='/previews/'+name+'.png';img.alt='';img.className=cls;img.width=540;img.height=705;cover.append(img)}
   if(badge){const b=document.createElement('span');b.className='cover-badge';b.textContent=badge;cover.append(b)}
@@ -110,15 +110,16 @@ export function initLaunch(api){
   a.append(cover,heading,desc);grid.append(a);
  }
  document.querySelectorAll('.tool span').forEach(span=>{const id=span.parentElement.dataset.tool;span.replaceChildren(icon(previews[id]?.[5]||'file-pdf'))});
- let browseCategory='all';
+ const everydayIds=new Set(['merge','split','visualorganize','lossless','targetcompress','images']);
+ let browseCategory='everyday';
  const groups={organize:'Organize',edit:'Edit & sign',scan:'Scan & OCR',secure:'Privacy',convert:'Convert',intelligence:'Intelligence'};
- const applyBrowse=()=>{const q=$('discover-search').value.trim().toLowerCase();let count=0;grid.querySelectorAll('a').forEach(a=>{const show=(browseCategory==='all'||a.dataset.group===groups[browseCategory])&&a.dataset.search.includes(q);a.hidden=!show;if(show)count++});$('empty-browse').hidden=count>0};
+ const applyBrowse=()=>{const q=$('discover-search').value.trim().toLowerCase();let count=0;grid.querySelectorAll('a').forEach(a=>{const show=(browseCategory==='all'||(browseCategory==='everyday'?(q||everydayIds.has(a.dataset.toolCard)):a.dataset.group===groups[browseCategory]))&&a.dataset.search.includes(q);a.hidden=!show;if(show)count++});$('empty-browse').hidden=count>0};
  document.querySelectorAll('.browse-category').forEach(button=>button.addEventListener('click',()=>{browseCategory=button.dataset.category;document.querySelectorAll('.browse-category').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));applyBrowse()}));
  $('discover-search').addEventListener('input',()=>{applyBrowse();$('tool-search').value=$('discover-search').value;$('tool-search').dispatchEvent(new Event('input',{bubbles:true}))});
- const filter=$('tool-filter'),option=document.createElement('option');option.value='core';option.textContent='Everyday tools';filter.prepend(option);filter.value='all';
- const coreIds=new Set(core.map(x=>x[0]));
+ const filter=$('tool-filter'),option=document.createElement('option');option.value='core';option.textContent='Everyday tools';filter.prepend(option);filter.value=document.documentElement.dataset.page==='home'&&!new URLSearchParams(location.search).has('tool')?'core':'all';
+ const coreIds=everydayIds;api.categories.core=[...everydayIds];
  const applyCore=()=>{if(filter.value!=='core')return;const q=$('tool-search').value.trim().toLowerCase();document.querySelectorAll('.tool').forEach(b=>b.style.display=(q?b.textContent.toLowerCase().includes(q):coreIds.has(b.dataset.tool))?'flex':'none')};
- filter.addEventListener('change',applyCore);$('tool-search').addEventListener('input',applyCore);applyCore();
+ filter.addEventListener('change',()=>{applyCore();applyBrowse()});$('tool-search').addEventListener('input',applyCore);applyCore();
  let running=null;
  const summary=()=>{const a=read('privypdf-beta-metrics',[]),done=a.filter(x=>x.outcome==='completed').length;$('metrics-summary').textContent=`This device: ${a.filter(x=>x.outcome==='started').length} starts · ${done} completed · ${a.filter(x=>x.outcome==='failure').length} failed. Completion is a processing signal, not proof of output quality.`};
  $('metrics-optin').checked=read('privypdf-metrics-optin',false);

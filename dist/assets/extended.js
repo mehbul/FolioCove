@@ -100,13 +100,14 @@ function localModelStep(promise, milliseconds = 2e4) {
 
 // src/app/catalog-design.mjs
 var cards = {
+  images: ["scan", null, "image", "Turn JPG and PNG images into PDF pages.", "One image per page", "Images to PDF"],
   protect: ["proposal", null, "lock-simple", "Keep a document behind a password.", "AES-256", "Protect PDF"],
   unlock: ["proposal", null, "lock-simple-open", "Open a password-protected document.", "Password needed", "Unlock PDF"],
   lossless: ["invoice", null, "arrows-in-simple", "Reduce size while keeping selectable text.", "Lossless", "Lossless compression"],
   recover: ["proposal", "notes", "arrows-clockwise", "Try to recover a damaged document.", "Best effort", "Repair & recover"],
   jpg: ["scan", null, "image", "Save every page as a JPG image.", "ZIP download", "PDF to JPG"],
-  docx: ["letter", null, "file-doc", "Turn selectable text into editable Word.", "Text only", "PDF to Word"],
-  xlsx: ["sheet", null, "file-xls", "Put extracted rows into a workbook.", "Approximate tables", "PDF to Excel"],
+  docx: ["letter", null, "file-doc", "Keep page appearance or extract editable text.", "Page images or text", "PDF to Word"],
+  xlsx: ["sheet", null, "file-xls", "Save page images or extract approximate rows.", "Page images or text", "PDF to Excel"],
   pptx: ["slides", null, "file-ppt", "Give every PDF page its own slide.", "Image slides", "PDF to PowerPoint"],
   createform: ["form", null, "textbox", "Add fields, checkboxes and choices.", null, "Create PDF forms"],
   drawsign: ["signed", null, "signature", "Draw your signature or a freehand note.", "Visual signature", "Draw & sign"],
@@ -114,10 +115,10 @@ var cards = {
   shapes: ["notes", null, "shapes", "Make your point with a shape or line.", null, "Add shapes"],
   visualcompare: ["proposal", "letter", "columns", "View two versions side by side.", "Visual preview", "Compare PDFs"],
   aisummary: ["brief", null, "sparkle", "Find the main points with on-device AI.", "Browser dependent", "AI summary"],
-  wordtopdf: ["letter", null, "file-doc", "Make a Word document easy to share.", "DOCX text only", "Word to PDF"],
-  exceltopdf: ["sheet", null, "file-xls", "Give spreadsheet values a printable home.", "Cell values only", "Excel to PDF"],
-  ppttopdf: ["slides", null, "file-ppt", "Bring slide text into one document.", "Slide text only", "PowerPoint to PDF"],
-  htmltopdf: ["letter", null, "code", "Turn local HTML text into a PDF.", "Local files only", "HTML to PDF"],
+  wordtopdf: ["letter", null, "file-doc", "Render DOCX pages locally for sharing.", "Fonts may differ", "Word to PDF"],
+  exceltopdf: ["sheet", null, "file-xls", "Render basic cell formatting and images.", "Limited formatting", "Excel to PDF"],
+  ppttopdf: ["slides", null, "file-ppt", "Render supported slide text, shapes and images.", "Limited layouts", "PowerPoint to PDF"],
+  htmltopdf: ["letter", null, "code", "Render local HTML with supported CSS.", "Remote content blocked", "HTML to PDF"],
   watermark: ["proposal", null, "text-aa", "Add a subtle text mark across pages.", null, "Text watermark"],
   numbers: ["notes", null, "list-numbers", "Keep the order clear with page numbers.", null, "Page numbers"],
   rotate: ["invoice", null, "arrows-clockwise", "Turn your pages the right way around.", null, "Rotate PDF"],
@@ -241,7 +242,7 @@ function initExtended(api) {
   categories.convert.push("jpg", "docx", "xlsx", "pptx");
   categories.intelligence.push("lossless", "recover");
   const grid = document.getElementById("core-tools");
-  if (document.documentElement.dataset.page === "home") for (const id of [...Object.keys(tools), "wordtopdf", "exceltopdf", "ppttopdf", "htmltopdf", "watermark", "numbers", "rotate", "crop", "markdown", "translate", "fillform"]) {
+  if (document.documentElement.dataset.page === "home") for (const id of [...Object.keys(tools), "wordtopdf", "exceltopdf", "ppttopdf", "htmltopdf", "watermark", "numbers", "rotate", "crop", "markdown", "translate", "fillform", "images"]) {
     const group = ["createform", "drawsign", "imagewatermark", "shapes"].includes(id) ? "Edit & sign" : categories.secure.includes(id) ? "Privacy" : categories.edit.includes(id) ? "Edit & sign" : categories.organize.includes(id) ? "Organize" : categories.convert.includes(id) ? "Convert" : "Intelligence";
     grid.append(createCatalogCard(id, configs2[id], select, group));
   }

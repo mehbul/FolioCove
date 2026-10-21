@@ -172,9 +172,30 @@ test('PDF brand stays readable across public pages and tool navigation',async({p
  expect(manifest.name).toBe('FolioCove PDF');
  expect(failures).toEqual([]);
 });
+test('Everyday discovery starts focused and still exposes the complete catalog',async({page})=>{
+ await page.goto('/FolioCove/');await expect(page.getByTestId('file-input')).toBeEnabled();
+ await expect(page.locator('#tool-filter')).toHaveValue('core');
+ await expect(page.locator('#core-tools a:visible')).toHaveCount(6);
+ await expect(page.locator('.sidebar .tool:visible')).toHaveCount(6);
+ await page.screenshot({path:'.sites-runtime/proof/everyday-desktop.png',fullPage:false});
+ await page.setViewportSize({width:390,height:844});
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ await page.screenshot({path:'.sites-runtime/proof/everyday-mobile.png',fullPage:false});
+ await page.locator('#discover-search').fill('Word');
+ await expect(page.locator('#core-tools [data-tool-card=docx]')).toBeVisible();
+ await expect(page.locator('#core-tools [data-tool-card=wordtopdf]')).toBeVisible();
+ await page.locator('#discover-search').fill('');
+ await page.getByRole('button',{name:'All tools',exact:true}).click();
+ await expect(page.locator('#core-tools a:visible')).toHaveCount(36);
+ await page.locator('#tool-filter').selectOption('all');
+ await expect(page.locator('.sidebar .tool:visible')).toHaveCount(88);
+ await page.goto('/FolioCove/pdf-to-word/');await expect(page.getByTestId('file-input')).toBeEnabled();
+ await expect(page.locator('.sidebar [data-tool="docx"]')).toBeVisible();
+});
+
 test('Pages subpath loads tools, navigation, PDF renderer and local worker downloads',async({page})=>{
  const failures=[];page.on('pageerror',e=>failures.push(e.message));page.on('response',r=>{if(r.status()>=400)failures.push(r.url())});
- await page.goto('/FolioCove/');await expect(page.locator('#core-tools a')).toHaveCount(35);
+ await page.goto('/FolioCove/');await expect(page.locator('#core-tools a')).toHaveCount(36);
  await expect(page).toHaveTitle('FolioCove PDF — Free tools to merge, split & compress');
  await expect(page.locator('h1')).toHaveText('FolioCove PDF tools');
  await page.locator('.sidebar [data-tool="split"]').click();
