@@ -12,7 +12,7 @@ test('unavailable local AI models report limitations without creating downloads'
  expect(downloads).toBe(0);
 });
 for(const mimeType of ['application/octet-stream','application/msword'])test(`RTF import accepts ${mimeType} and preserves text`,async({page})=>{
- const dir=await makeFixtureDir();await page.goto('/');await page.locator('[data-tool="opendoc"]').click();await page.getByTestId('file-input').setInputFiles({name:'example.rtf',mimeType,buffer:Buffer.from('{\\rtf1\\ansi LOCAL-RTF-TEXT}')});const output=await runAndSaveDownload(page,dir,'open-document.pdf');expect(await pdfText(output)).toContain('LOCAL-RTF-TEXT');
+ const dir=await makeFixtureDir();await page.goto('/');await expect(page.getByTestId('file-input')).toBeEnabled();await page.locator('#tool-filter').selectOption('all');await page.locator('[data-tool="opendoc"]').click();await page.getByTestId('file-input').setInputFiles({name:'example.rtf',mimeType,buffer:Buffer.from('{\\rtf1\\ansi LOCAL-RTF-TEXT}')});const output=await runAndSaveDownload(page,dir,'open-document.pdf');expect(await pdfText(output)).toContain('LOCAL-RTF-TEXT');
 });
 test('local encryption rejects a wrong password and round trips document text',async({page})=>{
  const dir=await makeFixtureDir(),file=await createPdf(path.join(dir,'source.pdf'),['LOCAL-SECRET']);await choose(page,'protect',file);await page.locator('#local-password').fill('test-secret');await page.locator('#confirm-password').fill('test-secret');const locked=await runAndSaveDownload(page,dir,'protect.pdf');expect((await fs.readFile(locked)).toString('latin1')).toContain('/Encrypt');

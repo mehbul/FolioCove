@@ -7,6 +7,7 @@ test('pilot: unreadable photo reports an error without a download',async({page})
 });
 test('pilot: capability limits are visible before running a tool',async({page})=>{
  await page.goto('/');await expect(page.locator('.capability-note')).toContainText('Verified sanitization and PDF/A conversion are unavailable');await expect(page.locator('[data-tool-card="aisummary"] .cover-badge')).toContainText('Browser dependent');await expect(page.locator('a[href="/redact-pdf/"] .cover-badge')).toContainText('Experimental');
+ await expect(page.getByTestId('file-input')).toBeEnabled();await page.locator('#tool-filter').selectOption('all');
  for(const [id,copy] of [['aisummary','Browser-dependent'],['translate','not available in every browser'],['redact','Experimental raster redaction'],['sanitize','will not create a PDF download']]){await page.locator(`[data-tool="${id}"]`).click();await expect(page.getByTestId('tool-limit')).toContainText(copy);expect(await page.getByTestId('tool-limit').evaluate(el=>Boolean(el.compareDocumentPosition(document.getElementById('go'))&Node.DOCUMENT_POSITION_FOLLOWING))).toBe(true);}
  await page.goto('/limitations/');await expect(page.locator('body')).toContainText('Validated archival PDF/A conversion is unavailable.');
 });
