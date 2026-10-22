@@ -1,3 +1,5 @@
+> **Current owner preference — 22 October 2026:** Withdraw association with awesome-pdf. Update PR #110 is closed. Removal PR #111 is pending; do not promote, update or resubmit the entry. Earlier preparation and acceptance records below are historical only.
+
 # FolioCove directory submission record
 
 ## Current distribution record — 17 October 2026
@@ -91,4 +93,4 @@ GitHub Issues is enabled and accepts public, non-sensitive reports. General supp
 
 ## Name and URL maintenance — 22 October 2026
 
-The application is now iHatePDF at https://mehbul.github.io/ihatepdf/. The accepted awesome-pdf entry still used FolioCove and the former URL when rechecked on 22 October. [PR #110](https://github.com/karllhughes/awesome-pdf/pull/110) updates only that existing entry's name and link; its description is unchanged, and maintainer association is disclosed. This is a pending maintenance PR, not a new accepted listing or evidence of traffic. The former application URLs are separately restored through the owner's root GitHub Pages redirect site.
+The owner withdrew association with this directory on 22 October 2026. Update PR #110 was closed. [Removal PR #111](https://github.com/karllhughes/awesome-pdf/pull/111) removes the existing entry; it requires the upstream maintainer to merge. Do not promote or resubmit this listing.

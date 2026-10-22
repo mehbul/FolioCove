@@ -25,3 +25,8 @@ To verify AI-readable outputs, run `node scripts/test-ai-readiness.mjs`. Generat
 The primary public beta is https://mehbul.github.io/ihatepdf/. Push verified source to main; .github/workflows/pages.yml builds, tests and deploys it. scripts/build-pages.mjs adapts the generated site to the /ihatepdf/ project path. Verify changed deployment behavior with playwright.pages.config.mjs; restore the root build with npm run build before committing generated dist files. Report deployment success only from the completed GitHub workflow and live verification when behavior changed.
 
 The separate Sites host uses the existing project ID in `.openai/hosting.json`. Use the Sites publishing workflow only when that host is being updated, preserving owner-private access. See docs/OPERATIONS.md for incident and release priorities.
+
+
+## Directory association preference
+
+On 22 October 2026 the owner withdrew association with karllhughes/awesome-pdf. Do not promote that listing, submit updates or resubmit this application there. Name/URL update PR #110 is closed; removal PR #111 is pending upstream. Historical audit records do not authorize future association.
