@@ -2,7 +2,7 @@ import {test,expect} from '@playwright/test';
 import path from 'node:path';
 import {createPdf,makeFixtureDir,pdfPageCount,pdfText,runAndSaveDownload,installPageGuards,expectNoGuardViolations} from './helpers.mjs';
 
-const base=process.env.FOLIOCOVE_PAGES_TEST?'/FolioCove':'';
+const base=process.env.FOLIOCOVE_PAGES_TEST?'/ihatepdf':'';
 
 test('A new visitor can merge bundled synthetic PDFs from the homepage',async({page})=>{
  const guards=installPageGuards(page,['FC-MERGE-A-1','FC-MERGE-B-1','FC-MERGE-B-2']);

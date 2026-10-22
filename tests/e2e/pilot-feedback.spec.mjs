@@ -8,9 +8,9 @@ test('Pilot and email support are readable without JavaScript or a GitHub accoun
  const requests=[];context.on('request',r=>requests.push(r));
  try{
   const page=await context.newPage();
-  const response=await page.goto('/FolioCove/try/');expect(response.status()).toBe(200);
-  await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href','https://mehbul.github.io/FolioCove/try/');
-  await expect(page.getByRole('link',{name:'Open Merge PDFs',exact:true})).toHaveAttribute('href','/FolioCove/merge-pdf/');
+  const response=await page.goto('/ihatepdf/try/');expect(response.status()).toBe(200);
+  await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href','https://mehbul.github.io/ihatepdf/try/');
+  await expect(page.getByRole('link',{name:'Open Merge PDFs',exact:true})).toHaveAttribute('href','/ihatepdf/merge-pdf/');
   const href=await page.getByRole('link',{name:'Email your pilot feedback',exact:true}).getAttribute('href');
   const draft=new URL(href);expect(draft.protocol).toBe('mailto:');expect(draft.pathname).toBe(site.supportEmail);
   expect(draft.searchParams.get('subject')).toBe('iHatePDF pilot feedback');
@@ -19,16 +19,16 @@ test('Pilot and email support are readable without JavaScript or a GitHub accoun
   await expect(page.locator('article')).toContainText('nothing is sent automatically');
   await expect(page.locator('article')).toContainText('remain unverified');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  await page.goto('/FolioCove/support/');
+  await page.goto('/ihatepdf/support/');
   await expect(page.getByRole('link',{name:site.supportEmail,exact:true})).toBeVisible();
   await expect(page.locator('article')).toContainText('No GitHub account is needed');
   await expect(page.locator('article')).not.toContainText('has not yet been set up');
-  await page.goto('/FolioCove/privacy/');await expect(page.locator('article')).toContainText(site.supportEmail);
+  await page.goto('/ihatepdf/privacy/');await expect(page.locator('article')).toContainText(site.supportEmail);
   await expect(page.locator('article')).toContainText('email provider');
-  for(const slug of ['terms','testing']){await page.goto(`/FolioCove/${slug}/`);await expect(page.locator('article')).toContainText(site.supportEmail);}
-  const catalog=await(await page.request.get('/FolioCove/capabilities.json')).json();expect(catalog.supportEmail).toBe(site.supportEmail);
-  for(const file of ['llms.txt','docs/capabilities.md'])expect(await(await page.request.get('/FolioCove/'+file)).text()).toContain(site.supportEmail);
-  expect(await(await page.request.get('/FolioCove/sitemap.xml')).text()).toContain('https://mehbul.github.io/FolioCove/try/');
+  for(const slug of ['terms','testing']){await page.goto(`/ihatepdf/${slug}/`);await expect(page.locator('article')).toContainText(site.supportEmail);}
+  const catalog=await(await page.request.get('/ihatepdf/capabilities.json')).json();expect(catalog.supportEmail).toBe(site.supportEmail);
+  for(const file of ['llms.txt','docs/capabilities.md'])expect(await(await page.request.get('/ihatepdf/'+file)).text()).toContain(site.supportEmail);
+  expect(await(await page.request.get('/ihatepdf/sitemap.xml')).text()).toContain('https://mehbul.github.io/ihatepdf/try/');
   expect(requests.every(r=>r.method()==='GET'&&new URL(r.url()).origin===new URL(baseURL).origin)).toBe(true);
  }finally{await context.close();}
 });

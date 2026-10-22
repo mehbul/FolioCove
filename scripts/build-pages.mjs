@@ -9,7 +9,7 @@ import {buildBlog} from '../src/content/blog.mjs';
 import {buildSupport} from '../src/content/support.mjs';
 import {buildTaskDemo} from '../src/content/demos.mjs';
 import {buildPilot} from '../src/content/pilot.mjs';
-const base='/FolioCove';
+const base='/ihatepdf';
 const origin='https://mehbul.github.io'+base;
 const routeSlugs=[...toolRoutes.map(([,slug])=>slug),...Object.keys(pages),'tools'];
 const escapedRouteSlugs=routeSlugs.map(slug=>slug.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|');
@@ -31,7 +31,7 @@ async function adapt(directory){
   if(file.endsWith('launch.mjs'))text=text.replaceAll("location.pathname==='/'",`location.pathname==='${base}/'`).replaceAll("a.href='/'+slug",`a.href='${base}/'+slug`).replaceAll("==='/'+x[1]",`==='${base}/'+x[1]`);
   text=text.replaceAll('private-beta','public-beta').replaceAll('PRIVATE BETA','PUBLIC BETA').replaceAll('Private beta','Public beta').replaceAll('private beta','public beta').replaceAll('Owner-private beta','Public beta').replaceAll('owner-private beta','public beta');
   text=text.replaceAll('authenticates private access','serves public assets').replaceAll('authenticates access','serves public assets').replaceAll('controls private access','serves public assets').replaceAll('controls access','serves public assets');
-  if(file.endsWith('.html'))text=text.replace('</footer>','<p style="text-align:center;padding:16px"><a href="https://github.com/mehbul/FolioCove/issues">Report a bug on GitHub</a> · Use synthetic examples; do not attach personal documents.</p></footer>');
+  if(file.endsWith('.html'))text=text.replace('</footer>','<p style="text-align:center;padding:16px"><a href="https://github.com/mehbul/ihatepdf/issues">Report a bug on GitHub</a> · Use synthetic examples; do not attach personal documents.</p></footer>');
   // Disclosure of incomplete launch requirements remains; do not claim full validation.
   await fs.writeFile(file,text);
  }

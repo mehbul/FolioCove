@@ -26,16 +26,16 @@ This is a focused PDF resource list rather than a route to a claimed large audie
 
 | Criterion | Current evidence |
 | --- | --- |
-| A usable PDF application | [Public workspace](https://mehbul.github.io/FolioCove/) opens without an app account; the [demo](https://mehbul.github.io/FolioCove/demo/) shows a synthetic merge. |
-| Publicly inspectable implementation | [Source repository](https://github.com/mehbul/FolioCove) is public and [MIT licensed](https://github.com/mehbul/FolioCove/blob/main/LICENSE); dependencies keep their own licenses. |
+| A usable PDF application | [Public workspace](https://mehbul.github.io/ihatepdf/) opens without an app account; the [demo](https://mehbul.github.io/ihatepdf/demo/) shows a synthetic merge. |
+| Publicly inspectable implementation | [Source repository](https://github.com/mehbul/ihatepdf) is public and [MIT licensed](https://github.com/mehbul/ihatepdf/blob/main/LICENSE); dependencies keep their own licenses. |
 | Specific useful tasks | Merge PDFs, extract page ranges and organize pages are implemented. Avoid listing every catalog entry as a fully verified capability. |
-| Accurate privacy explanation | [Privacy page](https://mehbul.github.io/FolioCove/privacy/) and README explain on-device processing. Normal app-asset requests and optional model downloads still occur. |
+| Accurate privacy explanation | [Privacy page](https://mehbul.github.io/ihatepdf/privacy/) and README explain on-device processing. Normal app-asset requests and optional model downloads still occur. |
 | Honest limits | Public beta; keep originals and inspect outputs. Redaction is experimental; AI is conditional; verified sanitization and PDF/A are unavailable. Real-device evidence remains incomplete. |
 
 ### Exact proposed entry
 
 ```markdown
-- [FolioCove](https://mehbul.github.io/FolioCove/) - Free, MIT-licensed browser PDF workspace for merging, extracting and organizing pages, with on-device processing and no account required.
+- [FolioCove](https://mehbul.github.io/ihatepdf/) - Free, MIT-licensed browser PDF workspace for merging, extracting and organizing pages, with on-device processing and no account required.
 ```
 
 Add only this single entry. Preserve the list's current formatting and avoid adding promotional badges, tracking parameters or a competing category.
@@ -53,11 +53,11 @@ Adds FolioCove under Tools / Misc: a free browser PDF workspace for merging docu
 
 This is a self-submission on behalf of FolioCove's maintainer. The project is a public beta, not an independently certified security product.
 
-- App: https://mehbul.github.io/FolioCove/
-- Source and MIT license: https://github.com/mehbul/FolioCove
-- Privacy: https://mehbul.github.io/FolioCove/privacy/
-- Limitations: https://mehbul.github.io/FolioCove/limitations/
-- Synthetic examples: https://mehbul.github.io/FolioCove/guides/merge-pdfs-without-uploading/
+- App: https://mehbul.github.io/ihatepdf/
+- Source and MIT license: https://github.com/mehbul/ihatepdf
+- Privacy: https://mehbul.github.io/ihatepdf/privacy/
+- Limitations: https://mehbul.github.io/ihatepdf/limitations/
+- Synthetic examples: https://mehbul.github.io/ihatepdf/guides/merge-pdfs-without-uploading/
 
 The proposed line describes the supported core tasks rather than claiming feature parity with another product. Redaction is experimental, browser AI is conditional, and verified sanitization/PDF/A are unavailable. Physical phone camera and native download behavior remain unverified.
 
@@ -80,7 +80,7 @@ The second submission was checked against the destination's actual CONTRIBUTING.
 Additional triage on 16 October: `jsvvsolsllc/awesome-browser-tools` was not selected because its list is dominated by one provider and links a missing CONTRIBUTING.md; no audience or independent curation benefit was established. `pluja/awesome-privacy` has no specific PDF-tools category in the inspected list, so no marginal-fit submission was made. This is a scoped fit assessment, not a claim about either maintainer's intent or the safety of listed tools.
 
 - **AlternativeTo:** its [current approval rules](https://alternativeto.net/faq/#why-wasn-t-my-software-app-approved) specifically decline simple PDF tools and collections of such tools. Older advice to submit there does not establish eligibility. Do not pay for priority review or submit through profile/list spam to bypass that rule.
-- **Awesome-selfhosted:** [current contribution instructions](https://github.com/awesome-selfhosted/awesome-selfhosted-data/blob/master/CONTRIBUTING.md) require the first release to be more than four months old. FolioCove's [first beta release](https://github.com/mehbul/FolioCove/releases/tag/v0.1.0-beta) was published 3 October 2026, so it does not meet that age requirement. Recheck after 3 February 2027; do not treat the date as automatic acceptance.
+- **Awesome-selfhosted:** [current contribution instructions](https://github.com/awesome-selfhosted/awesome-selfhosted-data/blob/master/CONTRIBUTING.md) require the first release to be more than four months old. FolioCove's [first beta release](https://github.com/mehbul/ihatepdf/releases/tag/v0.1.0-beta) was published 3 October 2026, so it does not meet that age requirement. Recheck after 3 February 2027; do not treat the date as automatic acceptance.
 - **AI/MCP directories:** the application is a PDF workspace, and browser-dependent AI does not make it an AI platform or MCP server. Avoid irrelevant positioning.
 - **Review drives:** no eligible user group or genuine reviews have been verified. Do not invent customer experiences, endorse our own product as an independent user, or offer incentives without reviewing the destination's actual rules.
 

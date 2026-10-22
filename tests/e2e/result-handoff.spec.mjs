@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 import path from 'node:path';
 import {createPdf,makeFixtureDir,runAndSaveDownload,pdfPageCount,pdfText,installPageGuards,expectNoGuardViolations} from './helpers.mjs';
-const base=process.env.FOLIOCOVE_PAGES_TEST?'/FolioCove':'';
+const base=process.env.FOLIOCOVE_PAGES_TEST?'/ihatepdf':'';
 
 test('A merged PDF passes through page organization and lossless compression without choosing files again',async({page})=>{
  const dir=await makeFixtureDir(),a=await createPdf(path.join(dir,'first.pdf'),['FLOW-A','FLOW-B']),b=await createPdf(path.join(dir,'second.pdf'),['FLOW-C']);

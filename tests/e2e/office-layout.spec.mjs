@@ -4,7 +4,7 @@ import path from 'node:path';
 import JSZip from 'jszip';
 import {PDFDocument,PDFName} from 'pdf-lib';
 import {createPdf,makeFixtureDir,runAndSaveDownload} from './helpers.mjs';
-const base=process.env.FOLIOCOVE_PAGES_TEST?'/FolioCove':'';
+const base=process.env.FOLIOCOVE_PAGES_TEST?'/ihatepdf':'';
 test('Appearance conversion keeps page dimensions and graphics through Word and PDF',async({page})=>{
  const dir=await makeFixtureDir(),input=await createPdf(path.join(dir,'layout.pdf'),['LAYOUT-FIRST','LAYOUT-SECOND']);
  const external=[];page.on('request',r=>{if(new URL(r.url()).origin!==new URL(test.info().project.use.baseURL).origin&&!r.url().startsWith('data:')&&!r.url().startsWith('blob:'))external.push(r.url())});

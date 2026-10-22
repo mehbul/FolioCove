@@ -8,14 +8,14 @@ import {spawn} from 'node:child_process';
 const runtime='.sites-runtime/extraction-demo',assets='src/static/demo';
 await fs.mkdir(runtime,{recursive:true});
 const run=(exe,args)=>new Promise((resolve,reject)=>{const p=spawn(exe,args,{windowsHide:true,stdio:['ignore','ignore','pipe']});let err='';p.stderr.on('data',d=>err+=d);p.on('error',reject);p.on('exit',code=>code===0?resolve():reject(new Error(exe+': '+err.slice(-1500))))});
-const server=spawn(process.execPath,['scripts/dev-server.mjs'],{env:{...process.env,PORT:'4175',FOLIOCOVE_BASE_PATH:'/FolioCove'},stdio:'ignore',windowsHide:true});
+const server=spawn(process.execPath,['scripts/dev-server.mjs'],{env:{...process.env,PORT:'4175',FOLIOCOVE_BASE_PATH:'/ihatepdf'},stdio:'ignore',windowsHide:true});
 let browser;
 try{
- for(let n=0;n<100;n++){if(await fetch('http://127.0.0.1:4175/FolioCove/').then(r=>r.ok).catch(()=>false))break;await new Promise(r=>setTimeout(r,100));}
+ for(let n=0;n<100;n++){if(await fetch('http://127.0.0.1:4175/ihatepdf/').then(r=>r.ok).catch(()=>false))break;await new Promise(r=>setTimeout(r,100));}
  browser=await chromium.launch();
  const context=await browser.newContext({viewport:{width:1000,height:800},recordVideo:{dir:runtime,size:{width:1000,height:800}},reducedMotion:'reduce'});
  const page=await context.newPage(),recordingStarted=Date.now();
- await page.goto('http://127.0.0.1:4175/FolioCove/split-pdf/');await expect(page.getByTestId('file-input')).toBeEnabled();
+ await page.goto('http://127.0.0.1:4175/ihatepdf/split-pdf/');await expect(page.getByTestId('file-input')).toBeEnabled();
  await page.evaluate(()=>scrollTo(0,document.querySelector('.workspace').getBoundingClientRect().top+scrollY));
  const box=await page.locator('.workspace').boundingBox(),cropX=Math.floor(box.x/2)*2,cropWidth=Math.floor((1000-cropX)/2)*2;
  const ready=(Date.now()-recordingStarted)/1000,marks=[];

@@ -1,6 +1,6 @@
 # FolioCove operating plan
 
-Updated after the conversion and trust-label releases. Public beta: https://mehbul.github.io/FolioCove/. Source and bug reports: https://github.com/mehbul/FolioCove. The public source and history were authorized by the owner. The separate Sites host remains private. The owner authorized search indexing for the public Pages beta on 3 October 2026.
+Updated after the conversion and trust-label releases. Public beta: https://mehbul.github.io/ihatepdf/. Source and bug reports: https://github.com/mehbul/ihatepdf. The public source and history were authorized by the owner. The separate Sites host remains private. The owner authorized search indexing for the public Pages beta on 3 October 2026.
 
 ## Responsibilities and boundaries
 

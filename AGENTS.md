@@ -1,6 +1,6 @@
-# Working on FolioCove
+# Working on iHatePDF
 
-FolioCove is a static browser PDF workspace. Read README.md, PRODUCT.md and DESIGN.md for context; use the implementation and current audit evidence for capability claims.
+iHatePDF is a static browser PDF workspace. Read README.md, PRODUCT.md and DESIGN.md for context; use the implementation and current audit evidence for capability claims.
 
 ## Source map
 
@@ -22,6 +22,6 @@ Run `npm run build` and `npm test` for source changes. Choose focused Playwright
 
 To verify AI-readable outputs, run `node scripts/test-ai-readiness.mjs`. Generate discovery content from the shared registry and keep visible copy, JSON-LD and machine-readable limits consistent. No fake reviews, ratings, operator contact details, certifications, ranking claims or completed device tests.
 
-The primary public beta is https://mehbul.github.io/FolioCove/. Push verified source to main; .github/workflows/pages.yml builds, tests and deploys it. scripts/build-pages.mjs adapts the generated site to the /FolioCove/ project path. Verify changed deployment behavior with playwright.pages.config.mjs; restore the root build with npm run build before committing generated dist files. Report deployment success only from the completed GitHub workflow and live verification when behavior changed.
+The primary public beta is https://mehbul.github.io/ihatepdf/. Push verified source to main; .github/workflows/pages.yml builds, tests and deploys it. scripts/build-pages.mjs adapts the generated site to the /ihatepdf/ project path. Verify changed deployment behavior with playwright.pages.config.mjs; restore the root build with npm run build before committing generated dist files. Report deployment success only from the completed GitHub workflow and live verification when behavior changed.
 
 The separate Sites host uses the existing project ID in `.openai/hosting.json`. Use the Sites publishing workflow only when that host is being updated, preserving owner-private access. See docs/OPERATIONS.md for incident and release priorities.

@@ -4,7 +4,7 @@ import {escapeHtml as e} from './ai.mjs';
 import {feedbackPrompts,supportMailto} from './contact.mjs';
 
 export async function buildPilot(){
- const base='/FolioCove';
+ const base='/ihatepdf';
  const feedback=e(supportMailto('iHatePDF pilot feedback',feedbackPrompts));
  const body=`<p>Help improve iHatePDF by trying one small task. No sign-up is needed. Start with the synthetic samples below; keep your own documents out of feedback. Participation is optional and does not subscribe you to messages.</p>
  <h2>Choose one five-minute task</h2>

@@ -25,7 +25,7 @@ body:
     id: site
     attributes:
       label: Public tool URL and date tested
-      placeholder: https://mehbul.github.io/FolioCove/scan-pdf/ — YYYY-MM-DD
+      placeholder: https://mehbul.github.io/ihatepdf/scan-pdf/ — YYYY-MM-DD
     validations:
       required: true
   - type: dropdown

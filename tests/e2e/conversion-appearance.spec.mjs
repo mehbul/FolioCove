@@ -8,7 +8,7 @@ import {PDFDocument,rgb} from 'pdf-lib';
 import {createCanvas} from '@napi-rs/canvas';
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
 import {makeFixtureDir,createPdf,runAndSaveDownload} from './helpers.mjs';
-const base=process.env.FOLIOCOVE_PAGES_TEST?'/FolioCove':'';
+const base=process.env.FOLIOCOVE_PAGES_TEST?'/ihatepdf':'';
 async function open(page,slug){await page.goto(base+'/'+slug+'/');await expect(page.getByTestId('file-input')).toBeEnabled()}
 async function pixels(file){const task=pdfjs.getDocument({data:new Uint8Array(await fs.readFile(file)),standardFontDataUrl:'node_modules/pdfjs-dist/standard_fonts/'});try{const pdf=await task.promise,p=await pdf.getPage(1),v=p.getViewport({scale:1}),c=createCanvas(Math.ceil(v.width),Math.ceil(v.height));await p.render({canvasContext:c.getContext('2d'),viewport:v}).promise;const data=c.getContext('2d').getImageData(0,0,c.width,c.height).data;data.imageWidth=c.width;data.preview=c.toBuffer('image/png');return data}finally{await task.destroy()}}
 function colorCount(data,kind){let count=0;for(let i=0;i<data.length;i+=4)if(kind==='red'?data[i]>160&&data[i+1]<100&&data[i+2]<100:data[i+2]>160&&data[i]<100&&data[i+1]<100)count++;return count}

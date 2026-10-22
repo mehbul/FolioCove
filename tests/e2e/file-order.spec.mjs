@@ -11,7 +11,7 @@ import {
   runAndSaveDownload
 } from './helpers.mjs';
 
-const mergeRoute = `${process.env.FOLIOCOVE_PAGES_TEST ? '/FolioCove' : ''}/merge-pdf/`;
+const mergeRoute = `${process.env.FOLIOCOVE_PAGES_TEST ? '/ihatepdf' : ''}/merge-pdf/`;
 const markers = ['ORDER-A', 'ORDER-B1', 'ORDER-B2', 'ORDER-C'];
 
 test('slow startup keeps file selection unavailable until all workspace modules are ready', async ({ page }) => {

@@ -1,8 +1,8 @@
 FolioCove is a free, MIT-licensed browser PDF workspace. Documents are processed on the user's device; no account or document upload is required.
 
-- [Open the public beta](https://mehbul.github.io/FolioCove/)
-- [Watch a real synthetic-file merge demo](https://mehbul.github.io/FolioCove/demo/)
-- [Read the tool capabilities and limits](https://mehbul.github.io/FolioCove/tools/)
+- [Open the public beta](https://mehbul.github.io/ihatepdf/)
+- [Watch a real synthetic-file merge demo](https://mehbul.github.io/ihatepdf/demo/)
+- [Read the tool capabilities and limits](https://mehbul.github.io/ihatepdf/tools/)
 
 Merge, split, organize, edit and sign PDFs, with a wider catalog for conversion, OCR and forms. Each tool exposes its limits. Redaction is experimental, browser AI is conditional, and verified sanitization/PDF/A are unavailable. Real phone cameras, native phone downloads and Apple's Safari app still need physical-device validation. Keep original files and inspect outputs.
 
