@@ -1,10 +1,10 @@
-# FolioCove operating plan
+# iHatePDF operating plan
 
 Updated after the conversion and trust-label releases. Public beta: https://mehbul.github.io/ihatepdf/. Source and bug reports: https://github.com/mehbul/ihatepdf. The public source and history were authorized by the owner. The separate Sites host remains private. The owner authorized search indexing for the public Pages beta on 3 October 2026.
 
 ## Responsibilities and boundaries
 
-Codex handles requested engineering, focused verification, deployment, documentation and read-only issue/deployment review through this workspace. Routine reversible fixes are authorized. The FolioCove Google discovery heartbeat is configured and active on a six-hour schedule. It checks bounded public search/indexing evidence and stays quiet on unchanged results; it is not uptime monitoring or continuous security supervision. Do not claim ongoing supervision, guaranteed uptime, legal approval or actual phone validation.
+Codex handles requested engineering, focused verification, deployment, documentation and read-only issue/deployment review through this workspace. Routine reversible fixes are authorized. The iHatePDF Google discovery heartbeat is configured and active on a six-hour schedule. It checks bounded public search/indexing evidence and stays quiet on unchanged results; it is not uptime monitoring or continuous security supervision. Do not claim ongoing supervision, guaranteed uptime, legal approval or actual phone validation.
 
 The owner retains account ownership and billing. Spending, contracts, account verification, legal commitments, external outreach and changes to document-processing privacy need specific authority and available access. Never request passwords in chat or invent operator details.
 
@@ -17,7 +17,7 @@ Use completed commit-specific Pages and general CI results as release evidence; 
 1. Investigate reproducible crashes, missing downloads, document transmission or misleading security claims first. Preserve originals and use synthetic fixtures.
 2. Obtain real-device evidence when hardware access exists. Record observations in device-pilot.csv; never substitute emulation results.
 3. Improve fidelity/error handling based on real bug reports. Do not advertise unsupported Office reconstruction, PDF/A, sanitization or universal AI.
-4. General support uses the owner-authorized mehbulislam81@gmail.com inbox (17 October 2026). Review FolioCove support messages during the pilot; no response-time guarantee is promised. Finalize public-business notices before expanding beyond a controlled beta. GitHub Issues covers public bug reports. Private vulnerability reporting is enabled for security reports only; follow SECURITY.md and never request customer documents or credentials there.
+4. General support uses the owner-authorized mehbulislam81@gmail.com inbox (17 October 2026). Review iHatePDF and legacy FolioCove support messages during the pilot; no response-time guarantee is promised. Finalize public-business notices before expanding beyond a controlled beta. GitHub Issues covers public bug reports. Private vulnerability reporting is enabled for security reports only; follow SECURITY.md and never request customer documents or credentials there.
 5. Review indexing and broader launch communication after evidence/contact requirements are resolved. No paid domain, mail plan, analytics or remote AI service is required for the current beta.
 
 ## Release and incident procedure
@@ -35,3 +35,8 @@ Use reproducible issue outcomes, parseable downloads and scoped browser evidence
 First make the common merge, extract and compression workflows reliable and easy to verify. Reproducible guide examples and public help support that goal. Maintain useful task pages and sourced comparisons instead of publishing thin duplicate keyword pages. Submit factual entries only to relevant directories; inclusion is their maintainers' decision.
 
 Use Search Console's actual impressions, clicks and indexed-page reports to choose the next content improvement when account access is available. Review resolved public issues and real-device reports for product priorities. Do not treat indexing, directory submission or catalog size as evidence of top-five market position. No ranking, adoption or retention milestone has been established. Aggregate search clicks must be recorded with their exact reporting window and are not completed PDF tasks.
+
+
+## Founder execution review — 22 October 2026
+
+The URL migration now includes a root redirect-only Pages repository for old `/FolioCove/` routes. Directory maintenance PR #110 is pending. See `docs/SEARCH-DISCOVERY.md` for redirect limits and the new-property sitemap processing warning. Conversion/mobile-engine QA, support and monetization readiness, and actual discovery evidence are recorded in the three `2026-10-22-*` audit documents. Those audits distinguish completed engineering from actual-device evidence, visitor success and provider approval that remain unavailable. No remote analytics or ads have been introduced.

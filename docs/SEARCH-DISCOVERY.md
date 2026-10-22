@@ -53,4 +53,11 @@ Article titles/descriptions, canonical URLs, Open Graph fields, BlogPosting meta
 
 ## Repository URL migration — 22 October 2026
 
-The repository is now `mehbul/ihatepdf`; the current public URL and sitemap are https://mehbul.github.io/ihatepdf/ and https://mehbul.github.io/ihatepdf/sitemap.xml. Historic audit evidence and accepted indexing requests refer to the former `/FolioCove/` URL. GitHub repository redirects do not guarantee GitHub Pages redirects. Treat old and new URLs separately in ranking evidence. The old Search Console URL-prefix property does not cover the new path; verify the new property and submit its sitemap once when access is available. Publication does not establish indexing or ranking.
+The repository is now `mehbul/ihatepdf`; the current public URL and sitemap are https://mehbul.github.io/ihatepdf/ and https://mehbul.github.io/ihatepdf/sitemap.xml. Historic audit evidence and accepted indexing requests refer to the former `/FolioCove/` URL. GitHub repository redirects do not guarantee GitHub Pages redirects. Treat old and new URLs separately in ranking evidence. The old Search Console URL-prefix property does not cover the new path. The new property was verified by HTML tag on 22 October and its sitemap submission was accepted once, but the initial report still said "Couldn't fetch". Do not repeatedly resubmit it. Publication and successful live HTTP fetches do not establish Google indexing or ranking.
+
+
+### Legacy URL recovery
+
+A separate public redirect-only root site, [mehbul/mehbul.github.io](https://github.com/mehbul/mehbul.github.io), preserves the 40 known `/FolioCove/` routes from the current sitemap. Each page has a fixed matching `/ihatepdf/` destination, canonical link, `noindex,follow`, and a visible fallback link. JavaScript navigation preserves the query string and fragment; it is not an HTTP 301. Unknown paths keep a real 404. Root `robots.txt` permits crawling and advertises the current application sitemap. This is a hosting improvement, not proof that Google has fetched or indexed the sitemap. Do not create a new `mehbul/FolioCove` repository: leaving that source name unused preserves GitHub's repository redirect. Keep the root redirect list aligned when moving any additional historically published route.
+
+The existing awesome-pdf entry has a scoped name/URL correction in [PR #110](https://github.com/karllhughes/awesome-pdf/pull/110); submission does not imply upstream acceptance.

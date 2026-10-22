@@ -16,7 +16,7 @@ Ten core routes and a wider catalog of 88 tools. Documents are processed on the 
 
 ## Brand Commitments
 
-The public brand is iHatePDF, renamed from FolioCove PDF on 21 October 2026. Previous names remain discovery aliases. The existing repository and public URL stay stable. The owner requested a premium website inspired by real design such as Airbnb, using design-taste-frontend, impeccable and emil-design-eng. This is inspiration, not an Airbnb affiliation or use of its proprietary assets.
+The public brand is iHatePDF, renamed from FolioCove PDF on 21 October 2026. Previous names remain discovery aliases. The repository was renamed to `mehbul/ihatepdf` on 22 October 2026 and the public URL is https://mehbul.github.io/ihatepdf/. Historic `/FolioCove/` URLs remain audit history; GitHub repository redirects do not guarantee Pages redirects. The owner requested a premium website inspired by real design such as Airbnb, using design-taste-frontend, impeccable and emil-design-eng. This is inspiration, not an Airbnb affiliation or use of its proprietary assets.
 
 ## Evidence on Hand
 

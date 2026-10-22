@@ -86,4 +86,9 @@ Additional triage on 16 October: `jsvvsolsllc/awesome-browser-tools` was not sel
 
 ## Support status for directory copy
 
-GitHub Issues is enabled and accepts public, non-sensitive reports. A public support email is still unset; do not publish an assumed `support@` address or expose the owner's personal account details. GitHub private vulnerability reporting is enabled for security reports only; follow [SECURITY.md](../SECURITY.md). A directory listing does not resolve the general-contact gap or the physical-device pilot.
+GitHub Issues is enabled and accepts public, non-sensitive reports. General support uses the owner-authorized `mehbulislam81@gmail.com` inbox (17 October 2026); do not invent a `support@` address or publish other private account details. GitHub private vulnerability reporting is enabled for security reports only; follow [SECURITY.md](../SECURITY.md). A directory listing does not establish support response times or complete the physical-device pilot.
+
+
+## Name and URL maintenance — 22 October 2026
+
+The application is now iHatePDF at https://mehbul.github.io/ihatepdf/. The accepted awesome-pdf entry still used FolioCove and the former URL when rechecked on 22 October. [PR #110](https://github.com/karllhughes/awesome-pdf/pull/110) updates only that existing entry's name and link; its description is unchanged, and maintainer association is disclosed. This is a pending maintenance PR, not a new accepted listing or evidence of traffic. The former application URLs are separately restored through the owner's root GitHub Pages redirect site.
