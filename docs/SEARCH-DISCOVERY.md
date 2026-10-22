@@ -49,3 +49,8 @@ Validation: npm run build, npm test (77 generated handler cases), node scripts/t
 src/content/blog.mjs now generates a blog hub and three distinct articles: an iLovePDF alternative comparison, a PDF-tool privacy checklist and an open-source PDF selection guide. The comparison identifies FolioCove as its publisher, distinguishes iLovePDF online from Desktop, cites official privacy/pricing/Desktop pages checked on 3 October 2026, and includes FolioCove's unavailable capabilities. Do not refresh the checked date without rechecking the sources. No competitor security incident, certification claim or unverified performance comparison is implied.
 
 Article titles/descriptions, canonical URLs, Open Graph fields, BlogPosting metadata, visible publisher/date, homepage links, README links, sitemap entries and AI reading links are generated together. Search intent is the task or decision in each article; there is no invented search-volume evidence. Three focused Pages checks now pass, including the comparison's source link, schema/heading consistency and mobile overflow. Root build, handler and AI-readiness checks also pass.
+
+
+## Repository URL migration — 22 October 2026
+
+The repository is now `mehbul/ihatepdf`; the current public URL and sitemap are https://mehbul.github.io/ihatepdf/ and https://mehbul.github.io/ihatepdf/sitemap.xml. Historic audit evidence and accepted indexing requests refer to the former `/FolioCove/` URL. GitHub repository redirects do not guarantee GitHub Pages redirects. Treat old and new URLs separately in ranking evidence. The old Search Console URL-prefix property does not cover the new path; verify the new property and submit its sitemap once when access is available. Publication does not establish indexing or ranking.
