@@ -46,7 +46,7 @@ test('image-sized output reflects crop and rotation; invalid crop blocks export;
   await page.getByLabel('Crop left (%)',{exact:true}).fill('0');
   await page.getByLabel('Rotate clockwise',{exact:true}).selectOption('90');
   const output=await runAndSaveDownload(page,dir,'images.pdf');const pdf=await PDFDocument.load(await fs.readFile(output));
-  expect(pdf.getPage(0).getWidth()).toBeCloseTo(34.56,1);expect(pdf.getPage(0).getHeight()).toBeCloseTo(23.04,1);
+  expect(pdf.getPage(0).getWidth()).toBeCloseTo(72,1);expect(pdf.getPage(0).getHeight()).toBeCloseTo(48,1);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.getByRole('button',{name:'Duplicate image',exact:true}).click();await expect(page.locator('#files .file-name')).toHaveCount(2);
   await page.getByRole('button',{name:'Reset image',exact:true}).click();await expect(page.getByLabel('Crop right (%)',{exact:true})).toHaveValue('100');

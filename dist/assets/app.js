@@ -15,7 +15,7 @@ import{baseTools,localHtmlToPdf,localModelStep,pdfToWord,presentationToPdf,sprea
       ${selectField("paper","Paper size",[["image","Match each image"],["a4","A4"],["a5","A5"],["letter","Letter"],["legal","Legal"]])}
       ${selectField("orientation","Orientation",[["auto","Auto"],["portrait","Portrait"],["landscape","Landscape"]])}
       ${selectField("fit","Image fit",[["contain","Fit whole image"],["cover","Fill page \u2014 crop edges"],["stretch","Stretch to fit"]])}
-      ${numberField("margin","Margin (mm)",0,0,50)}${selectField("dpi","Resolution",[[150,"150 DPI"],[72,"72 DPI"],[200,"200 DPI"],[300,"300 DPI"]])}${numberField("quality","JPEG quality",90,40,100)}
+      ${numberField("margin","Margin (mm)",0,0,50)}${selectField("dpi","Resolution",[[72,"72 DPI"],[150,"150 DPI"],[200,"200 DPI"],[300,"300 DPI"]])}${numberField("quality","JPEG quality",90,40,100)}
       <label for="ip-background">Page background</label><input id="ip-background" type="color" value="#ffffff">
       <label for="ip-title">Document title</label><input id="ip-title" maxlength="200" value="Image document">
       <label for="ip-filename">Download filename</label><input id="ip-filename" maxlength="100" value="images">
