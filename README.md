@@ -21,7 +21,7 @@ iHatePDF is a free, MIT-licensed browser PDF workspace for everyday document tas
 | Organize PDF pages | [Organize pages](https://mehbul.github.io/ihatepdf/organize-pdf/) | Preview, rearrange or remove pages; inspect forms and annotations afterwards. |
 | Compress PDF without rasterizing text | [Lossless compression](https://mehbul.github.io/ihatepdf/lossless-compress-pdf/) | Optimize PDF structure; the file may not shrink and can become larger. |
 | Compress PDF to a target size | [Target-size compression](https://mehbul.github.io/ihatepdf/compress-pdf/) | Best-effort raster compression; loses selectable text, forms and accessibility information. |
-| Convert JPG or PNG to PDF | [Images to PDF](https://mehbul.github.io/ihatepdf/jpg-to-pdf/) | One image per page, ordered by you; no automatic A4 margins or OCR. |
+| Convert JPG or PNG to PDF | [Images to PDF](https://mehbul.github.io/ihatepdf/jpg-to-pdf/) | Ordered pictures with filters, crop/rotation, preview, paper size, margins and quality controls; no OCR. |
 | Convert PDF to JPG | [PDF to JPG](https://mehbul.github.io/ihatepdf/pdf-to-jpg/) | A ZIP containing one rendered JPG per page, not original embedded-image extraction. |
 | Convert PDF to Word | [PDF to DOCX](https://mehbul.github.io/ihatepdf/pdf-to-word/) | Page images preserve appearance by default; content is not editable. Optional editable text removes layout. |
 | Convert Word to PDF | [DOCX to PDF](https://mehbul.github.io/ihatepdf/word-to-pdf/) | Browser-rendered page images by default; text is not selectable. Complex layouts/fonts may differ. Optional text-only export. Legacy DOC unsupported. |
@@ -32,6 +32,14 @@ iHatePDF is a free, MIT-licensed browser PDF workspace for everyday document tas
 | Add text to a PDF | [Edit PDF](https://mehbul.github.io/ihatepdf/edit-pdf/) | Add a text overlay; does not rewrite existing paragraphs. |
 | Add a signature to a PDF | [Sign PDF](https://mehbul.github.io/ihatepdf/sign-pdf/) | A visible typed signature mark, not certificate signing or identity verification. |
 | Make scanned text searchable | [English OCR](https://mehbul.github.io/ihatepdf/ocr-pdf/) | Local recognition with an English model download; review words and numbers for errors. |
+
+## Pictures to PDF with filters
+
+Open [Images to PDF](https://mehbul.github.io/ihatepdf/jpg-to-pdf/) and select pictures in order. Use the file arrows, drag the page buttons, sort by filename or reverse the order. Choose an image to edit its original/grayscale/black-and-white/document-scan/sepia filter, brightness, contrast, saturation, sharpening, threshold, rotation, flips, inversion, auto contrast and percentage crop. Reset one image, duplicate it or apply its adjustments to all images.
+
+The preview shares export processing. Choose image-sized, A4, A5, Letter or Legal pages; auto, portrait or landscape orientation; fit, fill or stretch; margins, background, resolution, JPEG quality, page numbers, title and filename. Create & download produces one picture per page, and Download again recovers the prepared result. You can continue into another PDF tool with Use this PDF.
+
+Pictures stay in browser memory and are cleared when you leave/reload; no document upload or saved-document history is added. Limits: 100 images, 20 MB and 24 megapixels each; JPG, PNG, WebP and BMP. HEIC/TIFF require conversion first. Transparent pixels become white; source photo metadata is removed by re-encoding. Raster edges are capped at 3508 pixels. Output has no OCR or searchable image text, and no automatic perspective correction. Inspect the result and keep originals.
 
 ## How to merge PDFs without uploading
 

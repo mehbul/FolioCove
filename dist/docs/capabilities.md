@@ -48,9 +48,9 @@ Selected documents are processed on-device; there is no document-upload endpoint
 - ID: images
 - Open: https://foliocove-tools.mehbulislam81.chatgpt.site/jpg-to-pdf/
 - Status: implemented
-- Input MIME types: image/jpeg, image/png
-- Purpose: Turn JPG and PNG images into one clean PDF.
-- Boundary: One PDF page per JPG or PNG, using the image dimensions. Page order follows the selected files; margins and orientation controls are unavailable. Photo PDFs are not automatically searchable.
+- Input MIME types: image/jpeg, image/png, image/webp, image/bmp
+- Purpose: Arrange pictures, apply filters and crop or rotate, then create a PDF with paper, margin and quality controls.
+- Boundary: One image per page in your chosen order. JPG, PNG, WebP and BMP; up to 100 images, 20 MB and 24 megapixels each. Filters, crop, rotation, paper size, margins and quality controls run locally. Output is re-encoded as page images, capped at 3508 pixels per edge; no OCR or HEIC/TIFF conversion.
 
 ### Add watermark
 

@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {imageLayout} from '../src/app/image-pdf.mjs';
+const base={paper:'letter',orientation:'portrait',fit:'contain',margin:10,dpi:150,numbers:true};
+const fit=imageLayout(1000,500,base);
+assert.equal(fit.width,612);assert.equal(fit.height,792);
+assert(fit.iw<=fit.aw&&fit.ih<=fit.ah);
+assert.equal(fit.footer,18);
+const cover=imageLayout(1000,500,{...base,fit:'cover'});
+assert(cover.iw>=cover.aw&&cover.ih>=cover.ah);
+const stretch=imageLayout(1000,500,{...base,fit:'stretch'});
+assert.equal(stretch.iw,stretch.aw);assert.equal(stretch.ih,stretch.ah);
+const auto=imageLayout(1000,500,{...base,orientation:'auto'});
+assert.equal(auto.width,792);assert.equal(auto.height,612);
+const image=imageLayout(1000,500,{...base,paper:'image',orientation:'auto',margin:0,numbers:false});
+assert.equal(image.width,480);assert.equal(image.height,240);
+assert.throws(()=>imageLayout(10,10,{...base,paper:'image',margin:50}),/Margins leave no room/);
+for(const paper of ['a4','a5','legal'])assert(imageLayout(800,1200,{...base,paper}).width>400);
+console.log('PASS: image PDF fit/fill/stretch, orientation, physical sizing, footer and margin bounds.');

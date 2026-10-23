@@ -19,7 +19,7 @@ export const notices={
  trimheads:'Covers regions with white rectangles; underlying text remains recoverable. This is NOT redaction.',
  wordtopdf:'Keep appearance exports page images: text is not editable or selectable. Editable text mode removes layout, tables and images. Complex Word pagination and unavailable fonts may differ; inspect the output.',
  docx:'Keep appearance exports page images: text is not editable or selectable. Editable text mode removes layout, tables and images.',
- images:'One PDF page per JPG or PNG, using the image dimensions. Page order follows the selected files; margins and orientation controls are unavailable. Photo PDFs are not automatically searchable.',
+ images:'One image per page in your chosen order. JPG, PNG, WebP and BMP; up to 100 images, 20 MB and 24 megapixels each. Filters, crop, rotation, paper size, margins and quality controls run locally. Output is re-encoded as page images, capped at 3508 pixels per edge; no OCR or HEIC/TIFF conversion.',
  jpg:'Renders every PDF page into a JPG and downloads them together as a ZIP. This does not extract the original embedded images. Inspect image readability; large pages may exceed rendering limits.',
  lossless:'Optimizes PDF structure locally without turning pages into images. Size reduction is not guaranteed; keep the original and inspect the result. Modifying PDFs can invalidate digital signatures.',
  pdftoword:'Keep appearance exports page images: text is not editable or selectable. Editable text mode removes layout, tables and images.',
@@ -143,9 +143,9 @@ export function initLaunch(api){
   for(const input of document.querySelectorAll('#options input[type=number]'))if(!input.checkValidity()){input.reportValidity();e.stopImmediatePropagation();return}
   if(api.current()==='translate'&&!('Translator' in globalThis)){status.className='status error';status.textContent='This browser does not offer on-device translation. Choose another tool; no file was uploaded.';e.stopImmediatePropagation();return}
   if(api.files().some(f=>f.size>100*1024*1024)){status.className='status error';status.textContent='Private beta limit: 100 MB per file. Choose a smaller file.';e.stopImmediatePropagation();return}
-  running={tool:api.current(),start:performance.now()};record(running.tool,'started',0);$('job-controls').hidden=false;document.querySelector('.sidebar').inert=true;$('options').inert=true;$('files').inert=true;
+  running={tool:api.current(),start:performance.now()};record(running.tool,'started',0);$('job-controls').hidden=false;document.querySelector('.sidebar').inert=true;$('options').inert=true;$('files').inert=true;$('visual-panel').inert=true;
  },true);
- const finish=outcome=>{if(!running)return;record(running.tool,outcome,performance.now()-running.start);running=null;$('job-controls').hidden=true;document.querySelector('.sidebar').inert=false;$('options').inert=false;$('files').inert=false;};
+ const finish=outcome=>{if(!running)return;record(running.tool,outcome,performance.now()-running.start);running=null;$('job-controls').hidden=true;document.querySelector('.sidebar').inert=false;$('options').inert=false;$('files').inert=false;$('visual-panel').inert=false;};
  new MutationObserver(()=>{if(!running)return;const text=status.textContent,m=text.match(/page (\d+) of (\d+)/i);$('job-stage').textContent=m?`Page ${m[1]} of ${m[2]}`:'Processing on this device…';if(m){$('job-progress').max=+m[2];$('job-progress').value=+m[1]}else $('job-progress').removeAttribute('value');const result=classifyOutcome(status.className);if(result){if(result==='failure')status.textContent+='\nKeep the original. Try a smaller, unencrypted file; report only the tool and error category, not document contents.';finish(result)}}).observe(status,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});
  new MutationObserver(()=>{if(running&&!go.disabled)finish('completed')}).observe(go,{attributes:true,attributeFilter:['disabled']});
  $('cancel-job').onclick=()=>{if(confirm('Stop by reloading this tab? Selected files and unsaved settings will be cleared.')){finish('cancelled');location.reload()}};

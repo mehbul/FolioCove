@@ -66,15 +66,17 @@
     {
       "id": "images",
       "name": "Images to PDF",
-      "description": "Turn JPG and PNG images into one clean PDF.",
+      "description": "Arrange pictures, apply filters and crop or rotate, then create a PDF with paper, margin and quality controls.",
       "url": "https://foliocove-tools.mehbulislam81.chatgpt.site/jpg-to-pdf/",
       "inputMimeTypes": [
         "image/jpeg",
-        "image/png"
+        "image/png",
+        "image/webp",
+        "image/bmp"
       ],
       "multipleFiles": true,
       "status": "implemented",
-      "limitations": "One PDF page per JPG or PNG, using the image dimensions. Page order follows the selected files; margins and orientation controls are unavailable. Photo PDFs are not automatically searchable.",
+      "limitations": "One image per page in your chosen order. JPG, PNG, WebP and BMP; up to 100 images, 20 MB and 24 megapixels each. Filters, crop, rotation, paper size, margins and quality controls run locally. Output is re-encoded as page images, capped at 3508 pixels per edge; no OCR or HEIC/TIFF conversion.",
       "processing": "on-device"
     },
     {
